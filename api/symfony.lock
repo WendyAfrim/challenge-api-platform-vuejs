@@ -132,6 +132,15 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "gesdinet/jwt-refresh-token-bundle": {
+        "version": "1.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "13fb2b58ec6204211815eb6f4c69e4918e5af617"
+        }
+    },
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
@@ -149,6 +158,18 @@
     },
     "league/html-to-markdown": {
         "version": "5.0.2"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.16",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "config/packages/lexik_jwt_authentication.yaml"
+        ]
     },
     "monolog/monolog": {
         "version": "2.3.5"
