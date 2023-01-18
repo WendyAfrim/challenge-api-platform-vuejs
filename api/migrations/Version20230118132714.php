@@ -61,6 +61,8 @@ final class Version20230118132714 extends AbstractMigration
         $this->addSql('ALTER TABLE request ADD CONSTRAINT FK_3B978F9F549213EC FOREIGN KEY (property_id) REFERENCES property (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE viewing ADD CONSTRAINT FK_F5BB46983414710B FOREIGN KEY (agent_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE viewing ADD CONSTRAINT FK_F5BB469836790F15 FOREIGN KEY (lodger_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE "user" ADD salary INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE "user" ADD income_source VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
