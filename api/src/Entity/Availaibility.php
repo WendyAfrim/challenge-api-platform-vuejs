@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\AvailaibilityRepository;
+use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,11 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Availaibility
 {
     use TimestampTrait;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use EntityIdTrait;
 
     #[ORM\ManyToOne(inversedBy: 'availaibilities')]
     #[Groups(['availaibility_read', 'availaibility_write'])]
@@ -33,11 +30,6 @@ class Availaibility
 
     #[ORM\OneToOne(inversedBy: 'availaibility', cascade: ['persist', 'remove'])]
     private ?Viewing $viewing = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getProperty(): ?Property
     {

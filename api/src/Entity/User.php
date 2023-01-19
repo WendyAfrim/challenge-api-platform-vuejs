@@ -3,8 +3,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -12,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Traits\EntityIdTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
@@ -43,16 +42,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
   use TimestampTrait;
+  use EntityIdTrait;
 
   public const ROLE_LODGER = 'ROLE_LODGER';
   public const ROLE_AGENCY = 'ROLE_AGENCY';
   public const ROLE_OWNER = 'ROLE_OWNER';
-
-    #[Groups(['user_read'])]
-    #[ORM\Id]
-    #[ORM\Column]
-    #[ORM\GeneratedValue]
-    private ?int $id = null;
 
     #[Assert\NotBlank]
     #[Assert\Email]
@@ -115,11 +109,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->visits = new ArrayCollection();
         $this->properties = new ArrayCollection();
         $this->requests = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getEmail(): ?string

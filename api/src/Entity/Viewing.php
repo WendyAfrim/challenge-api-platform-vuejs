@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ViewingRepository;
+use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -16,11 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Viewing
 {
     use TimestampTrait;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use EntityIdTrait;
 
     #[ORM\ManyToOne(inversedBy: 'viewings')]
     #[Groups(['viewing_read', 'viewing_write'])]
@@ -33,12 +30,6 @@ class Viewing
     #[ORM\OneToOne(mappedBy: 'viewing', cascade: ['persist', 'remove'])]
     #[Groups(['viewing_read', 'viewing_write'])]
     private ?Availaibility $availaibility = null;
-
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getAgent(): ?User
     {

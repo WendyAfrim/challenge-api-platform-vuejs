@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PropertyRepository;
+use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,11 +24,7 @@ class Property
     public const TYPE_HOUSE = 'House';
 
     use TimestampTrait;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use EntityIdTrait;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -112,11 +109,6 @@ class Property
     {
         $this->availaibilities = new ArrayCollection();
         $this->requests = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getTitle(): ?string
