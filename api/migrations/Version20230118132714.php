@@ -14,7 +14,7 @@ final class Version20230118132714 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Creating all entities';
     }
 
     public function up(Schema $schema): void
@@ -44,7 +44,7 @@ final class Version20230118132714 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_3B978F9F549213EC ON request (property_id)');
         $this->addSql('COMMENT ON COLUMN request.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN request.updated_at IS \'(DC2Type:datetime_immutable)\'');
-        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, firstname VARCHAR(255) NOT NULL, lastname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, roles VARCHAR(255) NOT NULL, situation VARCHAR(255) DEFAULT NULL, salary INT DEFAULT NULL, income_source VARCHAR(255) DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "user" (id INT NOT NULL, firstname VARCHAR(255) NOT NULL, lastname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, situation VARCHAR(255) DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
         $this->addSql('COMMENT ON COLUMN "user".created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN "user".updated_at IS \'(DC2Type:datetime_immutable)\'');
@@ -61,12 +61,13 @@ final class Version20230118132714 extends AbstractMigration
         $this->addSql('ALTER TABLE request ADD CONSTRAINT FK_3B978F9F549213EC FOREIGN KEY (property_id) REFERENCES property (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE viewing ADD CONSTRAINT FK_F5BB46983414710B FOREIGN KEY (agent_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE viewing ADD CONSTRAINT FK_F5BB469836790F15 FOREIGN KEY (lodger_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE "user" ADD salary INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE "user" ADD income_source VARCHAR(255) DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP SEQUENCE availaibility_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE document_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE property_id_seq CASCADE');

@@ -1,37 +1,74 @@
 <?php
+# api/src/Entity/User.php
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use App\Traits\TimestampTrait;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use App\State\UserPasswordHasher;
+use App\Traits\TimestampTrait;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Post(processor: UserPasswordHasher::class),
+        new Get(),
+        new Put(processor: UserPasswordHasher::class),
+        new Patch(processor: UserPasswordHasher::class),
+        new Delete(),
+    ],
     normalizationContext: ['groups' => ['user_read']],
     denormalizationContext: ['groups' => ['user_write']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use TimestampTrait;
 
-    public const ROLE_LODGER = 'ROLE_LODGER';
-    public const ROLE_AGENCY = 'ROLE_AGENCY';
-    public const ROLE_OWNER = 'ROLE_OWNER';
+  use TimestampTrait;
 
+  public const ROLE_LODGER = 'ROLE_LODGER';
+  public const ROLE_AGENCY = 'ROLE_AGENCY';
+  public const ROLE_OWNER = 'ROLE_OWNER';
 
+    #[Groups(['user_read'])]
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[ORM\GeneratedValue]
     private ?int $id = null;
+
+    #[Assert\NotBlank]
+    #[Assert\Email]
+    #[Groups(['user_read', 'user_write'])]
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $email = null;
+
+    #[ORM\Column]
+    private ?string $password = null;
+
+    #[Assert\NotBlank(groups: ['user_write'])]
+    #[Groups(['user_write'])]
+    private ?string $plainPassword = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
     #[ORM\Column(length: 255)]
     #[Groups(['user_read', 'user_write'])]
@@ -42,15 +79,6 @@ class User
     #[Groups(['user_read', 'user_write'])]
     #[Assert\NotBlank]
     private ?string $lastname = null;
-
-    #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['user_read', 'user_write'])]
-    #[Assert\Email]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
-    #[Groups(['user_read', 'user_write'])]
-    private ?string $roles = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user_read', 'user_write'])]
@@ -83,10 +111,8 @@ class User
     public function __construct()
     {
         $this->documents = new ArrayCollection();
-        $this->userProperties = new ArrayCollection();
         $this->viewings = new ArrayCollection();
         $this->visits = new ArrayCollection();
-        $this->ownerProperties = new ArrayCollection();
         $this->properties = new ArrayCollection();
         $this->requests = new ArrayCollection();
     }
@@ -94,6 +120,82 @@ class User
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $painPassword): self
+    {
+        $this->plainPassword = $painPassword;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        $this->plainPassword = null;
     }
 
     public function getFirstname(): ?string
@@ -120,30 +222,6 @@ class User
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getRoles(): ?string
-    {
-        return $this->roles;
-    }
-
-    public function setRoles(string $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
-    }
-
     public function getSituation(): ?string
     {
         return $this->situation;
@@ -164,7 +242,7 @@ class User
         return $this->documents;
     }
 
-    public function addDocument(?Document $document): self
+    public function addDocument(Document $document): self
     {
         if (!$this->documents->contains($document)) {
             $this->documents->add($document);
@@ -212,18 +290,6 @@ class User
                 $viewing->setAgent(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getViewing(): ?Viewing
-    {
-        return $this->viewing;
-    }
-
-    public function setViewing(?Viewing $viewing): self
-    {
-        $this->viewing = $viewing;
 
         return $this;
     }
