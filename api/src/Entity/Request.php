@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RequestRepository;
+use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -16,11 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Request
 {
     use TimestampTrait;
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use EntityIdTrait;
 
     #[ORM\ManyToOne(inversedBy: 'requests')]
     #[Groups(['request_read', 'request_write'])]
@@ -33,11 +30,6 @@ class Request
     #[ORM\Column(nullable: true)]
     #[Groups(['request_read', 'request_write'])]
     private ?bool $is_accepted = null;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getLodger(): ?User
     {
