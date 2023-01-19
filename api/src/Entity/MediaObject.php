@@ -66,8 +66,23 @@ class MediaObject
     #[Groups(['media_object:read'])]
     public ?string $fileId = null;
 
+    #[ORM\ManyToOne(inversedBy: 'photos')]
+    private ?Property $property = null;
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getProperty(): ?Property
+    {
+        return $this->property;
+    }
+
+    public function setProperty(?Property $property): self
+    {
+        $this->property = $property;
+
+        return $this;
     }
 }

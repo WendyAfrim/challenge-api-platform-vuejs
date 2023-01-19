@@ -5,6 +5,7 @@ import RegisterView from '../views/RegisterView.vue';
 import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
+import PropertyRegister from '@/views/Property/AddProperty.vue';
 import { useAuthStore } from '@/stores/auth.store';
 
 const router = createRouter({
@@ -85,6 +86,11 @@ const router = createRouter({
           name: 'homeowner_dashboard',
           component: DashboardView,
         },
+        {
+          path: 'property/add',
+          name: 'homeowner_property_add',
+          component: PropertyRegister,
+        }
       ],
     },
     {

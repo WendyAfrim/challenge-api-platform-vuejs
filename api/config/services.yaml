@@ -33,6 +33,10 @@ services:
         tags:
           {name: doctrine.event_subscriber, event: prePersist}
 
+    App\EventListener\Lifecycle\EntityListener:
+        tags:
+          {name: doctrine.event_subscriber, event: prePersist}
+
     aws.s3:
         class: Aws\S3\S3Client
         arguments:
