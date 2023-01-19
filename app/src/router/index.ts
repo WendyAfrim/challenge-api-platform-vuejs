@@ -4,7 +4,7 @@ import HomeownerHome from '@/views/HomeowerHome.vue';
 import HomeownerRegister from '@/views/HomeownerRegister.vue'
 import UserLogin from "@/views/User/UserLogin.vue";
 import UserDashboard from "@/views/User/UserDashboard.vue";
-
+import PropertyRegister from '@/views/Property/AddProperty.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +33,11 @@ const router = createRouter({
       path: '/homeowner/register',
       name: 'homeowner_register',
       component: HomeownerRegister,
+    },
+    {
+      path: '/property/add',
+      name: 'property_add',
+      component: PropertyRegister,
     }
   ]
 })
