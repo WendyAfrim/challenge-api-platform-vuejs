@@ -14,7 +14,7 @@ final class Version20230118132714 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Creating all entities';
     }
 
     public function up(Schema $schema): void
@@ -68,7 +68,6 @@ final class Version20230118132714 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP SEQUENCE availaibility_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE document_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE property_id_seq CASCADE');
