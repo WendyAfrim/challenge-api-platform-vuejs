@@ -13,9 +13,8 @@ use Faker\Provider\Address;
 
 class PropertyFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -26,12 +25,8 @@ class PropertyFixtures extends Fixture implements DependentFixtureInterface
         $types = array("Apartment", "House");
         $heatTypes = array("Electricity", "Gaz");
         $states = array("Available now", "Available soon", "Available in two weeks");
-        #$owners = $manager->getRepository(User::class)->findBy(['roles' => [User::ROLE_OWNER]]);
-        $query = $this->userRepository->createQueryBuilder('u')
-            ->where('u.roles LIKE :val')
-            ->setParameter('val', User::ROLE_OWNER)
-        ;
-        $owners = $query->getQuery()->getResult();
+        $owners = $this->userRepository->findByRole(User::ROLE_OWNER);
+
         $faker = Factory::create();
         for ($i = 0; $i < count($owners); $i++) {
             $rooms = $faker->numberBetween($min=1, $max=6);

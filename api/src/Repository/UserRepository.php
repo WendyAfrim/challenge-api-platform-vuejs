@@ -25,6 +25,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
+    public function findByRole(string $role)
+    {
+        return $this->createQueryBuilder('u')
+            ->where("JSON_GET_TEXT(u.roles,0) = :role ")
+            ->setParameter('role', $role)
+            ->getQuery()
+            ->getResult();
+
+    }
+
     public function save(User $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
