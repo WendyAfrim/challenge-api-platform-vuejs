@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\PropertyRepository;
 use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
@@ -18,7 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['property_read']],
     denormalizationContext: ['groups' => ['property_write']],
 )]
+#[Get]
+#[GetCollection]
 #[Post(security: "is_granted('ROLE_OWNER')")]
+#[Put(security: "is_granted('ROLE_OWNER')")]
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 class Property
 {
