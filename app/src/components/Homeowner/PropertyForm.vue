@@ -200,7 +200,6 @@
             } else {
                 form.value.validate();
             }
-
         }
     
 </script>

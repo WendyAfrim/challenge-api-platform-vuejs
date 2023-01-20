@@ -89,21 +89,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read','user_write','request_read',  'user_details'])]
     #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write','request_read',  'user_details'])]
     #[Assert\NotBlank]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_read', 'user_write'])]
+    #[Groups(['user_read', 'user_write','request_read'])]
     private ?string $situation = null;
 
     #[ORM\OneToMany(mappedBy: 'user_document', targetEntity: Document::class)]
-    #[Groups(['user_read'])]
+    #[Groups(['user_read','request_read'])]
     private ?Collection $documents = null;
 
     #[ORM\OneToMany(mappedBy: 'agent', targetEntity: Viewing::class)]
