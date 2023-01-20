@@ -1,32 +1,89 @@
 <template>
-    <h1>Formulaire - Ajout d'un bien</h1>
-    <Input type="text" label="" name="title" placeholder="Nom du bien" @update:modelValue="newValue => property.title = newValue"/>
-    <Input type="text" label="" name="address" placeholder="Adresse" @update:modelValue="newValue => property.address = newValue" />
-    <Input type="text" label="" name="zipcode" placeholder="Code postal" @update:modelValue="newValue => property.zipcode = newValue" />
-    <Input type="text" label="" name="country" placeholder="Pays" @update:modelValue="newValue => property.country = newValue" :value="property.country"/>
-    <TextAreaField for="description" label="Description" name="description" id="description" cols="5" rows="33" @update:modelValue="newValue => property.description = newValue"></TextAreaField>
-    <SelectField for="type" name="type" id="type" label="Type de bien" :options="propertyType" @update:modelValue="newValue => property.type = newValue"></SelectField>
-    <SelectField for="number_room" name="number_room" id="number_room" label="Nombre de chambres" :options="numberRoom"></SelectField>
-    <Input type="number" name="surface" placeholder="Surface" @update:modelValue="newValue => property.surface = newValue"/>
-    <CheckBoxField type="checkbox" label="Balcon" name="has_balcony" @update:modelValue="newValue => property.has_balcony = newValue"/>
-    <CheckBoxField type="checkbox" label="Terasse" name="has_terrace" @update:modelValue="newValue => property.has_terrace = newValue"/>
-    <CheckBoxField type="checkbox" label="Cave" name="has_cave" @update:modelValue="newValue => property.has_cave = newValue"/>
-    <CheckBoxField type="checkbox" label="Ascenseur" name="has_elevator" @update:modelValue="newValue => property.has_elevator = newValue"/>
-    <CheckBoxField type="checkbox" label="Parking" name="has_parking" @update:modelValue="newValue => property.has_parking = newValue"/>
-    <Input type="text" label="" name="energy_grade" placeholder="CO2 Grade" @update:modelValue="newValue => property.energy_grade = newValue"/>
-    <CheckBoxField type="checkbox" label="Equipé" name="is_furnished" @update:modelValue="newValue => property.is_furnished = newValue"/>
-    <Input type="number" name="monthly_rent" placeholder="Prix mensuel" @update:modelValue="newValue => property.monthly_rent = newValue"/>
-    <SelectField for="state" name="state" id="state" label="Etat du bien" :options="state"></SelectField>
+    <v-container>
+        <template>
+            <h1 class="text-h4 font-weight-bold text-center mb-3">Formulaire - Ajout d'un bien</h1>
+        </template>
+        <v-form ref="form" v-model="valid" >
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="6">
+                    <v-text-field v-model="property.title" :rules="titleRules" label="Nom du bien" required ></v-text-field>
+                </v-col>
+                <v-col cols="12" md="6">
+                    <v-text-field v-model="property.price" type="number" :rules="monthlyRentRules" label="Prix mensuel" required ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="6">
+                    <v-select v-model="property.type" :items="propertyType" :rules="typeRules" label="Type de bien" solo></v-select>
+                </v-col>
+                <v-col cols="12" md="6">
+                    <v-select v-model="property.state" :items="propertyState" :rules="stateRules" label="Etat du bien" solo></v-select>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="4">
+                    <v-text-field v-model="property.address" :rules="addressRules" label="Adresse" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-text-field v-model="property.zipcode" :rules="zipcodeRules" label="Code postal" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-text-field v-model="property.country" :rules="countryRules" label="Pays" required></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="12">
+                    <v-textarea outlined name="input-7-4" label="Description" v-model="property.description"></v-textarea>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="12">
+                    <v-select :items="numberRoom" label="Nombre de chambres" solo v-model="property.number_rooms"></v-select>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="12">
+                    <v-text-field type="number" v-model="property.surface" :rules="surfaceRules" label="Surface" required></v-text-field>
+                </v-col>
+            </v-row>
 
-    <button type="submit" @click="addProperty">Enregistrer</button>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="4">
+                    <v-checkbox  v-model="property.has_balcony" label="Balcon"></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-checkbox  v-model="property.has_terrace" label="Terasse"></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-checkbox  v-model="property.has_cave" label="Cave"></v-checkbox>
+                </v-col>
+            </v-row>
+
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="4">
+                    <v-checkbox  v-model="property.has_elevator" label="Ascenseur"></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-checkbox  v-model="property.has_parking" label="Parking"></v-checkbox>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <v-checkbox  v-model="property.is_furnished" label="Equipé"></v-checkbox>
+                </v-col>
+            </v-row>
+            <v-col cols="12" class="d-flex justify-center">
+                <v-btn color="primary" class="mr-4" @click="addProperty"> Ajouter ce bien </v-btn>
+            </v-col>
+        </v-form>
+    </v-container>
 </template>
 
 <script setup lang="ts">
-    import CheckBoxField from '../Helpers/FormFields/CheckBoxField.vue';
-    import Input from '../Helpers/FormFields/InputField.vue';
-    import SelectField from '../Helpers/FormFields/SelectField.vue';
-    import TextAreaField from '../Helpers/FormFields/TextAreaField.vue';
 
+    import axios from 'axios';
+    import { ref, reactive } from 'vue';
+
+    const form = ref();
+    const valid = ref(false);
 
     interface Property {
         title: string,
@@ -45,13 +102,12 @@
         energy_grade: string
         co2_grade: string
         is_furnished: boolean
-        monthly_rent: number
+        price: number
         roommate_accepted: boolean
-        // availability_date: Date
         state: string
     };
 
-    let property: Property = {
+    const property = reactive<Property>({
         title: '',
         address: '',
         zipcode: '',
@@ -68,20 +124,91 @@
         energy_grade: '',
         co2_grade: '',
         is_furnished: false,
-        monthly_rent: 0,
+        price: 0,
         roommate_accepted: false,
-        // availability_date: '01/10/4242',
         state: '',
-    };
+    });
+    
 
-    let propertyType: string[] = ['Appartment', 'House'];
+    let propertyType: string[] = ['Appartement', 'Maison'];
+    let propertyState: string[] = ['Libre', 'Occupé'];
     let numberRoom = [0, 1, 2, 3, 4, 5];
-    let state = ['Busy', 'Available']
 
-    function addProperty(event: MouseEvent) {
-        console.log(property.type);
-        
-    }
+
+    const titleRules = ref([
+        (v: string) => !!v || 'Le nom du bien est requis',
+    ]);
+
+    const monthlyRentRules = ref([
+        (v: string) => !!v || 'Le prix du bien est requis',
+    ]);
+
+    const typeRules = ref([
+        (v: string) => !!v || 'Le type du bien est requis',
+    ]);
+
+    const stateRules = ref([
+        (v: string) => !!v || 'L\'état du bien est requis',
+    ]);
+
+    const addressRules = ref([
+        (v: string) => !!v || 'L\'adresse  du bien est requis',
+    ]);
+
+    const zipcodeRules = ref([
+        (v: string) => !!v || 'Le code postal du bien est requis',
+    ]);
+
+    const countryRules = ref([
+        (v: string) => !!v || 'Le pays du bien est requis',
+    ]);
+
+    const numberRoomRules = ref([
+        (v: string) => !!v || 'Le nombre de chambre du bien est requis',
+    ]);
+
+
+    const surfaceRules = ref([
+        (v: string) => !!v || 'La surface du bien est requis',
+    ]);
+
+
+    const addProperty = (event: MouseEvent) => {
+        event.preventDefault();
+
+        if(valid.value) {
+            const data = {
+                title: property.title,
+                address: property.address,
+                zipcode: property.zipcode,
+                country: property.country,
+                description: property.description,
+                type: property.type, 
+                number_rooms: property.number_rooms,
+                surface: parseInt(property.surface),
+                has_balcony: property.has_balcony,
+                has_terrace: property.has_terrace,
+                has_cave: property.has_cave,
+                has_elevator: property.has_elevator,
+                has_parking: property.has_parking,
+                is_furnished: property.is_furnished,
+                price: parseInt(property.price),
+                state: property.state,
+            }
+
+            axios.post(`${import.meta.env.VITE_BASE_API_URL}/properties`, data)
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            } else {
+                form.value.validate();
+            }
+
+        }
+    
 </script>
 
 <style scoped>

@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[Get]
 #[GetCollection]
-#[Post(security: "is_granted('ROLE_OWNER')")]
+#[Post]
 #[Put(security: "is_granted('ROLE_OWNER')")]
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 class Property
