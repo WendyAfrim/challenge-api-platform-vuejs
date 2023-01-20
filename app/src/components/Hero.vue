@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import hero from '@/assets/hero.svg';
+import { computed } from 'vue';
 
 
 export interface IHero {
@@ -31,13 +32,25 @@ const highlighted_heading = heading.replace(
     (match) => `<span class="span">${match}</span>`
 );
 
+const link = computed(() => {
+    if (props.for === 'homeowner') {
+        return { name: 'homeowner_signup' };
+    } else if (props.for === 'tenant') {
+        return { name: 'tenant_signup' };
+    } else {
+        return { name: 'home' };
+    }
+});
+
 </script>
 
 <template>
     <v-row align="center" justify="space-between">
         <v-col>
             <h1 class="text-h2 font-weight-black heading-sentence" v-html="highlighted_heading"></h1>
-            <v-btn color="primary" class="mt-6" to="/signup">Je crée mon compte</v-btn>
+            <v-btn color="primary" class="mt-6" :to="link">
+                Commencer
+            </v-btn>
         </v-col>
         <v-col>
             <img :src="image" alt="hero image" />
@@ -56,8 +69,8 @@ const highlighted_heading = heading.replace(
     }
 }
 
-.heading-sentence :deep {
-    span {
+.heading-sentence {
+    :deep(span) {
         color: rgb(var(--v-theme-primary));
         font-weight: 900;
     }

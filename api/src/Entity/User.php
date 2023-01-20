@@ -44,9 +44,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
   use TimestampTrait;
   use EntityIdTrait;
 
-  public const ROLE_LODGER = 'ROLE_LODGER';
-  public const ROLE_AGENCY = 'ROLE_AGENCY';
-  public const ROLE_OWNER = 'ROLE_OWNER';
+    public const ROLE_TENANT = 'ROLE_TENANT';
+    public const ROLE_AGENCY = 'ROLE_AGENCY';
+    public const ROLE_HOMEOWNER = 'ROLE_HOMEOWNER';
 
     #[Assert\NotBlank]
     #[Assert\Email]
@@ -90,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read'])]
     private Collection $visits;
 
-    #[ORM\Column(nullable:true)]
+    #[ORM\Column(nullable: true)]
     private ?int $salary = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -143,9 +143,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(?string $painPassword): self
+    public function setPlainPassword(?string $plainPassword): self
     {
-        $this->plainPassword = $painPassword;
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }

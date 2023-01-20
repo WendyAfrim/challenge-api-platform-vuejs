@@ -1,26 +1,51 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import TenantHome from '@/views/TenantHome.vue';
-import HomeownerHome from '@/views/HomeowerHome.vue';
-import HomeownerRegister from '@/views/HomeownerRegister.vue'
+import Base from '../components/Base.vue';
+import HomeView from '../views/HomeView.vue';
+import RegisterView from '../views/RegisterView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'tenant_home',
-      component: TenantHome,
+      path: '',
+      name: 'tenant',
+      component: Base,
+      meta: {
+        forType: 'tenant',
+      },
+      children: [
+        {
+          path: '',
+          name: 'tenant_home',
+          component: HomeView,
+        },
+        {
+          path: 'register',
+          name: 'tenant_signup',
+          component: RegisterView,
+        },
+      ],
     },
     {
       path: '/homeowner',
-      name: 'homeowner_home',
-      component: HomeownerHome,
+      name: 'homeowner',
+      component: Base,
+      meta: {
+        forType: 'homeowner',
+      },
+      children: [
+        {
+          path: '',
+          name: 'homeowner_home',
+          component: HomeView,
+        },
+        {
+          path: 'register',
+          name: 'homeowner_signup',
+          component: RegisterView,
+        },
+      ],
     },
-    {
-      path: '/homeowner/register',
-      name: 'homeowner_register',
-      component: HomeownerRegister,
-    }
   ]
 })
 

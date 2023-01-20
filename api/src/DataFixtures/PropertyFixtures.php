@@ -25,7 +25,7 @@ class PropertyFixtures extends Fixture implements DependentFixtureInterface
         $types = array("Apartment", "House");
         $heatTypes = array("Electricity", "Gaz");
         $states = array("Available now", "Available soon", "Available in two weeks");
-        $owners = $this->userRepository->findByRole(User::ROLE_OWNER);
+        $owners = $this->userRepository->findByRole(User::ROLE_HOMEOWNER);
 
         $faker = Factory::create();
         for ($i = 0; $i < count($owners); $i++) {
