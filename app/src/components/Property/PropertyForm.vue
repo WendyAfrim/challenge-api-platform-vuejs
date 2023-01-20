@@ -99,11 +99,8 @@
         has_cave: boolean
         has_elevator: boolean
         has_parking: boolean
-        energy_grade: string
-        co2_grade: string
         is_furnished: boolean
         price: number
-        roommate_accepted: boolean
         state: string
     };
 
@@ -121,11 +118,8 @@
         has_cave: false,
         has_elevator: false,
         has_parking: false,
-        energy_grade: '',
-        co2_grade: '',
         is_furnished: false,
         price: 0,
-        roommate_accepted: false,
         state: '',
     });
     
