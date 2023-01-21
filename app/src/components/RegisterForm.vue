@@ -26,7 +26,6 @@
   };
   
   function register(event: MouseEvent) {
-  
     axios.post(`${import.meta.env.VITE_BASE_API_URL}/users`, {
       firstname: owner.firstname,
       lastname: owner.lastname,
