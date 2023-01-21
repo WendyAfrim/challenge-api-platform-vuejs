@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class MeController extends AbstractController
+class UserController extends AbstractController
 {
     public function __construct(private readonly Security $security)
     {
@@ -22,7 +22,7 @@ class MeController extends AbstractController
                 'error' => 'Authentication required'
             ], 401);
         }
-        return $this->json($user);
-    }
 
+        return $this->json($user, 200);
+    }
 }
