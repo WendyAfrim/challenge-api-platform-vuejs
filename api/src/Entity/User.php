@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'user_account'
         ),
     ],
-    normalizationContext: ['groups' => ['user_details']],
+    normalizationContext: ['groups' => ['user_details', 'owner_read']],
     openapiContext: [
         'summary' => 'hidden'
     ],
@@ -121,6 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $income_source = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Property::class)]
+    #[Groups(['owner_read'])]
     private Collection $properties;
 
     #[ORM\OneToMany(mappedBy: 'lodger', targetEntity: Request::class)]

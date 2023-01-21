@@ -2,7 +2,7 @@
 
 const props = defineProps<{
     for: 'homeowner' | 'tenant';
-    location: 'dashboard' | 'front';
+    location: 'front' | 'dashboard'
 }>()
 
 
@@ -22,10 +22,11 @@ const props = defineProps<{
         </v-container>
     </v-app-bar>
 
-    <v-app-bar v-if="props.location === 'dashboard'" color="white" elevation="0" class="sticky">
+    <v-app-bar v-else color="white" elevation="0" class="sticky">
         <v-app-bar-title class="font-weight-bold ml-16" text="Dashboard" />
         <v-container class="d-flex justify-end">
             <template v-if="props.for === 'homeowner'">
+                <v-btn color="primary" href="/" class="ml-3">Mon compte</v-btn>
                 <v-btn color="primary" href="/" class="ml-3">Mes biens</v-btn>
                 <v-btn color="primary" href="/">Mes dossiers</v-btn>
                 <v-btn color="primary" href="/">Mes visites</v-btn>
@@ -33,7 +34,6 @@ const props = defineProps<{
             <template v-else>
                 <v-btn color="primary" variant="outlined" href="/proprietaire">Vous êtes propriétaire ?</v-btn>
             </template>
-            <v-btn color="primary" href="/logout">Deconnexion</v-btn>
         </v-container>
     </v-app-bar>
 </template>
