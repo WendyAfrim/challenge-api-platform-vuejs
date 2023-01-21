@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -10,13 +11,17 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\MeController;
 use App\Traits\EntityIdTrait;
+use cebe\openapi\spec\SecurityScheme;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
 use App\Traits\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
+use JetBrains\PhpStorm\NoReturn;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -25,12 +30,33 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
+
+        new Get(
+            uriTemplate: '/me',
+            controller: MeController::class,
+//            security: 'is_granted("ROLE_USER")',
+            output: false,
+            read: false,
+            name: 'me'
+        ),
+//        'me' => []
+    ],
+    normalizationContext: ['groups' => ['user_details']],
+    openapiContext: [
+//        'security' => ['bearerAuth' => []],
+        'summary' => 'hidden'
+    ],
+    paginationEnabled: false,
+)]
+#[ApiResource(
+    operations: [
         new GetCollection(),
         new Post(processor: UserPasswordHasher::class),
         new Get(),
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
+
     ],
     normalizationContext: ['groups' => ['user_read']],
     denormalizationContext: ['groups' => ['user_write']],
@@ -50,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['user_read', 'user_write'])]
+    #[Groups(['user_read', 'user_write', 'user_details'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
@@ -61,17 +87,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_write'])]
     private ?string $plainPassword = null;
 
+
+
+    #[Groups(['user_details'])]
     #[ORM\Column(type: 'json')]
     #[Groups(['user_read', 'user_write'])]
     private array $roles = [];
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_read', 'user_write'])]
+    #[Groups(['user_read', 'user_write', 'user_details'])]
     #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user_read', 'user_write'])]
+    #[Groups(['user_read', 'user_write', 'user_details'])]
     #[Assert\NotBlank]
     private ?string $lastname = null;
 
@@ -127,12 +156,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password): ?self
     {
         $this->password = $password;
 
