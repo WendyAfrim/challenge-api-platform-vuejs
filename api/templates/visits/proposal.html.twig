@@ -1,0 +1,17 @@
+Bonjour,
+
+Vous avez récemment déposer votre dossier pour le bien suivant :
+{{ property.title }}. Bonne nouvelle ! Le propriétaire a sélectionné votre profil.
+
+Voici les créneaux de visites qu'il vous propose :
+
+<ul>
+{% for availaibility in availaibilities %}
+    <li>{{ availaibility.slot|date('d/m/Y H:i:s') }}</li>
+{% endfor  %}
+</ul>
+
+Veuillez vous rendre au sein de votre espace personnel afin de choisir le créneau qu'il vous convient !
+
+A bientôt !
+Easyhome

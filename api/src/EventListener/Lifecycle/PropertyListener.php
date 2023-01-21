@@ -2,16 +2,18 @@
 
 namespace App\EventListener\Lifecycle;
 
+use App\Entity\Availaibility;
 use App\Entity\Property;
+use App\Service\EmailService;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class EntityListener implements EventSubscriber
+class PropertyListener implements EventSubscriber
 {
     public function __construct(
-        private readonly RequestStack $request
+        private readonly RequestStack $request,
     )
     {
     }
@@ -33,6 +35,7 @@ class EntityListener implements EventSubscriber
         $entity = $args->getObject();
 
         $request = $this->request->getCurrentRequest();
+        if (!$request) return false;
         $data = json_decode($request->getContent(), true);
 
         if (Property::class ===  get_class($entity)) {

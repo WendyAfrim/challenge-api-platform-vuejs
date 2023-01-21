@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    normalizationContext: ['groups' => ['property_read']],
+    normalizationContext: ['groups' => ['property_read', 'user_details', 'all', 'all_id']],
     denormalizationContext: ['groups' => ['property_write']],
     paginationItemsPerPage: 10,
 )]
@@ -35,7 +35,7 @@ class Property implements PropertyInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['property_read', 'property_write'])]
+    #[Groups(['property_read', 'property_write', 'user_details'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
@@ -45,6 +45,10 @@ class Property implements PropertyInterface
     #[ORM\Column(length: 5)]
     #[Groups(['property_read', 'property_write'])]
     private ?string $zipcode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['property_read', 'property_write'])]
+    private ?string $city = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['property_read', 'property_write'])]
@@ -106,10 +110,11 @@ class Property implements PropertyInterface
     private Collection $availaibilities;
 
     #[ORM\ManyToOne(inversedBy: 'properties')]
-    #[Groups(['property_read'])]
+    #[Groups(['property_read', 'property_write'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: Request::class)]
+    #[Groups(['property_read'])]
     private Collection $requests;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
@@ -118,10 +123,6 @@ class Property implements PropertyInterface
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: MediaObject::class)]
     #[Groups(['property_read', 'property_write'])]
     private Collection $photos;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $city = null;
-
 
     public function __construct()
     {
@@ -162,6 +163,18 @@ class Property implements PropertyInterface
     public function setZipcode(string $zipcode): self
     {
         $this->zipcode = $zipcode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }
@@ -444,18 +457,6 @@ class Property implements PropertyInterface
                 $photo->setProperty(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
-    public function setCity(?string $city): self
-    {
-        $this->city = $city;
 
         return $this;
     }

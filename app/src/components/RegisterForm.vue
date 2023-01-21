@@ -164,8 +164,8 @@ const message = ref({
 
 const loading = ref<Boolean>(false);
 
-const register = async (event: MouseEvent) => {
-  event.preventDefault();
+const register = async (event: MouseEvent) =>{
+    event.preventDefault();
   loading.value = true;
   if (valid.value) {
     type FormUserData = Omit<User, "passwordConfirm" | "password"> & { plainPassword: string };

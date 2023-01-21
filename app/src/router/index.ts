@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Base from '../components/Base.vue';
 import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
+import PropertyRequestsView from "@/views/Homeowner/PropertyRequestsView.vue";
+import VisitsProposals from "@/views/Homeowner/VisitsProposalsView.vue";
+
+
 import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
@@ -18,6 +22,7 @@ const router = createRouter({
       component: Base,
       meta: {
         forType: 'tenant',
+        location: 'front'
       },
       children: [
         {
@@ -52,10 +57,16 @@ const router = createRouter({
       ],
     },
     {
+      path: '/user/dashboard',
+      name: 'user_dashboard',
+      component: UserDashboard,
+    },
+    {
       path: '/homeowner',
       component: Base,
       meta: {
         forType: 'homeowner',
+        location: 'dashboard'
       },
       children: [
         {
@@ -91,6 +102,16 @@ const router = createRouter({
           path: 'property/add',
           name: 'homeowner_property_add',
           component: PropertyRegister,
+        },
+        {
+          path: 'property/requests/:id',
+          name: 'homeowner_property_requests',
+          component: PropertyRequestsView,
+        },
+        {
+          path: 'lodger/:id/visits/proposals/:propertyId',
+          name: 'homeowner_visits_proposals',
+          component: VisitsProposals
         },
         {
           path: 'property/:id/add/photos',

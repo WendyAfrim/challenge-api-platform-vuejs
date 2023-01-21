@@ -5,16 +5,15 @@ import { RouterView } from 'vue-router'
 <template>
   <v-theme-provider theme="light">
     <v-app>
-      <RouterView v-slot="{ Component, route }">
-        <template v-if="Component">
+      <RouterView v-slot="{ Component, route }"><template v-if="Component">
           <Transition mode="out-in" name="fade">
-            <Suspense>
-              <component :is="Component" :key="route.path" />
-              <template #fallback>
-                <v-progress-circular indeterminate color="primary"></v-progress-circular>
-              </template>
-            </Suspense>
-          </Transition>
+        <Suspense>
+          <component :is="Component" :key="route.path" />
+          <template #fallback>
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
+          </template>
+        </Suspense>
+      </Transition>
         </template>
       </RouterView>
     </v-app>

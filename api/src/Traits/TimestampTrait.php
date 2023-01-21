@@ -4,16 +4,19 @@ namespace App\Traits;
 
 use Gedmo\Mapping\Annotation\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait TimestampTrait
 {
     #[ORM\Column]
     #[Timestampable]
+    #[Groups(['all_timestamp'])]
     private ?\DateTimeImmutable $created_at = null;
 
 
     #[ORM\Column]
     #[Timestampable]
+    #[Groups(['all_timestamp'])]
     private ?\DateTimeImmutable $updated_at = null;
 
     /**

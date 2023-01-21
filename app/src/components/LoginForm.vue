@@ -45,7 +45,6 @@
   import { Field, Form } from 'vee-validate';
   import * as yup from 'yup';
   import type { Roles } from "@/enums/roles";
-
   const router = useRouter();
   const route = useRoute();
   const forType = route.meta.forType as Roles;
