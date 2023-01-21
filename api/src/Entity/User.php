@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
 
         new Get(
-            uriTemplate: '/user/account',
+            uriTemplate: '/user/details',
             controller: UserController::class,
             output: false,
             read: false,
