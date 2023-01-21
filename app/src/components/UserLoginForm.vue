@@ -26,7 +26,7 @@
         .then((response) => {
           if (response.data.token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-            router.push('/userDashboard')
+            router.push('/user/dashboard')
           } else {
             console.log(response.data)
           }

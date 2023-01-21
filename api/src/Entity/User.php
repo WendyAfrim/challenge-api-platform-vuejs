@@ -11,7 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Controller\MeController;
+use App\Controller\UserController;
 use App\Traits\EntityIdTrait;
 use cebe\openapi\spec\SecurityScheme;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,18 +32,15 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
 
         new Get(
-            uriTemplate: '/me',
-            controller: MeController::class,
-//            security: 'is_granted("ROLE_USER")',
+            uriTemplate: '/user/account',
+            controller: UserController::class,
             output: false,
             read: false,
-            name: 'me'
+            name: 'user_account'
         ),
-//        'me' => []
     ],
     normalizationContext: ['groups' => ['user_details']],
     openapiContext: [
-//        'security' => ['bearerAuth' => []],
         'summary' => 'hidden'
     ],
     paginationEnabled: false,
@@ -86,8 +83,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(groups: ['user_write'])]
     #[Groups(['user_write'])]
     private ?string $plainPassword = null;
-
-
 
     #[Groups(['user_details'])]
     #[ORM\Column(type: 'json')]

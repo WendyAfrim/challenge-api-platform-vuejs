@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import TenantHome from '@/views/TenantHome.vue';
 import HomeownerHome from '@/views/HomeowerHome.vue';
 import HomeownerRegister from '@/views/HomeownerRegister.vue'
-import UserLogIn from "@/views/UserLogIn.vue";
-import UserDashboard from "@/views/UserDashboard.vue";
+import UserLogin from "@/views/User/UserLogin.vue";
+import UserDashboard from "@/views/User/UserDashboard.vue";
 
 
 const router = createRouter({
@@ -17,10 +17,10 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: UserLogIn,
+      component: UserLogin,
     },
     {
-      path: '/userDashboard',
+      path: '/user/dashboard',
       name: 'user_dashboard',
       component: UserDashboard,
     },
