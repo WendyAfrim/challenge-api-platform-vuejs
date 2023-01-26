@@ -22,7 +22,7 @@ class RequestFixtures extends Fixture  implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        $lodgers = $this->userRepository->findByRole(User::ROLE_LODGER);
+        $lodgers = $this->userRepository->findByRole(User::ROLE_TENANT);
         $properties = $manager->getRepository(Property::class)->findAll();
         $faker = Factory::create();
 

@@ -73,6 +73,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 v-main__wrap {
   display: flex;
 }

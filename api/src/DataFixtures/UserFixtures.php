@@ -17,12 +17,12 @@ class UserFixtures extends Fixture
     {
         function userSalary($userRole, $faker){
 
-            if ($userRole == 'ROLE_LODGER'){
+            if ($userRole == 'ROLE_TENANT'){
                 return $faker->numberBetween($min=600, $max=3000);
             }
             return null;
         }
-        $roles = [User::ROLE_OWNER, User::ROLE_LODGER, User::ROLE_AGENCY];
+        $roles = [User::ROLE_HOMEOWNER, User::ROLE_TENANT, User::ROLE_AGENCY];
         $situations = ["Student", "Employee", "Freelancer"];
         $incomeSources = ["Student job", "Scholarship", "Full time Job"];
         $faker = Factory::create();

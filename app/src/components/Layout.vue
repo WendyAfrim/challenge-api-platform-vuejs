@@ -4,6 +4,7 @@
 <template>
     <v-main>
         <v-container fluid>
+            <slot name="header" />
             <slot />
         </v-container>
     </v-main>
@@ -12,7 +13,7 @@
 <style scoped lang="scss">
 .v-main {
     display: flex;
-    max-height: 100vh;
+    min-height: 100vh;
 
     .v-container {
         display: flex;
