@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-
-
 use App\Entity\Document;
 use App\Entity\MediaObject;
 use App\Repository\UserRepository;
@@ -11,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-
 
 #[AsController]
 class CreateDocumentAction extends AbstractController

@@ -14,11 +14,9 @@ use App\Repository\DocumentRepository;
 use Symfony\Component\HttpFoundation\File\File;
 use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 #[ApiResource(
     types: ['https://schema.org/MediaObject'],
@@ -78,7 +76,7 @@ class Document
 
 
     #[ORM\Column(length: 255)]
-    #[Groups(['document_read', 'document_write'])]
+    #[Groups(['document_read', 'document_write', 'user_write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -152,4 +150,30 @@ class Document
 
         return $this;
     }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $file
+     */
+    public function setFile(?UploadedFile $file = null): void
+    {
+        $this->file = $file;
+
+        if (null !== $file) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updated_at = new \DateTimeImmutable();
+        }
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
 }

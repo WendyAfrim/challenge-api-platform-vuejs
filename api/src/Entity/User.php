@@ -102,8 +102,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read', 'user_write'])]
     private ?string $situation = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_document', targetEntity: Document::class)]
-    #[Groups(['user_read'])]
+    #[ORM\OneToMany(mappedBy: 'user_document', targetEntity: Document::class, cascade: ['persist'])]
+    #[Groups(['user_read', 'user_write'])]
     private ?Collection $documents = null;
 
     #[ORM\OneToMany(mappedBy: 'agent', targetEntity: Viewing::class)]
