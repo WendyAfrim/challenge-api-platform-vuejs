@@ -9,6 +9,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
+    private $passwordHasher = null;
+    
     public function __construct (UserPasswordHasherInterface $passwordHasher)
     {
         $this->passwordHasher = $passwordHasher;
@@ -26,28 +28,54 @@ class UserFixtures extends Fixture
         $situations = ["Student", "Employee", "Freelancer"];
         $incomeSources = ["Student job", "Scholarship", "Full time Job"];
         $faker = Factory::create();
-        for ($i = 0; $i < 40; $i++) {
-            $userRole = [$faker->randomElement($roles)];
 
-            $object = (new User())
+        $admin = new User();
+        $admin->setFirstname('admin')
+        ->setLastname('admin')
+        ->setEmail('admin@test.com')
+        ->setRoles([User::ROLE_AGENCY])
+        ->setSalary(null)
+        ->setSituation($faker->randomElement($situations))
+        ->setIncomeSource($faker->randomElement($incomeSources))
+        ->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
+        $manager->persist($admin);
+
+        $tenant = new User();
+        $tenant->setFirstname('tenant')
+        ->setLastname('tenant')
+        ->setEmail('tenant@test.com')
+        ->setRoles([User::ROLE_TENANT])
+        ->setSalary(null)
+        ->setSituation($faker->randomElement($situations))
+        ->setIncomeSource($faker->randomElement($incomeSources))
+        ->setPassword($this->passwordHasher->hashPassword($tenant, 'tenant'));
+        $manager->persist($tenant);
+
+        $owner = new User();
+        $owner->setFirstname('owner')
+        ->setLastname('owner')
+        ->setEmail('owner@test.com')
+        ->setRoles([User::ROLE_HOMEOWNER])
+        ->setSalary(null)
+        ->setSituation($faker->randomElement($situations))
+        ->setIncomeSource($faker->randomElement($incomeSources))
+        ->setPassword($this->passwordHasher->hashPassword($owner, 'owner'));
+        $manager->persist($owner);
+
+        for ($i = 0; $i < 10; $i++) {
+            $userRole = [$faker->randomElement($roles)];
+            $user = (new User())
                 ->setFirstname($faker->firstName)
                 ->setLastname($faker->lastName)
                 ->setEmail($faker->email)
-                ->setRoles($userRole)
+                ->setRoles([$faker->randomElement($roles)])
                 ->setSalary(userSalary($userRole, $faker))
                 ->setSituation($faker->randomElement($situations))
-                ->setIncomeSource($faker->randomElement($incomeSources))
-            ;
-            $plainPassword = "Password@dev";
-            $encoded = $this->passwordHasher->hashPassword(
-                $object,
-                $plainPassword
-            );
-
-            $object->setPassword($encoded);
-
-            $manager->persist($object);
+                ->setIncomeSource($faker->randomElement($incomeSources));
+            $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
+            $manager->persist($user);
         }
-         $manager->flush();
+        
+        $manager->flush();
     }
 }
