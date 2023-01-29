@@ -1,12 +1,30 @@
 # api/config/packages/vich_uploader.yaml
+#
+#oneup_flysystem:
+#    adapters:
+#        product_adapter:
+#            local:
+#                location: '%kernel.project_dir%/public/images/products'
+#
+#    filesystems:
+#        products:
+#            adapter: product_adapter
+#            mount: products
+
+
+
 vich_uploader:
     db_driver: orm
+    storage: flysystem
     metadata:
         type: attribute
+
 
     mappings:
         media_object:
             uri_prefix: /media
-            upload_destination: '%kernel.project_dir%/public/media'
+            upload_destination: users.storage
+#            upload_destination: '%kernel.project_dir%/public/media'
             # Will rename uploaded files using a uniqueid as a prefix.
             namer: Vich\UploaderBundle\Naming\OrignameNamer
+

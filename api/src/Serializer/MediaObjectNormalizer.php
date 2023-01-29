@@ -3,9 +3,9 @@
 namespace App\Serializer;
 
 use App\Entity\MediaObject;
+use League\Flysystem\FilesystemOperator;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Vich\UploaderBundle\Storage\StorageInterface;
 class MediaObjectNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
@@ -13,7 +13,7 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
     use NormalizerAwareTrait;
     private const ALREADY_CALLED = 'MEDIA_OBJECT_NORMALIZER_ALREADY_CALLED';
 
-    public function __construct(private StorageInterface $storage)
+    public function __construct(private StorageInterface $storage, private FilesystemOperator $usersStorage)
     {
     }
 
@@ -37,6 +37,7 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
         $context[self::ALREADY_CALLED] = true;
 
         $object->contentUrl = $this->storage->resolveUri($object, 'file');
+        $object->filePath = $this->usersStorage->temporaryUrl( $this->storage->resolvePath($object, 'file'), (new \DateTime('now'))->modify('+1 hour'));
 
         return $this->normalizer->normalize($object, $format, $context);
     }
