@@ -22,13 +22,13 @@ class RequestFixtures extends Fixture  implements DependentFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        $lodgers = $this->userRepository->findByRole(User::ROLE_TENANT);
+        $tenants = $this->userRepository->findByRole(User::ROLE_TENANT);
         $properties = $manager->getRepository(Property::class)->findAll();
         $faker = Factory::create();
 
-        for ($i = 0; $i < count($lodgers); $i++) {
+        for ($i = 0; $i < count($tenants); $i++) {
             $object = (new Request())
-                ->setLodger($faker->randomElement($lodgers))
+                ->setLodger($faker->randomElement($tenants))
                 ->setProperty($faker->randomElement($properties))
                 ->setIsAccepted($faker->boolean())
             ;
