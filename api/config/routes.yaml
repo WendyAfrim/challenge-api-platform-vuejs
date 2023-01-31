@@ -4,7 +4,7 @@ controllers:
         namespace: App\Controller
     type: attribute
 auth:
-    path: /api/auth
+    path: /api/login
     methods: ['POST']
 api_refresh_token:
     path: /api/token/refresh

@@ -2,9 +2,10 @@
 import { useRoute } from 'vue-router';
 import Layout from '@/components/Layout.vue';
 import Navbar from '@/components/Navbar.vue';
+import type { Roles } from '@/enums/roles';
 
 const route = useRoute();
-const forType = route.meta.forType as 'homeowner' | 'tenant';
+const forType = route.meta.forType as Roles;
 </script>
 
 <template>
