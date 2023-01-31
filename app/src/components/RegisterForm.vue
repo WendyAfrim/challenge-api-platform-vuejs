@@ -57,11 +57,12 @@
 </template>
 
 <script setup lang="ts">
+import type { Roles } from '@/enums/roles';
 import axios from 'axios';
 import { ref, reactive } from 'vue';
 
 const props = defineProps<{
-  for: 'homeowner' | 'tenant';
+  for: Roles;
 }>();
 
 const form = ref();

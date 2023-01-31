@@ -30,23 +30,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-
-        new Get(
-            uriTemplate: '/user/account',
-            controller: UserController::class,
-            output: false,
-            read: false,
-            name: 'user_account'
-        ),
-    ],
-    normalizationContext: ['groups' => ['user_details']],
-    openapiContext: [
-        'summary' => 'hidden'
-    ],
-    paginationEnabled: false,
-)]
-#[ApiResource(
-    operations: [
         new GetCollection(),
         new Post(processor: UserPasswordHasher::class),
         new Get(),
@@ -84,7 +67,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_write'])]
     private ?string $plainPassword = null;
 
-    #[Groups(['user_details'])]
     #[ORM\Column(type: 'json')]
     #[Groups(['user_read', 'user_write'])]
     private array $roles = [];
@@ -181,8 +163,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }

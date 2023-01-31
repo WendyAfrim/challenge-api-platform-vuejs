@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Layout from '@/components/Layout.vue';
-import LoginForm from "@/components/UserLoginForm.vue";
+  import Layout from '@/components/Layout.vue';
+  import LoginForm from "@/components/LoginForm.vue";
 </script>
     
 <template>
@@ -13,5 +13,4 @@ import LoginForm from "@/components/UserLoginForm.vue";
 
 
 <style scoped>
-
 </style>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import hero from '@/assets/hero.svg';
+import type { Roles } from '@/enums/roles';
 import { computed } from 'vue';
 
 
 export interface IHero {
-    for?: 'homeowner' | 'tenant';
+    for?: Roles;
     heading?: string;
     highlighted_words?: string[];
     image?: string;
