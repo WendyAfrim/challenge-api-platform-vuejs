@@ -36,7 +36,7 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
     {
         $context[self::ALREADY_CALLED] = true;
 
-        $object->contentUrl = $this->storage->resolveUri($object, 'file');
+        $object->fileId = "/media_objects/".$object->getId();
         $object->filePath = $this->usersStorage->temporaryUrl( $this->storage->resolvePath($object, 'file'), (new \DateTime('now'))->modify('+1 hour'));
 
         return $this->normalizer->normalize($object, $format, $context);
