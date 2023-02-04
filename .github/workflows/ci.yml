@@ -1,48 +1,62 @@
-name: CI
-
-on:
-  push:
-    branches:
-      - main
-  pull_request: ~
-  workflow_dispatch: ~
-
+name: 🛫 CI
+on: 
+  workflow_call:
 jobs:
-  tests:
-    name: Tests
+  api-platform-ci:
+    name: API-Platform
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Pull images
-        run: docker compose pull --ignore-pull-failures || true
-      - name: Start services
-        run: docker compose up --build -d
-      - name: Wait for services
-        run: |
-          while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker compose ps -q php)")"; do
-            case $status in
-              starting) sleep 1;;
-              healthy) exit 0;;
-              unhealthy)
-                docker compose ps
-                docker compose logs
-                exit 1
-              ;;
-            esac
-          done
-          exit 1
-      - name: Check HTTP reachability
-        run: curl -v -o /dev/null http://localhost
-      - name: Check API reachability
-        run: curl -vk -o /dev/null https://localhost
-      - name: Check PWA reachability
-        run: "curl -vk -o /dev/null -H 'Accept: text/html' https://localhost"
-      - name: Create test database
-        run: |
-          docker compose exec -T php bin/console -e test doctrine:database:create
-          docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
-      - name: PHPUnit
-        run: docker compose exec -T php bin/phpunit
-      - name: Doctrine Schema Validator
-        run: docker compose exec -T php bin/console doctrine:schema:validate --skip-sync
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: php-pdo, php-pgsql, php-sodium, php-zip, unzip, php-intl
+          coverage: none
+          tools: composer:v2.5.2
+        env:
+          update: true
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+      - name: Install dependencies
+        run: composer install --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader
+      - name: Create env file and dump env vars to .env (prod)
+        run: echo "${{ secrets.ENV_FILE }}" > .env && composer dump-env prod
+      - name: Install bundle's web assets under a public directory
+        run: php bin/console assets:install --symlink --relative public
+      - name: Upload API-Platform artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-platform
+          path: "./api"
+          retention-days: 1
+  app-ci:
+    name: Vue App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm install
+      - name: Build frontend
+        run: npm run build
+        env:
+          NODE_ENV: production
+          VITE_BASE_API_URL: https://challenge.rklf.fr/api
+      - name: Upload app artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: app
+          path: ./app/dist
+          retention-days: 1

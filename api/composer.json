@@ -1,4 +1,6 @@
 {
+    "name": "api-platform/api-platform",
+    "description": "The API Platform framework",
     "type": "project",
     "license": "MIT",
     "require": {
@@ -15,7 +17,7 @@
         "nelmio/cors-bundle": "^2.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "scienta/doctrine-json-functions": "^5.2",
-        "stof/doctrine-extensions-bundle": "1.7.1",
+        "stof/doctrine-extensions-bundle": "^1.7",
         "symfony/asset": "6.2.*",
         "symfony/console": "6.2.*",
         "symfony/dotenv": "6.2.*",
