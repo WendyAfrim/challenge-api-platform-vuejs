@@ -153,6 +153,8 @@ const register = (event: MouseEvent) => {
       lastname: user.lastname,
       email: user.email,
       plainPassword: user.password,
+      // @TODO: fix typescript error
+      // @ts-ignore
       roles: roles[props.for],
     };
     if (props.for === 'tenant') {

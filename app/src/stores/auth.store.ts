@@ -3,7 +3,7 @@ import { axios } from '@/services/auth';
 import router from '@/router';
 import { useLocalStorage } from '@vueuse/core';
 import { ref, computed } from 'vue';
-import jwt_decode from "jwt-decode";
+import jwt_decode, { type JwtPayload } from "jwt-decode";
 import { Roles } from '@/enums/roles';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -29,6 +29,8 @@ export const useAuthStore = defineStore('auth', () => {
         const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/api/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
         access_token.value = response.data.token;
         refresh_token.value = response.data.refresh_token;
+        // @TODO: fix typescript error
+        // @ts-ignore
         user.value = jwt_decode(access_token.value);
         return access_token.value;
     }
@@ -45,13 +47,16 @@ export const useAuthStore = defineStore('auth', () => {
         });
         access_token.value = response.data.token;
         refresh_token.value = response.data.refresh_token;
+        // @TODO: fix typescript error
+        // @ts-ignore
         user.value = jwt_decode(access_token.value);
         return access_token.value;
     }
 
     function isTokenExpired() {
         if (!access_token.value) return false;
-        const decoded = jwt_decode(access_token.value);
+        const decoded: JwtPayload = jwt_decode(access_token.value);
+        if (!decoded.exp) return false;
         return Date.now() > decoded.exp * 1000;
     }
 

@@ -115,7 +115,8 @@ const router = createRouter({
         beforeRouteEnter(to, from, next) {
           const authStore = useAuthStore();
           authStore.logout();
-          next({ name: 'tenant_login', params: { alert: { type: 'info', message: 'Vous vous êtes bien déconnecté' } } });
+          const alert = { type: 'info', message: 'Vous vous êtes bien déconnecté' };
+          next({ name: 'tenant_login', params: { alert: JSON.stringify(alert) } });
         }
       },
     },
