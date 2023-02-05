@@ -2,14 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\DocumentRepository;
 use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(
+
     normalizationContext: ['groups' => ['document_read']],
     denormalizationContext: ['groups' => ['document_write']],
 )]
@@ -34,6 +38,12 @@ class Document
     #[ORM\Column(nullable: true)]
     #[Groups(['document_read', 'document_write'])]
     private ?bool $is_valid = null;
+
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[ApiProperty(types: ['https://schema.org/file'])]
+    #[Groups(['document_read', 'document_write'])]
+    public ?MediaObject $file = null;
 
     public function getName(): ?string
     {
@@ -67,6 +77,17 @@ class Document
     public function setUserDocument(?User $user_document): self
     {
         $this->user_document = $user_document;
+
+        return $this;
+    }
+
+    public function getFileDocument(): ?MediaObject
+    {
+        return $this->file;
+    }
+    public function setFileDocument(?MediaObject $file): self
+    {
+        $this->file = $file;
 
         return $this;
     }
