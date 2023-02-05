@@ -17,6 +17,7 @@ security:
             pattern: ^/
             stateless: true
             entry_point: jwt
+            user_checker: App\Security\UserChecker
             json_login:
                 check_path: auth
                 username_path: email
@@ -40,6 +41,10 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/users, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/verify/email, roles: PUBLIC_ACCESS }
+        - { path: ^/test, roles: PUBLIC_ACCESS }
+        - { path: ^/verify/request-new-link, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

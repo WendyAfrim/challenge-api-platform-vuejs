@@ -24,9 +24,12 @@
         "symfony/asset": "6.2.*",
         "symfony/console": "6.2.*",
         "symfony/dotenv": "6.2.*",
+        "symfony/event-dispatcher": "6.2.*",
         "symfony/expression-language": "6.2.*",
         "symfony/flex": "^2.2",
+        "symfony/form": "6.2.*",
         "symfony/framework-bundle": "6.2.*",
+        "symfony/mailer": "6.2.*",
         "symfony/mercure-bundle": "^0.3.5",
         "symfony/monolog-bundle": "^3.8",
         "symfony/password-hasher": "6.2.*",
@@ -39,7 +42,8 @@
         "symfony/uid": "6.2.*",
         "symfony/validator": "6.2.*",
         "symfony/yaml": "6.2.*",
-        "vich/uploader-bundle": "^2.0"
+        "vich/uploader-bundle": "^2.0",
+        "symfonycasts/verify-email-bundle": "^1.13"
     },
     "require-dev": {
         "api-platform/schema-generator": "^5.0",
