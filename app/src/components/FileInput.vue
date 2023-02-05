@@ -13,10 +13,13 @@ const emit = defineEmits(['file-uploaded']);
 async function onUpload() {
   const formData = new FormData();
   formData.append('file', selectedFile.value, selectedFile.value.name);
-  const  response = await axios.post('https://localhost/media_objects', formData)
-  if(response.data){
-    // const {apiId, filePath} = response.data;
-    emit('file-uploaded', response.data)
+  try {
+    const response = await axios.post('https://localhost/media_objects', formData)
+    if(response.data){
+      emit('file-uploaded', response.data)
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
