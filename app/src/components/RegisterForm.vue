@@ -153,7 +153,7 @@ const register = (event: MouseEvent) => {
       lastname: user.lastname,
       email: user.email,
       plainPassword: user.password,
-      roles: roles[props.for],
+      roles: roles[props.for as keyof typeof roles],
     };
     if (props.for === 'tenant') {
       data.situation = user.situation;

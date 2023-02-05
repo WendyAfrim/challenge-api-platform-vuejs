@@ -3,14 +3,14 @@ import { axios } from '@/services/auth';
 import router from '@/router';
 import { useLocalStorage } from '@vueuse/core';
 import { ref, computed } from 'vue';
-import jwt_decode from "jwt-decode";
+import jwt_decode, { type JwtPayload } from "jwt-decode";
 import { Roles } from '@/enums/roles';
-
+import type { Ref } from 'vue'
 export const useAuthStore = defineStore('auth', () => {
 
-    const access_token = ref(useLocalStorage('access_token', null));
-    const refresh_token = ref(useLocalStorage('refresh_token', null));
-    const user = ref<any>(access_token.value ? jwt_decode(access_token.value) : null);
+    const access_token: Ref<string | null> = ref(useLocalStorage('access_token', null));
+    const refresh_token: Ref<string | null> = ref(useLocalStorage('refresh_token', null));
+    const user: any = ref(access_token.value ? jwt_decode(access_token.value) : null);
 
     const getRole = computed(() => {
         if (access_token.value) {
@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
         const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/api/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
         access_token.value = response.data.token;
         refresh_token.value = response.data.refresh_token;
-        user.value = jwt_decode(access_token.value);
+        user.value = jwt_decode<any>(access_token.value as string);
         return access_token.value;
     }
 
@@ -45,13 +45,14 @@ export const useAuthStore = defineStore('auth', () => {
         });
         access_token.value = response.data.token;
         refresh_token.value = response.data.refresh_token;
-        user.value = jwt_decode(access_token.value);
+        user.value = jwt_decode(access_token.value as string);
         return access_token.value;
     }
 
     function isTokenExpired() {
         if (!access_token.value) return false;
-        const decoded = jwt_decode(access_token.value);
+        const decoded: JwtPayload = jwt_decode(access_token.value);
+        if (!decoded.exp) return false;
         return Date.now() > decoded.exp * 1000;
     }
 
