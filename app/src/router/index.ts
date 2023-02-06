@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/DashboardView.vue";
+import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
 import { useAuthStore } from '@/stores/auth.store';
 
 const router = createRouter({
@@ -118,6 +119,14 @@ const router = createRouter({
           const alert = { type: 'info', message: 'Vous vous êtes bien déconnecté' };
           next({ name: 'tenant_login', params: { alert: JSON.stringify(alert) } });
         }
+      },
+    },
+    {
+      path: '/email-verification-new-link',
+      name: 'email_verification_new_link',
+      component: RequestNewLinkView,
+      meta: {
+        public: true,
       },
     },
   ]

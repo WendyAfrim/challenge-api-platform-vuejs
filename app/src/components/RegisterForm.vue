@@ -10,6 +10,19 @@
         clics.
       </h1>
     </template>
+    <v-alert v-if="message.content" class="mb-10 text-white" :color="message.type">
+      <div v-if="message.type === 'error'">
+        <template v-for="(messages, field) in message.content" :key="field">
+          <li>{{ field }}: </li>
+          <template v-for="(message, index) in messages" :key="index">
+            <li class="error-message pl-6"> - {{ message }} </li>
+          </template>
+        </template>
+      </div>
+      <div v-else>
+        {{ message.content }}
+      </div>
+    </v-alert>
     <v-form ref="form" v-model="valid" lazy-validation class="d-flex justify-center align-start flex-grow-1">
       <v-row class="d-flex justify-center align-start">
         <v-col cols="12" md="6">
@@ -49,7 +62,8 @@
           </template>
         </v-col>
         <v-col cols="12" class="d-flex justify-center">
-          <v-btn color="primary" @click="register">S'inscrire</v-btn>
+          <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+          <v-btn v-if="!loading" color="primary" @click="register">S'inscrire</v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -58,7 +72,7 @@
 
 <script setup lang="ts">
 import type { Roles } from '@/enums/roles';
-import axios from 'axios';
+import { axios } from '@/services/auth';
 import { ref, reactive } from 'vue';
 
 const props = defineProps<{
@@ -133,7 +147,7 @@ const emailRules = ref([
 ]);
 const passwordRules = ref([
   (v: string) => !!v || 'Le mot de passe est requis',
-  (v: string) => v.length >= 8 || 'Le mot de passe doit contenir au moins 8 caractères',
+  (v: string) => v.length >= 3 || 'Le mot de passe doit contenir au moins 3 caractères',
 ]);
 const passwordConfirmRules = ref([
   (v: string) => !!v || 'La confirmation du mot de passe est requise',
@@ -143,9 +157,16 @@ const situationRules = ref([
   (v: string) => !!v || 'Votre situation est requise',
 ]);
 
+const message = ref({
+  content: null,
+  type: ''
+})
 
-const register = (event: MouseEvent) => {
+const loading = ref<Boolean>(false);
+
+const register = async (event: MouseEvent) => {
   event.preventDefault();
+  loading.value = true;
   if (valid.value) {
     type FormUserData = Omit<User, "passwordConfirm" | "password"> & { plainPassword: string };
     const data: FormUserData = {
@@ -159,21 +180,27 @@ const register = (event: MouseEvent) => {
       data.situation = user.situation;
       // data.documents = user.documents;
     }
-    axios.post(`${import.meta.env.VITE_BASE_API_URL}/users`, data)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/register`, data, {headers: {'Content-Type': 'application/json'}});
+      message.value.content = response.data.message;
+      message.value.type = 'success';
+    } catch (error: any) {
+      message.value.content = error.response.data.errors;
+      message.value.type = 'error';
+    }
   } else {
     form.value.validate();
   }
+  loading.value = false;
 }
 </script>
 
 <style scoped lang="scss">
 .v-text-field {
   margin-bottom: .5rem;
+}
+
+.error-message {
+  list-style: none;
 }
 </style>
