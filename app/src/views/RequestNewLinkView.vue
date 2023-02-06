@@ -4,6 +4,7 @@ import { Field, Form } from 'vee-validate';
 import * as yup from 'yup';
 import { requestNewLink } from '@/services/user';
 import Navbar from '@/components/Navbar.vue';
+import { Roles } from "@/enums/roles";
 
   const loading = ref<Boolean>(false);
   const message = ref({
@@ -33,7 +34,7 @@ import Navbar from '@/components/Navbar.vue';
 
 <template>
     <v-layout class="d-flex flex-column justify-center items-center">
-        <Navbar for="tenant" />
+        <Navbar :for="Roles.Tenant" />
         <div class="ma-auto w-25">
             <v-alert v-if="message.text" class="mb-10 text-white" :text="message.text" :color="message.type"></v-alert>
             <v-card class="elevation-12">
