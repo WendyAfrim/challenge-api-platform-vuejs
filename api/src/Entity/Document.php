@@ -4,24 +4,78 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\CreateDocumentAction;
+use App\Controller\CreateMediaObjectAction;
 use App\Repository\DocumentRepository;
+use Symfony\Component\HttpFoundation\File\File;
 use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ApiResource(
-
+    types: ['https://schema.org/MediaObject'],
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            controller: CreateDocumentAction::class,
+            openapiContext: [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary'
+                                    ],
+                                    'name'=> [
+                                        'type' => 'string',
+                                    ],
+                                    'type'=> [
+                                        'type' => 'string',
+                                    ],
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            validationContext: ['groups' => ['Default', 'media_object_create']],
+            deserialize: false
+        )
+    ],
     normalizationContext: ['groups' => ['document_read']],
-    denormalizationContext: ['groups' => ['document_write']],
+    denormalizationContext: ['groups' => ['document_write']]
 )]
-#[ORM\Entity(repositoryClass: DocumentRepository::class)]
+
+#[Vich\Uploadable]
+#[ORM\Entity]
 class Document
 {
     use TimestampTrait;
     use EntityIdTrait;
+
+    #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    #[Groups(['document_read'])]
+    public ?string $contentUrl = null;
+
+    #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
+    #[Assert\NotNull(groups: ['document_write'])]
+    public ?File $file = null;
+
+    #[ORM\Column(nullable: true)]
+    public ?string $filePath = null;
+
 
     #[ORM\Column(length: 255)]
     #[Groups(['document_read', 'document_write'])]
@@ -39,11 +93,6 @@ class Document
     #[Groups(['document_read', 'document_write'])]
     private ?bool $is_valid = null;
 
-    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    #[ApiProperty(types: ['https://schema.org/file'])]
-    #[Groups(['document_read', 'document_write'])]
-    public ?MediaObject $file = null;
 
     public function getName(): ?string
     {
@@ -81,11 +130,11 @@ class Document
         return $this;
     }
 
-    public function getFileDocument(): ?MediaObject
+    public function getFileDocument(): ?File
     {
         return $this->file;
     }
-    public function setFileDocument(?MediaObject $file): self
+    public function setFileDocument(?File $file): self
     {
         $this->file = $file;
 
