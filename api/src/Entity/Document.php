@@ -66,6 +66,7 @@ class Document
     use EntityIdTrait;
 
     #[ApiProperty(types: ['https://schema.org/contentUrl'])]
+    #[Groups(['document_read'])]
     public ?string $contentUrl = null;
 
     #[Vich\UploadableField(mapping: "media_object", fileNameProperty: "filePath")]
@@ -73,7 +74,6 @@ class Document
     public ?File $file = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['media_object:read'])]
     public ?string $filePath = null;
 
 
