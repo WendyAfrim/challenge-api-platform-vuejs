@@ -19,8 +19,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
+
     normalizationContext: ['groups' => ['property_read']],
     denormalizationContext: ['groups' => ['property_write']],
+    paginationItemsPerPage: 10,
 )]
 #[Get]
 #[GetCollection]
