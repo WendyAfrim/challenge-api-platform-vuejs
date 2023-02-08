@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth.store';
 
 export const axios = axiosDefault.create();
 axios.defaults.headers.common['Accept'] = 'application/json';
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] =  'application/json';
 
 axios.interceptors.request.use(
   async config => {

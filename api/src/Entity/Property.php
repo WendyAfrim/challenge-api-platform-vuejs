@@ -3,6 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Interfaces\PropertyInterface;
 use App\Repository\PropertyRepository;
 use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
@@ -17,12 +22,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['property_read']],
     denormalizationContext: ['groups' => ['property_write']],
 )]
+#[Get]
+#[GetCollection]
+#[Post]
+#[Put(security: "is_granted('ROLE_OWNER')")]
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
-class Property
+class Property implements PropertyInterface
 {
-    public const TYPE_APPARTMENT = 'Appartment';
-    public const TYPE_HOUSE = 'House';
-
     use TimestampTrait;
     use EntityIdTrait;
 
@@ -61,19 +67,19 @@ class Property
 
     #[ORM\Column(nullable: true)]
     #[Groups(['property_read', 'property_write'])]
-    private ?bool $has_balcony = null;
+    private ?bool $has_balcony = false;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['property_read', 'property_write'])]
-    private ?bool $has_terrace = null;
+    private ?bool $has_terrace = false;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['property_read', 'property_write'])]
-    private ?bool $has_cave = null;
+    private ?bool $has_cave = false;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['property_read', 'property_write'])]
-    private ?bool $has_elevator = null;
+    private ?bool $has_elevator = false;
 
     #[ORM\Column(nullable: true)]
     #[Groups(['property_read', 'property_write'])]
@@ -89,7 +95,7 @@ class Property
 
     #[ORM\Column(nullable: true)]
     #[Groups(['property_read', 'property_write'])]
-    private ?bool $is_furnished = null;
+    private ?bool $is_furnished = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['property_read', 'property_write'])]
@@ -104,11 +110,21 @@ class Property
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: Request::class)]
     private Collection $requests;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    private ?int $level = null;
+
+    #[ORM\OneToMany(mappedBy: 'property', targetEntity: MediaObject::class)]
+    private Collection $photos;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $city = null;
+
 
     public function __construct()
     {
         $this->availaibilities = new ArrayCollection();
         $this->requests = new ArrayCollection();
+        $this->photos = new ArrayCollection();
     }
 
     public function getTitle(): ?string
@@ -383,6 +399,60 @@ class Property
                 $request->setProperty(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLevel(): ?int
+    {
+        return $this->level;
+    }
+
+    public function setLevel(?int $level): self
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MediaObject>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function addPhoto(MediaObject $photo): self
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos->add($photo);
+            $photo->setProperty($this);
+        }
+
+        return $this;
+    }
+
+    public function removePhoto(MediaObject $photo): self
+    {
+        if ($this->photos->removeElement($photo)) {
+            // set the owning side to null (unless already changed)
+            if ($photo->getProperty() === $this) {
+                $photo->setProperty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
 
         return $this;
     }
