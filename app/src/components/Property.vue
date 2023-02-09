@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {axios} from "@/services/auth";
-import { ref , defineProps} from "vue";
+import {ref, defineProps, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {Roles} from "@/enums/roles";
 
@@ -17,11 +17,11 @@ const message = ref({
   text:'',
   type:''
 });
-
+const imagePath = ref("");
 
 async function onClick() {
     try{
-      const response = await axios.get(`https://localhost/properties/${props.property['@id'].split('/').pop()}`);
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties/${props.property['@id'].split('/').pop()}`);
       // router.push()
     } catch (error: any) {
       console.log("err: ", error)
@@ -32,12 +32,32 @@ async function onClick() {
   }
 }
 
+onMounted(async () => {
+  if(props.property['photos']['0'] !== undefined){
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${props.property['photos']['0'].split('/').pop()}`);
+      imagePath.value = response.data.filePath;
+      // router.push()
+    } catch (error: any) {
+      console.log("err: ", error)
+      message.value.text = '';
+      message.value.type = '';
+      message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+      message.value.type = 'error';
+    }
+  }
+})
+
+
+const getImage = computed( () => {
+  return imagePath.value;
+});
+
 </script>
 
 <template>
 
   <v-card id="card" @click="onClick"
-
     >
   <v-alert v-if="message.text" class="text-white" :color="message.type">
     {{ message.text }}
@@ -45,7 +65,7 @@ async function onClick() {
       <v-img
 
           class="align-end text-white"
-          src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+          v-bind:src="getImage"
           cover
       >
       </v-img>

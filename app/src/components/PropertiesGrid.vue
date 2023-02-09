@@ -33,7 +33,7 @@ async function previous_page() {
 async function get_page(pageNumber = 1) {
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
-    const response = await axios.get(`https://localhost/properties?page=${pageNumber}`);
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties?page=${pageNumber}`);
     if(response.data['hydra:view'] !== undefined){
       current_page.value = parseInt(response.data['hydra:view']['@id'].split('=')[1]);
       last_page.value = parseInt(response.data['hydra:view']['hydra:last'].split('=')[1]);
@@ -58,7 +58,7 @@ onMounted(async () => {
 <template>
   <div id="box" >
     <v-alert v-if="message.text" class="text-white" :color="message.type">{{ message.text }}</v-alert>
-    <div class="ma-0" v-for="element in properties" :key="element['@id'].split('=')[1]">
+    <div class="ma-0" v-for="element in properties" :key="element['@id'].split('/').pop()">
     <Property :property="element"></Property>
     </div>
   </div>
