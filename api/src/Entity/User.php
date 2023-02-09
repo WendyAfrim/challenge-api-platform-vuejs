@@ -12,6 +12,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\UserController;
+use App\Enums\UserValidationStatusEnum;
+use App\Enums\WorkSituationEnum;
 use App\Traits\EntityIdTrait;
 use cebe\openapi\spec\SecurityScheme;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -53,7 +55,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
-
+        // new Post(
+        //     uriTemplate: '/users/{id}',
+        //     inputFormats: ['multipart' => ['multipart/form-data']]),
     ],
     normalizationContext: ['groups' => ['user_read', 'all']],
     denormalizationContext: ['groups' => ['user_write']],
@@ -71,8 +75,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_AGENCY = 'ROLE_AGENCY';
     public const ROLE_HOMEOWNER = 'ROLE_HOMEOWNER';
 
-    #[Assert\NotBlank]
-    #[Assert\Email]
+    #[Assert\NotBlank(groups: ['register'])]
+    #[Assert\Email(groups: ['register'])]
     #[Groups(['user_read', 'user_write', 'user_details', 'property_read'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
@@ -80,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['user_write'])]
+    #[Assert\NotBlank(groups: ['register'])]
     #[Groups(['user_write'])]
     private ?string $plainPassword = null;
 
@@ -88,19 +92,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read', 'user_write', 'user_details'])]
     private array $roles = [];
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user_read', 'user_write', 'user_details'])]
     #[Assert\NotBlank]
     private ?string $firstname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user_read', 'user_write', 'user_details'])]
     #[Assert\NotBlank]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', enumType: WorkSituationEnum::class, nullable: true)]
     #[Groups(['user_read', 'user_write'])]
-    private ?string $situation = null;
+    private ?WorkSituationEnum $situation = null;
 
     #[ORM\OneToMany(mappedBy: 'user_document', targetEntity: Document::class, cascade: ['persist'])]
     #[Groups(['user_read', 'user_write'])]
@@ -118,10 +122,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read', 'user_details'])]
     private ?int $salary = 0;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_read', 'user_details'])]
-    private ?string $income_source = null;
-
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Property::class)]
     #[Groups(['user_read', 'user_write', 'user_details'])]
     private Collection $properties;
@@ -130,12 +130,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user_read', 'user_details'])]
     private Collection $requests;
 
-    #[ORM\Column(type: 'boolean')]
+    #[ORM\Column(type: 'boolean', options: ["default" => false])]
     private $isVerified = false;
 
     #[ORM\OneToMany(mappedBy: 'lodger', targetEntity: Availaibility::class)]
     private Collection $availaibilities;
 
+    #[ORM\Column(type: 'string', enumType: UserValidationStatusEnum::class, options: ["default" => UserValidationStatusEnum::ToComplete])]
+    #[Groups(['user_read', 'user_write'])]
+    private UserValidationStatusEnum $validationStatus = UserValidationStatusEnum::ToComplete;
 
     public function __construct()
     {
@@ -245,12 +248,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSituation(): ?string
+    public function getSituation(): ?WorkSituationEnum
     {
         return $this->situation;
     }
 
-    public function setSituation(?string $situation): self
+    public function setSituation(WorkSituationEnum $situation): self
     {
         $this->situation = $situation;
 
@@ -359,18 +362,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getIncomeSource(): ?string
-    {
-        return $this->income_source;
-    }
-
-    public function setIncomeSource(?string $income_source): self
-    {
-        $this->income_source = $income_source;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Property>
      */
@@ -469,6 +460,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $availaibility->setLodger(null);
             }
         }
+     * Get the value of status
+     */ 
+    public function getValidationStatus(): ?UserValidationStatusEnum
+    {
+        return $this->validationStatus;
+    }
+
+    /**
+     * Set the value of status
+     *
+     * @return  self
+     */ 
+    public function setValidationStatus(UserValidationStatusEnum $validationStatus): self
+    {
+        $this->validationStatus = $validationStatus;
 
         return $this;
     }

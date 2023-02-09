@@ -71,9 +71,10 @@
       await authStore.login(values.email, values.password);
       await router.push({ name: `${forType}_dashboard`});
     } catch (error: any) {
-        errorType.value = error.response.data.error_type || '';
+      errorType.value = error.response.data.error_type || '';
       message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
       message.value.type = 'error';
+      console.log(error.response.data);
     }
     loading.value = false;
   }

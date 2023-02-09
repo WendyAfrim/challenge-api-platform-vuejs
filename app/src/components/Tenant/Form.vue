@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ErrorMessage, Field, useField } from 'vee-validate';
+import { Field } from 'vee-validate';
 
 import * as yup from 'yup';
 import FormWizard from './FormWizard.vue';
 import FormStep from './FormStep.vue';
-import { updateUser } from '@/services/user';
 import { ref, computed, watch } from 'vue';
 import { WorkSituationEnum } from '@/enums/WorkSituation';
-import { DOMDirectiveTransforms } from '@vue/compiler-dom';
+import { useAuthStore } from '@/stores/auth.store';
+import { axios } from '@/services/auth';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useRouter } from 'vue-router';
 
 const SUPPORTED_FORMATS = [
   "image/jpg",
@@ -20,10 +22,13 @@ const workDocumentType = ref({ label: '', name: 'work_document' });
 const workSituation = ref();
 const salary = ref();
 const has_tax_notice = ref();
+const selectedFile = ref();
+const authStore = useAuthStore();
+const router = useRouter();
+const loading = ref(false);
 const firstname = ref();
 const lastname = ref();
-const email = ref();
-const rent_receipt = ref();
+const done = ref(false);
 
 const workSituations = ref([
   { label: 'Salarié dans le privé', value: 'employee' },
@@ -65,7 +70,7 @@ const schema = computed(() => {
   yup.object({
     firstname: yup.string().required().label('Prénom'),
     lastname: yup.string().required().label('Nom de famille'),
-    email: yup.string().required().email().label('Adresse email'),
+    // email: yup.string().required().email().label('Adresse email'),
   }),
   yup.object({
     id_card: yup.mixed().required().maxFileSize().fileType(SUPPORTED_FORMATS).label('Carte d\'identité'),
@@ -87,92 +92,130 @@ const schema = computed(() => {
  * Only Called when the last step is submitted
  */
 async function onSubmit(formData) {
+  loading.value = true;
   try {
-    console.log()
-    const res = await updateUser(1, {
-      firstname: formData.firstname,
-      lastname: formData.lastname,
-      email: formData.email,
-      // salary: formData.salary,
-      documents: [
-        {
-          name: formData.id_card[0].name,
-          type: 'id_card',
-        },
-        {
-          name: formData.rent_receipt[0].name,
-          type: 'rent_receipt',
-        },
-        {
-          name: `formData.${workDocumentType.value.name}[0].name`,
-          type: workDocumentType.value.name,
-        },
-        {
-          name: formData.pay_slip[0].name,
-          type: 'pay_slip',
-        },
-        {
-          name: formData.tax_notice[0].name,
-          type: 'pay_slip',
-        },
-      ],
-    });
-    console.log(res);
+      await axios.post('https://localhost/documents', {
+        file: formData.id_card[0],
+        name: formData.id_card[0].name,
+        type: 'identity',
+        user_id: authStore.user.id
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      await axios.post('https://localhost/documents', {
+        file: formData.rent_receipt[0],
+        name: formData.rent_receipt[0].name,
+        type: 'address',
+        user_id: authStore.user.id
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      await axios.post('https://localhost/documents', {
+        file: formData[`${workDocumentType.value.name}`][0],
+        name: formData[`${workDocumentType.value.name}`][0].name,
+        type: `professional`,
+        user_id: authStore.user.id
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      await axios.post('https://localhost/documents', {
+        file: formData.pay_slip[0],
+        name: formData.pay_slip[0].name,
+        type: 'tax_status',
+        user_id: authStore.user.id
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      await axios.put(`https://localhost/users/${authStore.user.id}`, {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        salary: formData.salary,
+        situation: formData.work_situation,
+        validationStatus: 'to_review'
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      done.value = true;
+      authStore.user.validationStatus = 'to_review';
   } catch (error) {
     console.log(error);
   }
+  loading.value = false;
   console.log(JSON.stringify(formData, null, 2));
 }
+const { lgAndUp } = useDisplay();
 </script>
 <template>
-  <div>
-    <h1>Multi-step Form</h1>
-    <FormWizard as="v-form" :validation-schema="schema" @submit="onSubmit">
+    <div v-if="done">
+      <v-card class="mx-auto" max-width="500">
+        <v-card-title class="text-h5 font-weight-bold">Votre demande a bien été envoyée</v-card-title>
+        <v-card-text>
+          <p class="text-body-1">Votre demande est en cours de validation. Vous recevrez un email dès que votre demande aura été traitée.</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="router.push({ name: 'tenant_dashboard' })">Fermer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </div>
+    <v-progress-circular v-else-if="loading" indeterminate color="primary" class="m-auto"></v-progress-circular>
+    <FormWizard class="ma-auto" v-else as="v-form" :validation-schema="schema" @submit="onSubmit" :class="[lgAndUp ? 'w-50' : 'w-75']">
 
+      <template #stepper_name_1>Mes informations</template>
       <FormStep>
-        <h1>Mes informations</h1>
+        <h1 class="mb-10 text-h4 font-weight-bold">Mes informations</h1>
         <Field name="firstname" v-slot="{ field, errors }">
-          <v-text-field v-bind="field" label="Prénom" :error-messages="errors" v-model="firstname" />
+          <v-text-field v-bind="field" label="Prénom" :error-messages="errors" v-model="firstname" class="mb-6" />
         </Field>
         <Field name="lastname" v-slot="{ field, errors }">
           <v-text-field v-bind="field" label="Nom de famille" :error-messages="errors" v-model="lastname" />
         </Field>
-        <Field name="email" type="email" v-slot="{ field, errors }">
-          <v-text-field v-bind="field" label="Adresse email" :error-messages="errors" v-model="email" />
-        </Field>
       </FormStep>
 
+      <template #stepper_name_2>Identité</template>
       <FormStep>
-        <h1>Je dépose ma pièce d'identité</h1>
-        <Field name="id_card" type="file" v-slot="{ handleChange, value, errors }">
+        <h1 class="mb-10 text-h4 font-weight-bold">Je dépose ma pièce d'identité</h1>
+        <Field name="id_card" type="file" v-slot="{ handleChange, value, errors }" v-model="selectedFile">
           <v-file-input :model-value="value" @update:modelValue="handleChange" label="Carte d'identité" :error-messages="errors" />
         </Field>
       </FormStep>
 
+      <template #stepper_name_3>Domicile</template>
       <FormStep>
-        <h1>Je dépose un justificatif de domicile</h1>
+        <h1 class="mb-10 text-h4 font-weight-bold">Je dépose un justificatif de domicile</h1>
         <Field name="rent_receipt" type="file" v-slot="{ handleChange, value, errors }">
           <v-file-input :model-value="value" @update:modelValue="handleChange" label="Dernière quittance de loyer" :error-messages="errors" />
         </Field>
-      </FormStep> -->
-
-      <FormStep>
-        <h1>Je dépose mon justificatif de situation professionnelle</h1>
-          <span>Actuellement, je suis</span>
-          <Field name="work_situation" type="select" v-slot="{ field, errors }" class="mb-15" >
-            <v-select v-bind="field" label="Situation professionnelle" :error-messages="errors" :items="workSituations" item-title="label" item-value="value" v-model="workSituation" />
-          </Field>
-            <Field v-if="workSituation" :name="workDocumentType.name" type="file" v-slot="{ handleChange, value, errors }">
-              <v-file-input :model-value="value" @update:modelValue="handleChange" :label="workDocumentType.label" :error-messages="errors" />
-            </Field>
       </FormStep>
 
+      <template #stepper_name_4>Situation professionnelle</template>
       <FormStep>
-        <h1>Je partage et justifie mes revenus</h1>
-        <div class="d-flex align-center text-h6 w-50">
+        <h1 class="mb-10 text-h4 font-weight-bold">Je dépose mon justificatif de situation professionnelle</h1>
+        <span>Actuellement, je suis</span>
+        <Field name="work_situation" type="select" v-slot="{ field, errors }" class="mb-15" >
+          <v-select v-bind="field" label="Situation professionnelle" :error-messages="errors" :items="workSituations" item-title="label" item-value="value" v-model="workSituation" class="mb-6" />
+        </Field>
+        <Field v-if="workSituation" :name="workDocumentType.name" type="file" v-slot="{ handleChange, value, errors }">
+          <v-file-input :model-value="value" @update:modelValue="handleChange" :label="workDocumentType.label" :error-messages="errors" />
+        </Field>
+      </FormStep>
+
+      <template #stepper_name_5>Ressources</template>
+      <FormStep>
+        <h1 class="mb-10 text-h4 font-weight-bold">Je partage et justifie mes revenus</h1>
+        <div class="d-flex align-center justify-start text-h6 mb-6">
           <span class="mr-4">Mon salaire est de </span>
           <Field name="salary" v-slot="{ field, errors }">
-            <v-text-field v-bind="field" label="Salaire" type="number" :error-messages="errors" variant="underlined" v-model="salary" />
+            <v-text-field v-bind="field" label="Salaire" type="number" :error-messages="errors" variant="underlined" v-model="salary"/>
           </Field>
           <span>€</span>
         </div>
@@ -181,35 +224,20 @@ async function onSubmit(formData) {
         </Field>
       </FormStep>
 
+      <template #stepper_name_6>Impôts</template>
       <FormStep>
-        <h1>Je justifie ma situation fiscale</h1>
-        <div class="d-flex align-center text-h6 w-50">
+        <h1 class="mb-10 text-h4 font-weight-bold">Je justifie ma situation fiscale</h1>
+        <div class="d-flex align-center text-h6 mb-6">
           <Field name="has_tax_notice" type="select" v-slot="{ field, errors }">
             <v-select v-bind="field" label="Situation fiscale" :error-messages="errors" :items="[{'label': 'Je dispose', 'value': 1}, {'label': 'Je ne dispose pas', 'value': 0}]" item-title="label" item-value="value" v-model="has_tax_notice" variant="underlined"  />
           </Field>
-          <span class="mr-4">d'un avis d'imposition à mon nom</span>
+          <span class="ml-6">d'un avis d'imposition à mon nom</span>
         </div>
         <Field v-if="has_tax_notice" name="tax_notice" type="file" v-slot="{ handleChange, value, errors }">
           <v-file-input :model-value="value" @update:modelValue="handleChange" label="Dernier avis d'imposition" :error-messages="errors" />
         </Field>
       </FormStep>
-
-        <!-- <div class="d-flex align-center text-h6 w-50">
-          <Field name="has_guarantor" type="select" v-slot="{ field, errors }">
-            <v-select v-bind="field" label="Situation fiscale" :error-messages="errors" :items="[{'label': 'Je n\'ajoute pas de garant', 'value': 1}, {'label': 'J\'ajoute un garant', 'value': 0}]" item-title="label" item-value="value" v-model="has_guarantor" variant="underlined"  />
-          </Field>
-          <span class="mr-4">à mon dossier</span>
-          <Field v-if="has_guarantor" name="guarantor" type="file" v-slot="{ field, errors }">
-            <v-file-input v-bind="field" label="Dernier avis d'imposition" :error-messages="errors" />
-          </Field>
-        </div> -->
-      <!-- <FormStep>
-        <Field name="id_card" type="file" v-slot="{ field, errors }">
-          <v-file-input v-bind="field" label="Carte d'identité" :error-messages="errors" />
-        </Field>
-      </FormStep> -->
     </FormWizard>
-  </div>
 </template>
 
 <style>

@@ -12,6 +12,7 @@ import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
 import PropertyRegister from '@/views/Property/AddProperty.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
+import WizardViewVue from '@/views/Tenant/WizardView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,11 @@ const router = createRouter({
           name: 'tenant_dashboard',
           component: DashboardView,
         },
+        {
+          path: 'first-steps',
+          name: 'tenant_first_steps',
+          component: WizardViewVue,
+        }
       ],
     },
     {
@@ -172,7 +178,16 @@ router.beforeEach(async (to, from) => {
         return { name: 'tenant_login' }
       }
     }
+    if (to.name === 'logout') return true;
     const role = authStore.getRole;
+    if (role === 'tenant') {
+      if (authStore.user.validation_status === 'to_complete' && to.name !== 'tenant_first_steps') {
+        return { name: 'tenant_first_steps' };
+      }
+      if (authStore.user.validation_status !== 'to_complete' && to.name === 'tenant_first_steps') {
+        return { name: 'tenant_dashboard' };
+      }
+    }
     if (to.meta.public || (to.meta.forType && to.meta.forType !== role)) {
       return { name: `${role}_dashboard` }
     }

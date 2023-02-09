@@ -1,17 +1,31 @@
 <template>
-    <form @submit="onSubmit">
+  <div class="d-flex h-50">
+    <div class="d-flex flex-column justify-space-around">
+      <template v-for="index in stepCounter" :key="index">
+        <div class="step d-flex align-center mr-16">
+          <div class="bullet d-flex justify-center align-center" :class="[index <= currentStepId+1 ? 'bg-primary' : 'bg-white to-complete', {'validated': index < currentStepId+1}]">
+            <v-icon v-if="index < currentStepId+1" icon="mdi-check-bold"></v-icon>
+            <v-icon v-else-if="index === currentStepId+1" icon="mdi-dots-horizontal"></v-icon>
+            <div v-else>{{ index }}</div>
+          </div>
+          <div class="font-weight-medium ml-4 text-h7">
+            <slot :name="`stepper_name_${index}`">
+              Etape {{ index }}
+            </slot>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <form class="flex-grow-1" @submit="onSubmit">
       <slot />
-  
-      <div>
-        <v-btn v-if="hasPrevious" type="button" @click="goToPrev">
-          Previous
-        </v-btn>
-        <v-btn type="submit">{{ isLastStep ? 'Submit' : 'Next' }}</v-btn>
+      <div class="d-flex justify-space-between mt-10">
+        <v-btn color="primary" v-if="hasPrevious" type="button" @click="goToPrev">Précedent</v-btn>
+        <v-btn color="primary" type="submit">{{ isLastStep ? 'Envoyer' : 'Suivant' }}</v-btn>
       </div>
-  
-      <pre>{{ values }}</pre>
     </form>
-  </template>
+  </div>
+</template>
   
   <script setup lang="ts">
   import { useForm } from 'vee-validate';
@@ -23,9 +37,8 @@
       required: true,
     },
   });
-  
   const emit = defineEmits(['submit']);
-  const currentStepIdx = ref(0);
+  const currentStepId = ref(0);
   
   // Injects the starting step, child <form-steps> will use this to generate their ids
   const stepCounter = ref(0);
@@ -33,50 +46,49 @@
   
   // Inject the live ref of the current index to child components
   // will be used to toggle each form-step visibility
-  provide('CURRENT_STEP_INDEX', currentStepIdx);
+  provide('CURRENT_STEP_INDEX', currentStepId);
   
   // if this is the last step
   const isLastStep = computed(() => {
-    return currentStepIdx.value === stepCounter.value - 1;
+    return currentStepId.value === stepCounter.value - 1;
   });
   
-  // If the `previous` button should appear
   const hasPrevious = computed(() => {
-    return currentStepIdx.value > 0;
+    return currentStepId.value > 0;
   });
   
-  // extracts the indivdual step schema
   const currentSchema = computed(() => {
-    return props.validationSchema[currentStepIdx.value];
+    return props.validationSchema[currentStepId.value];
   });
   
   const { values, handleSubmit } = useForm({
-    // vee-validate will be aware of computed schema changes
     validationSchema: currentSchema,
-    // turn this on so each step values won't get removed when you move back or to the next step
     keepValuesOnUnmount: true,
   });
-  
-  // We are using the "submit" handler to progress to next steps
-  // and to submit the form if its the last step
   const onSubmit = handleSubmit((values) => {
-    console.log(values);
     if (!isLastStep.value) {
-      currentStepIdx.value++;
+      currentStepId.value++;
   
       return;
     }
-  
-    // Let the parent know the form was filled across all steps
     emit('submit', values);
   });
   
   function goToPrev() {
-    if (currentStepIdx.value === 0) {
+    if (currentStepId.value === 0) {
       return;
     }
   
-    currentStepIdx.value--;
+    currentStepId.value--;
   }
-  </script>
+</script>
   
+<style scoped>
+  .validated {
+    opacity: 0.5;
+  }
+  .to-complete {
+    border: 2px solid #bfbfbf;
+    opacity: 0.7;
+  }
+</style>

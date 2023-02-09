@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\MediaObject;
+use App\Enums\DocumentStatusEnum;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,10 +21,14 @@ class CreateDocumentAction extends AbstractController
             throw new BadRequestHttpException('"file" is required');
         }
         $mediaObject = new Document();
-        $mediaObject->file = $uploadedFile;
+        $mediaObject->setFile($uploadedFile);
         $mediaObject->setName($request->get('name'));
         $mediaObject->setType($request->get('type'));
-        $mediaObject->setIsValid(false);
+        if ($request->get('status')) {
+            $mediaObject->setStatus($request->get('status'));
+        } else {
+            $mediaObject->setStatus(DocumentStatusEnum::ToReview);
+        }
         $user = $userRepository->find($request->get('user_id'));
         $mediaObject->setUserDocument($user);
 

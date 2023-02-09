@@ -45,13 +45,11 @@ class RegistrationController extends AbstractController
         $data = $request->toArray();
 
         $user = new User();
-        if (isset($data['firstname'])) $user->setFirstname($data['firstname']);
-        if (isset($data['lastname'])) $user->setLastname($data['lastname']);
         if (isset($data['email'])) $user->setEmail($data['email']);
         if (isset($data['roles'])) $user->setRoles($data['roles']);
         if (isset($data['plainPassword'])) $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['plainPassword']));
 
-        $errors = $this->validator->validate($user);
+        $errors = $this->validator->validate($user, null, ['registration']);
         if (count($errors) > 0) {
             $errorsOutput = [];
             foreach ($errors as $error) {
