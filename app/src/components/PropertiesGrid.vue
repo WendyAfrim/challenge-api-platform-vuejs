@@ -34,6 +34,8 @@ async function get_page(pageNumber = 1) {
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
     const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties?page=${pageNumber}`);
+    console.log(response.data)
+    console.log(response.data["hydra:member"][0].photos)
     if(response.data['hydra:view'] !== undefined){
       current_page.value = parseInt(response.data['hydra:view']['@id'].split('=')[1]);
       last_page.value = parseInt(response.data['hydra:view']['hydra:last'].split('=')[1]);

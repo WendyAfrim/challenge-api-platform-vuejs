@@ -33,6 +33,7 @@ async function onClick() {
 }
 
 onMounted(async () => {
+  console.log("prop: ", props.property)
   if(props.property['photos']['0'] !== undefined){
     try {
       const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${props.property['photos']['0'].split('/').pop()}`);

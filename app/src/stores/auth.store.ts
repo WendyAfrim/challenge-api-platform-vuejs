@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const access_token: Ref<string | null> = ref(useLocalStorage('access_token', null));
     const refresh_token: Ref<string | null> = ref(useLocalStorage('refresh_token', null));
+    const posted_property_id: Ref<String> = ref(useLocalStorage('posted_property_id', ''));
     const user: any = ref(access_token.value ? jwt_decode(access_token.value) : null);
 
     const getRole = computed(() => {
@@ -56,5 +57,14 @@ export const useAuthStore = defineStore('auth', () => {
         return Date.now() > decoded.exp * 1000;
     }
 
-    return { access_token, refresh_token, login, logout, refreshAccessToken, user, getRole, isTokenExpired }
+    function setPropertyId(id:String){
+        posted_property_id.value = id;
+    }
+
+    function getPropertyId(){
+        return posted_property_id.value;
+    }
+
+
+    return { access_token, refresh_token, setPropertyId, getPropertyId, login, logout, refreshAccessToken, user, getRole, isTokenExpired }
 });

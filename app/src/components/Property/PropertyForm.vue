@@ -147,7 +147,7 @@
         is_furnished: boolean
         price: any
         state: string
-    };
+    }
 
     const property = reactive<Property>({
         title: '',

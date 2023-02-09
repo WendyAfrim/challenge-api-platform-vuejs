@@ -7,6 +7,7 @@ import DashboardView from "@/views/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
 import PropertyRegister from '@/views/Property/AddProperty.vue';
 import { useAuthStore } from '@/stores/auth.store';
+import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -90,6 +91,11 @@ const router = createRouter({
           path: 'property/add',
           name: 'homeowner_property_add',
           component: PropertyRegister,
+        },
+        {
+          path: 'property/add/photos',
+          name: 'homeowner_property_add_photos',
+          component: PropertyPhotosUploadViews,
         }
       ],
     },
