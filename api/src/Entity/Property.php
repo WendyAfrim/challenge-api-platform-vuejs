@@ -19,7 +19,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-
     normalizationContext: ['groups' => ['property_read']],
     denormalizationContext: ['groups' => ['property_write']],
     paginationItemsPerPage: 10,
@@ -116,6 +115,7 @@ class Property implements PropertyInterface
     private ?int $level = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: MediaObject::class)]
+    #[Groups(['property_read', 'property_write'])]
     private Collection $photos;
 
     #[ORM\Column(length: 255, nullable: true)]
