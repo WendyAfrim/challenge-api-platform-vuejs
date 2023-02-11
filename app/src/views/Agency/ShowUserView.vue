@@ -16,7 +16,7 @@
     });
     const response = await axios.get('https://localhost/users/' + route.params.id);
     user.value = response.data;
-    const baseValidatedDocuments = response.data.documents.filter((document: any) => document.isValid);
+    const baseValidatedDocuments = ref(response.data.documents.filter((document: any) => document.isValid));
     const baseInvalidDocuments = ref(response.data.documents.filter((document: any) => !document.isValid));
 
     async function handleSubmit() {
@@ -29,6 +29,7 @@
             });
             message.value = { text: 'Le dossier a bien été mis à jour.', type: 'success' };
             user.value.validationStatus = response.data.validationStatus;
+            baseValidatedDocuments.value = user.value.documents.filter((document: any) => document.isValid);
         } catch (error: any) {
             message.value = { text: error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.', type: 'error' };
             console.log(error.response.data);
