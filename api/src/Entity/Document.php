@@ -95,9 +95,9 @@ class Document
     #[Groups(['document_read', 'document_write'])]
     private ?User $user_document = null;
 
-    #[ORM\Column(type: 'string', enumType: DocumentStatusEnum::class, options: ["default" => DocumentStatusEnum::ToReview->value], nullable: true)]
-    #[Groups(['document_read', 'document_write', 'user_read'])]
-    private ?DocumentStatusEnum $status;
+    #[ORM\Column(type: 'boolean', options: ["default" => false])]
+    #[Groups(['document_read', 'document_write', 'user_read', 'user_write'])]
+    private $isValid = false;
 
     public function getName(): ?string
     {
@@ -173,22 +173,34 @@ class Document
     }
 
 
-    /**
-     * Get the value of status
-     */ 
-    public function getStatus(): ?DocumentStatusEnum
+    // /**
+    //  * Get the value of status
+    //  */ 
+    // public function getStatus(): ?DocumentStatusEnum
+    // {
+    //     return $this->status;
+    // }
+
+    // /**
+    //  * Set the value of status
+    //  *
+    //  * @return  self
+    //  */ 
+    // public function setStatus(DocumentStatusEnum $status): self
+    // {
+    //     $this->status = $status;
+
+    //     return $this;
+    // }
+
+    public function getIsValid(): ?bool
     {
-        return $this->status;
+        return $this->isValid;
     }
 
-    /**
-     * Set the value of status
-     *
-     * @return  self
-     */ 
-    public function setStatus(DocumentStatusEnum $status): self
+    public function setIsValid(bool $isValid): self
     {
-        $this->status = $status;
+        $this->isValid = $isValid;
 
         return $this;
     }

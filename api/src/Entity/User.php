@@ -4,6 +4,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Action\NotFoundAction;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -65,6 +67,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
+#[ApiFilter(SearchFilter::class, properties: ['validationStatus' => 'exact', 'roles' => 'exact'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
@@ -119,7 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $visits;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user_read', 'user_details'])]
+    #[Groups(['user_read', 'user_write', 'user_details'])]
     private ?int $salary = 0;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Property::class)]

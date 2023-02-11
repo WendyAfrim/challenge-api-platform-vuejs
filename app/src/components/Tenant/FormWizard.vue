@@ -1,17 +1,16 @@
 <template>
   <div class="d-flex h-50">
     <div class="d-flex flex-column justify-space-around">
-      <template v-for="index in stepCounter" :key="index">
+      <template v-for="(step, index) in steps" :key="index">
+        
         <div class="step d-flex align-center mr-16">
-          <div class="bullet d-flex justify-center align-center" :class="[index <= currentStepId+1 ? 'bg-primary' : 'bg-white to-complete', {'validated': index < currentStepId+1}]">
-            <v-icon v-if="index < currentStepId+1" icon="mdi-check-bold"></v-icon>
-            <v-icon v-else-if="index === currentStepId+1" icon="mdi-dots-horizontal"></v-icon>
+          <div class="bullet d-flex justify-center align-center" :class="[index <= currentStepId ? 'bg-primary' : 'bg-white to-complete', {'validated': index < currentStepId}]">
+            <v-icon v-if="index < currentStepId" icon="mdi-check-bold"></v-icon>
+            <v-icon v-else-if="index === currentStepId" icon="mdi-dots-horizontal"></v-icon>
             <div v-else>{{ index }}</div>
           </div>
           <div class="font-weight-medium ml-4 text-h7">
-            <slot :name="`stepper_name_${index}`">
-              Etape {{ index }}
-            </slot>
+              {{ $t(`document_type.${step}`) }}
           </div>
         </div>
       </template>
@@ -30,25 +29,25 @@
   <script setup lang="ts">
   import { useForm } from 'vee-validate';
   import { ref, computed, provide } from 'vue';
+  import { StepCounterKey, CurrentStepIndexKey } from '@/symbols'
   
   const props = defineProps({
     validationSchema: {
       type: Array,
       required: true,
     },
+    steps: {
+      type: Array,
+      required: true,
+    },
   });
   const emit = defineEmits(['submit']);
   const currentStepId = ref(0);
-  
-  // Injects the starting step, child <form-steps> will use this to generate their ids
   const stepCounter = ref(0);
-  provide('STEP_COUNTER', stepCounter);
+
+  provide(StepCounterKey, stepCounter);
+  provide(CurrentStepIndexKey, currentStepId);
   
-  // Inject the live ref of the current index to child components
-  // will be used to toggle each form-step visibility
-  provide('CURRENT_STEP_INDEX', currentStepId);
-  
-  // if this is the last step
   const isLastStep = computed(() => {
     return currentStepId.value === stepCounter.value - 1;
   });
@@ -61,7 +60,7 @@
     return props.validationSchema[currentStepId.value];
   });
   
-  const { values, handleSubmit } = useForm({
+  const { handleSubmit } = useForm({
     validationSchema: currentSchema,
     keepValuesOnUnmount: true,
   });
@@ -84,6 +83,12 @@
 </script>
   
 <style scoped>
+  .bullet {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid #bfbfbf;
+  }
   .validated {
     opacity: 0.5;
   }

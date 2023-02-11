@@ -13,6 +13,7 @@ import PropertyRegister from '@/views/Property/AddProperty.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
 import WizardViewVue from '@/views/Tenant/WizardView.vue';
+import ShowUserView from '@/views/Agency/ShowUserView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -141,6 +142,11 @@ const router = createRouter({
           name: 'agency_dashboard',
           component: DashboardView,
         },
+        {
+          path: 'users/:id',
+          name: 'agency_show_user',
+          component: ShowUserView,
+        },
       ],
     },
     {
@@ -166,7 +172,7 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore();
   if (authStore.access_token) {
     if (authStore.isTokenExpired()) {

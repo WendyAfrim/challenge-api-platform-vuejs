@@ -34,7 +34,18 @@ const messages = {
       professional: 'Situation professionnelle',
       income: 'Ressources',
       tax_status: 'Situation fiscale',
-    }
+    },
+    validation_status: {
+      to_complete: 'A compléter',
+      to_review: 'A valider',
+      validated: 'Validé',
+    },
+    work_situation: {
+      employee: 'Salarié',
+      student: 'Étudiant',
+      public_official: 'Fonctionnaire',
+      alternating_student: 'Alternant',
+    },
   }
 }
 

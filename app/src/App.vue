@@ -7,13 +7,13 @@ import { RouterView } from 'vue-router'
     <v-app>
       <RouterView v-slot="{ Component, route }"><template v-if="Component">
           <Transition mode="out-in" name="fade">
-        <Suspense>
-          <component :is="Component" :key="route.path" />
-          <template #fallback>
-            <v-progress-circular indeterminate color="primary"></v-progress-circular>
-          </template>
-        </Suspense>
-      </Transition>
+            <Suspense>
+              <component :is="Component" :key="route.path" />
+              <template #fallback>
+                <v-progress-circular indeterminate color="primary" class="ma-auto" :size="64" :width="6"></v-progress-circular>
+              </template>
+            </Suspense>
+          </Transition>
         </template>
       </RouterView>
     </v-app>

@@ -35,7 +35,9 @@ class PropertyListener implements EventSubscriber
         $entity = $args->getObject();
 
         $request = $this->request->getCurrentRequest();
-        if (!$request) return false;
+        if (!$request) {
+            return true;
+        }
         $data = json_decode($request->getContent(), true);
 
         if (Property::class ===  get_class($entity)) {

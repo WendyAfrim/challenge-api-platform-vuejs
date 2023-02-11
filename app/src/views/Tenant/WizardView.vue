@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Form from '@/components/Tenant/Form.vue';
+import TenantForm from '@/components/Tenant/TenantForm.vue';
 </script>
     
 <template>
-    <Form />
+    <TenantForm />
 </template>

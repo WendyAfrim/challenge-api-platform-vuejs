@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Field } from 'vee-validate';
-
 import * as yup from 'yup';
 import FormWizard from './FormWizard.vue';
 import FormStep from './FormStep.vue';
@@ -10,6 +9,8 @@ import { useAuthStore } from '@/stores/auth.store';
 import { axios } from '@/services/auth';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useRouter } from 'vue-router';
+import { DocumentTypeEnum } from '@/enums/DocumentTypeEnum';
+import { enumKeys } from '@/enums/EnumHelper';
 
 const SUPPORTED_FORMATS = [
   "image/jpg",
@@ -29,6 +30,27 @@ const loading = ref(false);
 const firstname = ref();
 const lastname = ref();
 const done = ref(false);
+
+const response = await axios.get('https://localhost/users/' + authStore.user.id);
+const user = response.data;
+
+const invalidDocuments = (user.documents.filter((document: any) => !document.isValid));
+const invalidDocumentsTypes = invalidDocuments.map((document: any) => document.type);
+const missingDocuments = [];
+for (const value of enumKeys(DocumentTypeEnum)) {
+  if (!user.documents.some((document: any) => document.type === DocumentTypeEnum[value])) {
+      missingDocuments.push(DocumentTypeEnum[value]);
+  }
+}
+const documentsTypes = invalidDocumentsTypes.concat(missingDocuments);
+const stepsToComplete: any = [];
+
+if (!user.firstname && !user.lastname) {
+  stepsToComplete.push('infos');
+}
+for (const value of enumKeys(DocumentTypeEnum)) {
+  documentsTypes.includes(DocumentTypeEnum[value]) && stepsToComplete.push(DocumentTypeEnum[value]);
+}
 
 const workSituations = ref([
   { label: 'Salarié dans le privé', value: 'employee' },
@@ -57,94 +79,124 @@ watch(workSituation, (newValue) => {
   }
 });
 
-yup.addMethod(yup.mixed, 'fileType', function(supportedFormats) {
-    return this.test('fileType', "Format de fichier invalide", value => value ? supportedFormats.includes(value[0].type) : true);
-});
-
-yup.addMethod(yup.mixed, 'maxFileSize', function(maxFileSize = 1000000) {
-  return this.test("maxFileSize", "Le fichier est trop large", (value) => value ? value[0].size <= maxFileSize : true);
-});
-
 const schema = computed(() => {
-  return [
-  yup.object({
-    firstname: yup.string().required().label('Prénom'),
-    lastname: yup.string().required().label('Nom de famille'),
-    // email: yup.string().required().email().label('Adresse email'),
-  }),
-  yup.object({
-    id_card: yup.mixed().required().maxFileSize().fileType(SUPPORTED_FORMATS).label('Carte d\'identité'),
-  }),
-  yup.object({
-    rent_receipt: yup.mixed().required().maxFileSize().fileType(SUPPORTED_FORMATS).label('Quittance de loyer'),
-  }),
-  yup.object({
-    work_situation: yup.string().required().label('Situation professionnelle'),
-    [`${workDocumentType.value.name}`]: yup.mixed().required().maxFileSize().fileType(SUPPORTED_FORMATS).label('document de situation pro'),
-  }),
-  yup.object({
-    salary: yup.number().required().label('Salaire'),
-    pay_slip: yup.mixed().required().maxFileSize().fileType(SUPPORTED_FORMATS).label('Dernière fiche de paie'),
-  }),
-];
+  const steps = documentsTypes.map((documentType: any) => {
+    switch(documentType) {
+      case 'identity':
+        return yup.object({
+          id_card: yup.mixed().required().label('Carte d\'identité')
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+        });
+      case 'address':
+        return yup.object({
+          rent_receipt: yup.mixed().required().label('Quittance de loyer')
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+        });
+      case 'professional':
+        return yup.object({
+          work_situation: yup.string().required().label('Situation professionnelle'),
+          [`${workDocumentType.value.name}`]: yup.mixed().required().label('document de situation pro')
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+        });
+      case 'salary':
+        return yup.object({
+          salary: yup.number().required().label('Salaire'),
+          pay_slip: yup.mixed().required().label('Dernière fiche de paie')
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+        });
+      case 'tax_status':
+        if (has_tax_notice.value) {
+          return yup.object({
+            tax_notice: yup.mixed().required().label('Avis d\'imposition')
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+          });
+        }
+    }
+  });
+  if (stepsToComplete.includes('infos')) {
+    steps.unshift(yup.object({
+      firstname: yup.string().required().label('Prénom'),
+      lastname: yup.string().required().label('Nom'),
+    }));
+  }
+  return steps;
 });
-/**
- * Only Called when the last step is submitted
- */
-async function onSubmit(formData) {
+
+async function onSubmit(formData: any) {
   loading.value = true;
   try {
-      await axios.post('https://localhost/documents', {
+    if (documentsTypes.includes(DocumentTypeEnum.Identity)) {
+      const identityPostData: any = {
         file: formData.id_card[0],
         name: formData.id_card[0].name,
         type: 'identity',
         user_id: authStore.user.id
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      await axios.post('https://localhost/documents', {
+      };
+      identityPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Identity) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Identity).id : null;
+      console.log(identityPostData);
+      await axios.post('https://localhost/documents', identityPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+    }
+    if (documentsTypes.includes(DocumentTypeEnum.Address)) {
+      const addressPostData: any = {
         file: formData.rent_receipt[0],
         name: formData.rent_receipt[0].name,
         type: 'address',
         user_id: authStore.user.id
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      await axios.post('https://localhost/documents', {
+      };
+      addressPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Address) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Address).id : null;
+      console.log(addressPostData);
+      await axios.post('https://localhost/documents', addressPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+    }
+    if (documentsTypes.includes(DocumentTypeEnum.Professional)) {
+      const professionalPostData: any = {
         file: formData[`${workDocumentType.value.name}`][0],
         name: formData[`${workDocumentType.value.name}`][0].name,
-        type: `professional`,
+        type: 'professional',
         user_id: authStore.user.id
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      await axios.post('https://localhost/documents', {
+      };
+      professionalPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Professional) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Professional).id : null;
+      console.log(professionalPostData);
+      await axios.post('https://localhost/documents', professionalPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+    }
+    if (documentsTypes.includes(DocumentTypeEnum.Income)) {
+      const incomePostData: any = {
         file: formData.pay_slip[0],
         name: formData.pay_slip[0].name,
+        type: 'income',
+        user_id: authStore.user.id
+      };
+      incomePostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Income) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Income).id : null;
+      console.log(incomePostData);
+      await axios.post('https://localhost/documents', incomePostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+    }
+    if (documentsTypes.includes(DocumentTypeEnum.TaxStatus)) {
+      const taxStatusPostData: any = {
+        file: formData.has_notice[0],
+        name: formData.has_notice[0].name,
         type: 'tax_status',
         user_id: authStore.user.id
-      }, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      await axios.put(`https://localhost/users/${authStore.user.id}`, {
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        salary: formData.salary,
-        situation: formData.work_situation,
-        validationStatus: 'to_review'
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      };
+      taxStatusPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.TaxStatus) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.TaxStatus).id : null;
+      console.log(taxStatusPostData);
+      await axios.post('https://localhost/documents', taxStatusPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+    }
+    const userPutData: any = { validationStatus: 'to_review' };
+    if (stepsToComplete.includes('infos')) {
+      userPutData.firstname = formData.firstname;
+      userPutData.lastname = formData.lastname;
+    }
+    if (documentsTypes.includes(DocumentTypeEnum.Income)) {
+      userPutData.salary = parseInt(formData.salary);
+    }
+    if (documentsTypes.includes(DocumentTypeEnum.Professional)) {
+      userPutData.situation = formData.work_situation;
+    }
+      await axios.put(`https://localhost/users/${authStore.user.id}`, userPutData, {headers: {'Content-Type': 'application/json' }});
       done.value = true;
       authStore.user.validationStatus = 'to_review';
   } catch (error) {
@@ -168,10 +220,9 @@ const { lgAndUp } = useDisplay();
       </v-card>
     </div>
     <v-progress-circular v-else-if="loading" indeterminate color="primary" class="m-auto"></v-progress-circular>
-    <FormWizard class="ma-auto" v-else as="v-form" :validation-schema="schema" @submit="onSubmit" :class="[lgAndUp ? 'w-50' : 'w-75']">
+    <FormWizard v-else :steps="stepsToComplete" class="ma-auto" as="v-form" :validation-schema="schema" @submit="onSubmit" :class="[lgAndUp ? 'w-50' : 'w-75']">
 
-      <template #stepper_name_1>Mes informations</template>
-      <FormStep>
+      <FormStep v-if="!user.firstname && !user.lastname">
         <h1 class="mb-10 text-h4 font-weight-bold">Mes informations</h1>
         <Field name="firstname" v-slot="{ field, errors }">
           <v-text-field v-bind="field" label="Prénom" :error-messages="errors" v-model="firstname" class="mb-6" />
@@ -181,24 +232,21 @@ const { lgAndUp } = useDisplay();
         </Field>
       </FormStep>
 
-      <template #stepper_name_2>Identité</template>
-      <FormStep>
+      <FormStep v-if="documentsTypes.includes('identity')">
         <h1 class="mb-10 text-h4 font-weight-bold">Je dépose ma pièce d'identité</h1>
         <Field name="id_card" type="file" v-slot="{ handleChange, value, errors }" v-model="selectedFile">
           <v-file-input :model-value="value" @update:modelValue="handleChange" label="Carte d'identité" :error-messages="errors" />
         </Field>
       </FormStep>
 
-      <template #stepper_name_3>Domicile</template>
-      <FormStep>
+      <FormStep v-if="documentsTypes.includes('address')">
         <h1 class="mb-10 text-h4 font-weight-bold">Je dépose un justificatif de domicile</h1>
         <Field name="rent_receipt" type="file" v-slot="{ handleChange, value, errors }">
           <v-file-input :model-value="value" @update:modelValue="handleChange" label="Dernière quittance de loyer" :error-messages="errors" />
         </Field>
       </FormStep>
 
-      <template #stepper_name_4>Situation professionnelle</template>
-      <FormStep>
+      <FormStep v-if="documentsTypes.includes('professional')">
         <h1 class="mb-10 text-h4 font-weight-bold">Je dépose mon justificatif de situation professionnelle</h1>
         <span>Actuellement, je suis</span>
         <Field name="work_situation" type="select" v-slot="{ field, errors }" class="mb-15" >
@@ -209,8 +257,7 @@ const { lgAndUp } = useDisplay();
         </Field>
       </FormStep>
 
-      <template #stepper_name_5>Ressources</template>
-      <FormStep>
+      <FormStep v-if="documentsTypes.includes('income')">
         <h1 class="mb-10 text-h4 font-weight-bold">Je partage et justifie mes revenus</h1>
         <div class="d-flex align-center justify-start text-h6 mb-6">
           <span class="mr-4">Mon salaire est de </span>
@@ -224,8 +271,7 @@ const { lgAndUp } = useDisplay();
         </Field>
       </FormStep>
 
-      <template #stepper_name_6>Impôts</template>
-      <FormStep>
+      <FormStep v-if="documentsTypes.includes('tax_status')">
         <h1 class="mb-10 text-h4 font-weight-bold">Je justifie ma situation fiscale</h1>
         <div class="d-flex align-center text-h6 mb-6">
           <Field name="has_tax_notice" type="select" v-slot="{ field, errors }">
