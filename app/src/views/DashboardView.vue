@@ -12,10 +12,7 @@ const user = authStore.user;
 </script>
 
 <template>
-  <PropertiesGrid v-if="forType==='tenant'"></PropertiesGrid>
-  <div v-else>
     dashboard {{ forType }}
-  </div>
 </template>
 
 <style scoped lang="scss">

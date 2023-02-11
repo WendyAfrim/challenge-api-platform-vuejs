@@ -21,7 +21,14 @@ const imagePath = ref("");
 
 async function onClick() {
     try{
-      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties/${props.property['@id'].split('/').pop()}`);
+      if (undefined !== props.property){
+        const property = props.property
+        if(undefined !== property['@id']){
+          const property_id = property['@id'].split('/').pop()
+          console.log("property_id: ", property_id)
+          const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties/${property_id}`);
+          }
+        }
       // router.push()
     } catch (error: any) {
       console.log("err: ", error)
@@ -33,18 +40,26 @@ async function onClick() {
 }
 
 onMounted(async () => {
-  console.log("prop: ", props.property)
-  if(props.property['photos']['0'] !== undefined){
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${props.property['photos']['0'].split('/').pop()}`);
-      imagePath.value = response.data.filePath;
-      // router.push()
-    } catch (error: any) {
-      console.log("err: ", error)
-      message.value.text = '';
-      message.value.type = '';
-      message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
-      message.value.type = 'error';
+  // default value will never be used (agency will verify the announcement before published)
+  imagePath.value = "https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+  if(undefined !== props.property) {
+    const property = props.property
+    if (undefined !== property['photos']) {
+      const photos_hydra_id_list =  property['photos']
+      const default_photo_hydra_id = photos_hydra_id_list['0'];
+      if(undefined !== default_photo_hydra_id){
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${default_photo_hydra_id.split('/').pop()}`);
+          imagePath.value = response.data.filePath;
+          // router.push() go to property details
+        } catch (error: any) {
+          console.log("err: ", error)
+          message.value.text = '';
+          message.value.type = '';
+          message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+          message.value.type = 'error';
+        }
+      }
     }
   }
 })
@@ -58,17 +73,14 @@ const getImage = computed( () => {
 
 <template>
 
-  <v-card id="card" @click="onClick"
-    >
+  <v-card id="card" @click="onClick">
   <v-alert v-if="message.text" class="text-white" :color="message.type">
     {{ message.text }}
   </v-alert>
       <v-img
-
           class="align-end text-white"
           v-bind:src="getImage"
-          cover
-      >
+          cover>
       </v-img>
       <v-card-title>
           <span class="float-start">{{props.property.price}} €</span>
@@ -84,19 +96,8 @@ const getImage = computed( () => {
             <span v-if="props.property.has_terrace"> | Terrasse</span>
           </div>
           <div>{{props.property.address}} ({{props.property.zipcode}})</div>
-
         </div>
       </v-card-text>
-
-      <v-card-actions class="pb-0 pt-0">
-        <v-btn color="orange" height="9">
-          reserve
-        </v-btn>
-
-        <v-btn color="orange" height="9">
-          Explore
-        </v-btn>
-      </v-card-actions>
     </v-card>
 
 </template>
