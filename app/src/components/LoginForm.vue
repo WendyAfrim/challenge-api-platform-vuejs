@@ -44,8 +44,8 @@
   import { useAuthStore } from '@/stores/auth.store';
   import { Field, Form } from 'vee-validate';
   import * as yup from 'yup';
-import type { Roles } from "@/enums/roles";
-  
+  import type { Roles } from "@/enums/roles";
+
   const router = useRouter();
   const route = useRoute();
   const forType = route.meta.forType as Roles;
