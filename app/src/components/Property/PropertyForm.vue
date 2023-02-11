@@ -1,8 +1,11 @@
 <template>
     <v-container>
-        <template>
-            <h1 class="text-h4 font-weight-bold text-center mb-3">Formulaire - Ajout d'un bien</h1>
-        </template>
+
+        <h1 class="text-h4 font-weight-bold text-center mb-10">Formulaire - Ajout d'un bien</h1>
+        <v-alert v-if="message.text" class="mb-10 text-white" :color="message.type">
+          {{ message.text }}
+        </v-alert>
+
         <v-form ref="form" v-model="valid" >
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="6">
@@ -105,12 +108,25 @@
 </template>
 
 <script setup lang="ts">
-
+    import { useRoute, useRouter } from "vue-router";
     import { axios } from '@/services/auth';
     import { ref, reactive } from 'vue';
+    import { useAuthStore } from '@/stores/auth.store';
+    import type { Roles } from "@/enums/roles";
+
+    const router = useRouter();
+    const route = useRoute();
 
     const form = ref();
     const valid = ref(false);
+
+    const forType = route.meta.forType as Roles;
+
+    const errorType = ref('');
+    const message = ref({
+    text: '',
+    type: ''
+  })
 
     interface Property {
         title: string,
@@ -122,14 +138,14 @@
         photos: [],
         type: string, 
         number_rooms: number,
-        surface: number,
+        surface: any,
         has_balcony: boolean
         has_terrace: boolean
         has_cave: boolean
         has_elevator: boolean
         has_parking: boolean
         is_furnished: boolean
-        price: number
+        price: any
         state: string
     };
 
@@ -194,12 +210,12 @@
 
 
     const surfaceRules = ref([
-        (v: string) => !!v || 'La surface du bien est requis',
+        (v: number) => !!v || 'La surface du bien est requis',
     ]);
 
 
     console.log(property);
-    
+
     const addProperty = (event: MouseEvent) => {
         event.preventDefault();
 
@@ -224,12 +240,23 @@
                 state: property.state,
             }
 
+            message.value.text = '';
+            message.value.type = '';
+
+
             axios.post(`${import.meta.env.VITE_BASE_API_URL}/properties`, data)
                 .then((response) => {
-                    console.log(response);
+                    message.value.text = 'Votre bien a été ajouté avec succès';
+                    message.value.type = 'info';
+                    router.push({ name: `${forType}_dashboard` })
                 })
                 .catch((error) => {
                     console.log(error);
+
+                    errorType.value = error.response.data.error_type || '';
+                    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+                    message.value.type = 'error';
+
                 });
             } else {
                 form.value.validate();
