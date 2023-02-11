@@ -122,8 +122,6 @@
 
     const forType = route.meta.forType as Roles;
 
-    const user = authStore.user;
-
     const errorType = ref('');
     const message = ref({
     text: '',
