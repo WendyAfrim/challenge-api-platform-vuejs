@@ -39,6 +39,17 @@ class RequestRepository extends ServiceEntityRepository
         }
     }
 
+    public function findRequestsByPropertyId(string $propertyId): Request|array
+    {
+        return $this->createQueryBuilder('r')
+                ->leftJoin('r.property', 'p')
+                ->andWhere('p.id = :propertyId')
+                ->setParameter('propertyId', $propertyId)
+                ->orderBy('r.created_at')
+                ->getQuery()
+                ->getResult();
+    }
+
 //    /**
 //     * @return Request[] Returns an array of Request objects
 //     */
