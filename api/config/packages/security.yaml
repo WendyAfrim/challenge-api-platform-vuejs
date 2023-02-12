@@ -26,7 +26,7 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
             refresh_jwt:
-                check_path: api_token_refresh
+                check_path: api_refresh_token
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

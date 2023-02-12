@@ -64,7 +64,6 @@
   try {
     const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/user/details`);
     properties = response.data.properties;
-    
   }
   catch(e){
     console.log(e);

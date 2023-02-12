@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 use App\Entity\User;
+use App\Enums\WorkSituationEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -25,8 +26,7 @@ class UserFixtures extends Fixture
             return null;
         }
         $roles = [User::ROLE_HOMEOWNER, User::ROLE_TENANT, User::ROLE_AGENCY];
-        $situations = ["Student", "Employee", "Freelancer"];
-        $incomeSources = ["Student job", "Scholarship", "Full time Job"];
+        $situations = [WorkSituationEnum::Employee, WorkSituationEnum::Student, WorkSituationEnum::AlterningStudent, WorkSituationEnum::PublicOfficial];
         $faker = Factory::create();
 
         $admin = new User();
@@ -36,7 +36,6 @@ class UserFixtures extends Fixture
         ->setRoles([User::ROLE_AGENCY])
         ->setSalary(null)
         ->setSituation($faker->randomElement($situations))
-        ->setIncomeSource($faker->randomElement($incomeSources))
         ->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
         $manager->persist($admin);
 
@@ -47,7 +46,6 @@ class UserFixtures extends Fixture
         ->setRoles([User::ROLE_TENANT])
         ->setSalary(null)
         ->setSituation($faker->randomElement($situations))
-        ->setIncomeSource($faker->randomElement($incomeSources))
         ->setPassword($this->passwordHasher->hashPassword($tenant, 'tenant'));
         $manager->persist($tenant);
 
@@ -58,7 +56,6 @@ class UserFixtures extends Fixture
         ->setRoles([User::ROLE_HOMEOWNER])
         ->setSalary(null)
         ->setSituation($faker->randomElement($situations))
-        ->setIncomeSource($faker->randomElement($incomeSources))
         ->setPassword($this->passwordHasher->hashPassword($owner, 'owner'));
         $manager->persist($owner);
 
@@ -70,8 +67,7 @@ class UserFixtures extends Fixture
                 ->setEmail($faker->email)
                 ->setRoles([$faker->randomElement($roles)])
                 ->setSalary(userSalary($userRole, $faker))
-                ->setSituation($faker->randomElement($situations))
-                ->setIncomeSource($faker->randomElement($incomeSources));
+                ->setSituation($faker->randomElement($situations));
             $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
             $manager->persist($user);
         }

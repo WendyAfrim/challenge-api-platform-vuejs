@@ -4,14 +4,17 @@ import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import PropertyRequestsView from "@/views/Homeowner/PropertyRequestsView.vue";
 import VisitsProposals from "@/views/Homeowner/VisitsProposalsView.vue";
-
-
 import LoginView from "@/views/LoginView.vue";
-import DashboardView from "@/views/DashboardView.vue";
+import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
+import HomeownerDashboardView from "@/views/Homeowner/DashboardView.vue";
+import AgencyDashboardView from "@/views/Agency/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
 import PropertyRegister from '@/views/Property/AddProperty.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
+import WizardViewVue from '@/views/Tenant/WizardView.vue';
+import ShowUserView from '@/views/Agency/ShowUserView.vue';
+import ViewingsView from '@/views/Agency/ViewingsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,7 +55,12 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'tenant_dashboard',
-          component: DashboardView,
+          component: TenantDashboardView,
+        },
+        {
+          path: 'first-steps',
+          name: 'tenant_first_steps',
+          component: WizardViewVue,
         },
       ],
     },
@@ -91,7 +99,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'homeowner_dashboard',
-          component: DashboardView,
+          component: HomeownerDashboardView,
         },
         {
           path: 'property/add',
@@ -133,7 +141,17 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'agency_dashboard',
-          component: DashboardView,
+          component: AgencyDashboardView,
+        },
+        {
+          path: 'users/:id',
+          name: 'agency_show_user',
+          component: ShowUserView,
+        },
+        {
+          path: 'viewings',
+          name: 'agency_viewings',
+          component: ViewingsView,
         },
       ],
     },
@@ -160,7 +178,7 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore();
   if (authStore.access_token) {
     if (authStore.isTokenExpired()) {
@@ -172,7 +190,16 @@ router.beforeEach(async (to, from) => {
         return { name: 'tenant_login' }
       }
     }
+    if (to.name === 'logout') return true;
     const role = authStore.getRole;
+    if (role === 'tenant') {
+      if (authStore.user.validation_status === 'to_complete' && to.name !== 'tenant_first_steps') {
+        return { name: 'tenant_first_steps' };
+      }
+      if (authStore.user.validation_status !== 'to_complete' && to.name === 'tenant_first_steps') {
+        return { name: 'tenant_dashboard' };
+      }
+    }
     if (to.meta.public || (to.meta.forType && to.meta.forType !== role)) {
       return { name: `${role}_dashboard` }
     }

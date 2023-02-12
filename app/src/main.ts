@@ -12,7 +12,7 @@ import * as directives from "vuetify/directives";
 import { mdi } from 'vuetify/iconsets/mdi'
 import '@mdi/font/css/materialdesignicons.css';
 import { configure } from 'vee-validate';
-
+import { createI18n } from 'vue-i18n'
 import "./assets/main.css";
 
 const vuetify = createVuetify({
@@ -26,6 +26,35 @@ const vuetify = createVuetify({
   },
 });
 
+const messages = {
+  fr: {
+    document_type: {
+      infos: 'Informations',
+      identity: 'Identité',
+      address: 'Domiciliation',
+      professional: 'Situation professionnelle',
+      income: 'Ressources',
+      tax_status: 'Situation fiscale',
+    },
+    validation_status: {
+      to_complete: 'A compléter',
+      to_review: 'A valider',
+      validated: 'Validé',
+    },
+    work_situation: {
+      employee: 'Salarié',
+      student: 'Étudiant',
+      public_official: 'Fonctionnaire',
+      alternating_student: 'Alternant',
+    },
+  }
+}
+
+const i18n = createI18n({
+  locale: 'fr',
+  messages,
+})
+
 configure({
   validateOnModelUpdate: false,
 });
@@ -35,5 +64,6 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 app.use(vuetify);
+app.use(i18n);
 
 app.mount("#app");
