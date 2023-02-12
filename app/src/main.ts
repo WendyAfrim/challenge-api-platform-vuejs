@@ -29,6 +29,7 @@ const vuetify = createVuetify({
 const messages = {
   fr: {
     document_type: {
+      infos: 'Informations',
       identity: 'Identité',
       address: 'Domiciliation',
       professional: 'Situation professionnelle',

@@ -85,35 +85,35 @@ const schema = computed(() => {
       case 'identity':
         return yup.object({
           id_card: yup.mixed().required().label('Carte d\'identité')
-            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
-            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
         });
       case 'address':
         return yup.object({
           rent_receipt: yup.mixed().required().label('Quittance de loyer')
-            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
-            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
         });
       case 'professional':
         return yup.object({
           work_situation: yup.string().required().label('Situation professionnelle'),
           [`${workDocumentType.value.name}`]: yup.mixed().required().label('document de situation pro')
-            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
-            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
         });
-      case 'salary':
+      case 'income':
         return yup.object({
           salary: yup.number().required().label('Salaire'),
           pay_slip: yup.mixed().required().label('Dernière fiche de paie')
-            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
-            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
         });
       case 'tax_status':
         if (has_tax_notice.value) {
           return yup.object({
             tax_notice: yup.mixed().required().label('Avis d\'imposition')
-            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0].size <= 1000000 : true)
-            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0].type) : true)
+            .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
+            .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
           });
         }
     }
@@ -174,10 +174,10 @@ async function onSubmit(formData: any) {
       console.log(incomePostData);
       await axios.post('https://localhost/documents', incomePostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
-    if (documentsTypes.includes(DocumentTypeEnum.TaxStatus)) {
+    if (documentsTypes.includes(DocumentTypeEnum.TaxStatus) && has_tax_notice.value) {
       const taxStatusPostData: any = {
-        file: formData.has_notice[0],
-        name: formData.has_notice[0].name,
+        file: formData.tax_notice[0],
+        name: formData.tax_notice[0].name,
         type: 'tax_status',
         user_id: authStore.user.id
       };
