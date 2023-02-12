@@ -1,0 +1,104 @@
+<script setup lang="ts">
+import {axios} from "@/services/auth";
+import {ref, defineProps, computed, onMounted} from "vue";
+import {useRoute, useRouter} from "vue-router";
+
+const props = defineProps(
+    {
+      property : Object
+    });
+
+const router = useRouter();
+const route = useRoute();
+const errorType = ref('');
+const message = ref({
+  text:'',
+  type:''
+});
+const imagePath = ref("");
+
+async function onClick() {
+    try{
+      if (undefined !== props.property){
+        const property = props.property
+        if(undefined !== property['@id']){
+          const property_id = property['@id'].split('/').pop()
+          console.log("property_id: ", property_id)
+          }
+        }
+      // router.push()
+    } catch (error: any) {
+      console.log("err: ", error)
+      message.value.text = '';
+      message.value.type = '';
+      message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+      message.value.type = 'error';
+  }
+}
+
+onMounted(async () => {
+  // default value will never be used (agency will verify the announcement before published)
+  imagePath.value = "https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+  if(undefined !== props.property) {
+    const property = props.property
+    if (undefined !== property['photos']) {
+      const photos_hydra_id_list =  property['photos']
+      const default_photo_hydra_id = photos_hydra_id_list['0'];
+      if(undefined !== default_photo_hydra_id){
+        try {
+          const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${default_photo_hydra_id.split('/').pop()}`);
+          imagePath.value = response.data.filePath;
+          // router.push() go to property details
+        } catch (error: any) {
+          console.log("err: ", error)
+          message.value.text = '';
+          message.value.type = '';
+          message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+          message.value.type = 'error';
+        }
+      }
+    }
+  }
+})
+
+
+const getImage = computed( () => {
+  return imagePath.value;
+});
+
+</script>
+
+<template>
+
+  <v-card id="card" @click="onClick">
+  <v-alert v-if="message.text" class="text-white" :color="message.type">
+    {{ message.text }}
+  </v-alert>
+      <v-img
+          class="align-end text-white"
+          v-bind:src="getImage"
+          cover>
+      </v-img>
+      <v-card-title>
+          <span class="float-start">{{props.property!.price}} €</span>
+          <span class="float-end">{{props.property!.type}}</span>
+      </v-card-title>
+      <v-card-text class="pb-0">
+        <div style="height: 96px">
+          {{props.property!.title}}
+          <div>{{props.property!.rooms}} pièces | {{props.property?.surface}} m2
+            <span v-if="props.property?.has_elevator"> | Ascenseur</span>
+            <span v-if="props.property?.has_balcony"> | Balcon</span>
+            <span v-if="props.property?.has_parking"> | Parking</span>
+            <span v-if="props.property?.has_terrace"> | Terrasse</span>
+          </div>
+          <div>{{props.property!.address}} ({{props.property?.zipcode}})</div>
+        </div>
+      </v-card-text>
+    </v-card>
+
+</template>
+
+<style scoped>
+
+</style>

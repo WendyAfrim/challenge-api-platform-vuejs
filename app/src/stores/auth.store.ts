@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const access_token: Ref<string | null> = ref(useLocalStorage('access_token', null));
     const refresh_token: Ref<string | null> = ref(useLocalStorage('refresh_token', null));
+    const posted_property_id: Ref<String> = ref(useLocalStorage('posted_property_id', ''));
     const user: any = ref(access_token.value ? jwt_decode(access_token.value) : null);
 
     const getRole = computed(() => {

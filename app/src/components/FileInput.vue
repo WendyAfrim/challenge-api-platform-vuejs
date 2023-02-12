@@ -1,26 +1,47 @@
 <script  setup lang="ts">
-import {ref} from "vue"
+import {ref, defineProps} from "vue"
 import { axios } from '@/services/auth';
 
 const selectedFile = ref();
 
+const props = defineProps({
+  propertyId: String
+})
+
+const message = ref({
+  text:'',
+  type:''
+});
 
 function onFileSelected(event: any){
   selectedFile.value = event.target.files[0];
 }
 
-const emit = defineEmits(['file-uploaded']);
 async function onUpload() {
+  console.log("pro Id: ",  props.propertyId)
   const formData = new FormData();
   formData.append('file', selectedFile.value, selectedFile.value.name);
+  formData.append('property_id', props.propertyId as string);
+
   try {
-    const response = await axios.post('https://localhost/media_objects', formData)
+    const response = await axios.post('https://localhost/media_objects', formData, {
+      headers:{
+        'Content-type' : 'multipart/form-data'
+      }
+        }
+    )
     if(response.data){
-      emit('file-uploaded', response.data)
+      message.value.text = 'fichier recu';
+      message.value.type = 'success';
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log("err: ", error)
+    message.value.text = '';
+    message.value.type = '';
+    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.type = 'error';
   }
+
 }
 
 
@@ -28,6 +49,9 @@ async function onUpload() {
 
 <template>
   <v-card>
+    <v-alert v-if="message.text" class="text-white" :color="message.type">
+      {{ message.text }}
+    </v-alert>
     <v-file-input
         color="primary"
         variant="outlined"

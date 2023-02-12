@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['property_read']],
     denormalizationContext: ['groups' => ['property_write']],
+    paginationItemsPerPage: 10,
 )]
 #[Get]
 #[GetCollection]
@@ -105,6 +106,7 @@ class Property implements PropertyInterface
     private Collection $availaibilities;
 
     #[ORM\ManyToOne(inversedBy: 'properties')]
+    #[Groups(['property_read'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: Request::class)]
@@ -114,6 +116,7 @@ class Property implements PropertyInterface
     private ?int $level = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: MediaObject::class)]
+    #[Groups(['property_read', 'property_write'])]
     private Collection $photos;
 
     #[ORM\Column(length: 255, nullable: true)]
