@@ -27,7 +27,7 @@ class Request
     private ?Property $property = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['request_read', 'request_write'])]
+    #[Groups(['request_read', 'request_write', 'property_read'])]
     private ?bool $is_accepted = null;
 
     public function getLodger(): ?User

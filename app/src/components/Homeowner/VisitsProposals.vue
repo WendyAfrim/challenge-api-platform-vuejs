@@ -13,16 +13,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { postAvailaibility } from '@/services/availaibility';
 import { sendAvailaibilityToLodger } from '@/services/availaibility';
 import type { Availaibility } from '@/interfaces/Availaibility';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-let router = useRoute();
-let lodgerId = router.params.id;
-let propertyId= router.params.propertyId;
+const router = useRouter();
+let route = useRoute();
+let lodgerId = route.params.id;
+let propertyId= route.params.propertyId;
 
 let availaibilities: any[] = [];
 
@@ -66,6 +67,7 @@ async function loadVisits() {
         } else {
             await sendAvailaibilityToLodger(propertyId, lodgerId);
             message.value.type = 'info';
+            await router.push({ name: 'homeowner_property_requests', params: {'id' : propertyId} })
         }
 
     })

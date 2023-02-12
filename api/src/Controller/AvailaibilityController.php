@@ -38,7 +38,10 @@ class AvailaibilityController extends AbstractController
             throw new \Exception('Aucune disponibilité n\'a été choisie');
         }
 
-        if ($this->locationService->isSlotConform($availaibilities[0]['property'], $availaibilities[0]['lodger'])) {
+        $propertyId = $availaibilities[0]['property'];
+        $lodgerId = $availaibilities[0]['lodger'];
+
+        if ($this->locationService->isSlotConform($propertyId, $lodgerId)) {
 
             foreach ($availaibilities as $availaibility) {
 
@@ -51,10 +54,11 @@ class AvailaibilityController extends AbstractController
                 $this->manager->persist($slot);
             }
 
+            $this->locationService->lockPropertyVisits($propertyId, $lodgerId);
             $this->manager->flush();
 
             return new JsonResponse([
-                'message' => 'Vos disponibilités ont bien été enregistrées',
+                'message' => 'Vos disponibilités ont bien été enregistrées ! Un email a été envoyé au futur locataire',
                 'status' => 201
             ]);
         }
