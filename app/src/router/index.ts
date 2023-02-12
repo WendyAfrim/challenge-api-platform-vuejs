@@ -57,11 +57,6 @@ const router = createRouter({
       ],
     },
     {
-      path: '/user/dashboard',
-      name: 'user_dashboard',
-      component: UserDashboard,
-    },
-    {
       path: '/homeowner',
       component: Base,
       meta: {
