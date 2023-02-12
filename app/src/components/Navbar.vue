@@ -12,8 +12,24 @@ const role = authStore.getRole;
 
 <template>
     <v-app-bar color="transparent" elevation="0" class="sticky">
+        <template v-if="role && role === 'homeowner'">
+            <router-link :to="{ name: `${role}_dashboard` }">
+                <v-app-bar-title class="font-weight-bold ml-16" text="Easyhome" />
+            </router-link>
+            <v-container class="d-flex justify-end">
+                    <router-link :to="{ name: `${role}_dashboard` }">
+                        <v-btn color="primary" variant="outlined">Dashboard</v-btn>
+                    </router-link>
+                    <!-- <router-link :to="{ name: `${role}_requests` }">
+                        <v-btn color="primary" variant="outlined">Mes demandes</v-btn>
+                    </router-link> -->
+                    <router-link :to="{ name: 'logout' }">
+                        <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
+                    </router-link>
+            </v-container>
+        </template>
 
-        <template v-if="role">
+        <template v-else-if="role && role === 'tenant'">
             <router-link :to="{ name: `${role}_dashboard` }">
                 <v-app-bar-title class="font-weight-bold ml-16" text="Easyhome" />
             </router-link>

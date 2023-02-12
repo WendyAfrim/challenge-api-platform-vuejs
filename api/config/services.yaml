@@ -33,7 +33,7 @@ services:
         tags:
           {name: doctrine.event_subscriber, event: prePersist}
 
-    App\EventListener\Lifecycle\EntityListener:
+    App\EventListener\Lifecycle\PropertyListener:
         tags:
           {name: doctrine.event_subscriber, event: prePersist}
 

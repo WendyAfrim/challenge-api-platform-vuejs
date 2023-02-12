@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    normalizationContext: (['request_read']),
-    denormalizationContext: (['request_write'])
+    normalizationContext: ['groups' => ['request_read', 'all', 'all_timestamp', 'property_read']],
+    denormalizationContext: ['groups' => ['request_write']]
 )]
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
 class Request
@@ -20,11 +20,10 @@ class Request
     use EntityIdTrait;
 
     #[ORM\ManyToOne(inversedBy: 'requests')]
-    #[Groups(['request_read', 'request_write'])]
+    #[Groups(['request_read', 'request_write', 'property_read', 'user_details'])]
     private ?User $lodger = null;
 
     #[ORM\ManyToOne(inversedBy: 'requests')]
-    #[Groups(['request_read', 'request_write'])]
     private ?Property $property = null;
 
     #[ORM\Column(nullable: true)]

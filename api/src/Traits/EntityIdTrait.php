@@ -8,12 +8,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 trait EntityIdTrait
 {
     #[ORM\Column(type: 'uuid', unique: true)]
+    #[Groups(['all'])]
     private ?string $uuid = null;
 
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    #[Groups(['property_read', 'property_write'])]
+    #[Groups(['all_id'])]
     private ?int $id = null;
 
     public function getId(): ?int

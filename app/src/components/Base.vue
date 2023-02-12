@@ -6,6 +6,7 @@ import type { Roles } from '@/enums/roles';
 
 const route = useRoute();
 const forType = route.meta.forType as Roles;
+const location = route.meta.location as 'dashboard' | 'front';
 </script>
 
 <template>

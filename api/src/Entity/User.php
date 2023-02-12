@@ -30,6 +30,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
+
+        new Get(
+            uriTemplate: '/user/details',
+            controller: UserController::class,
+            output: false,
+            read: false,
+            name: 'user_account'
+        ),
+    ],
+    normalizationContext: ['groups' => ['user_details', 'all']],
+    openapiContext: [
+        'summary' => 'hidden'
+    ],
+    paginationEnabled: false,
+)]
+#[ApiResource(
+    operations: [
         new GetCollection(),
         new Post(processor: UserPasswordHasher::class),
         new Get(),
@@ -38,7 +55,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Delete(),
 
     ],
-    normalizationContext: ['groups' => ['user_read']],
+    normalizationContext: ['groups' => ['user_read', 'all']],
     denormalizationContext: ['groups' => ['user_write']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -56,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\Email]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write', 'user_details', 'property_read'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
@@ -68,7 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['user_read', 'user_write'])]
+    #[Groups(['user_read', 'user_write', 'user_details'])]
     private array $roles = [];
 
     #[ORM\Column(length: 255)]
@@ -98,19 +115,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $visits;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['user_read', 'user_details'])]
     private ?int $salary = 0;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['user_read', 'user_details'])]
     private ?string $income_source = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Property::class)]
+    #[Groups(['user_read', 'user_write', 'user_details'])]
     private Collection $properties;
 
     #[ORM\OneToMany(mappedBy: 'lodger', targetEntity: Request::class)]
+    #[Groups(['user_read', 'user_details'])]
     private Collection $requests;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+
+    #[ORM\OneToMany(mappedBy: 'lodger', targetEntity: Availaibility::class)]
+    private Collection $availaibilities;
+
 
     public function __construct()
     {
@@ -119,6 +144,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->visits = new ArrayCollection();
         $this->properties = new ArrayCollection();
         $this->requests = new ArrayCollection();
+        $this->availaibilities = new ArrayCollection();
     }
 
     public function getEmail(): ?string
@@ -413,6 +439,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Availaibility>
+     */
+    public function getAvailaibilities(): Collection
+    {
+        return $this->availaibilities;
+    }
+
+    public function addAvailaibility(Availaibility $availaibility): self
+    {
+        if (!$this->availaibilities->contains($availaibility)) {
+            $this->availaibilities->add($availaibility);
+            $availaibility->setLodger($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvailaibility(Availaibility $availaibility): self
+    {
+        if ($this->availaibilities->removeElement($availaibility)) {
+            // set the owning side to null (unless already changed)
+            if ($availaibility->getLodger() === $this) {
+                $availaibility->setLodger(null);
+            }
+        }
 
         return $this;
     }

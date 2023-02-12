@@ -31,6 +31,10 @@ class Availaibility
     #[ORM\OneToOne(inversedBy: 'availaibility', cascade: ['persist', 'remove'])]
     private ?Viewing $viewing = null;
 
+    #[ORM\ManyToOne(inversedBy: 'availaibilities')]
+    #[Groups(['availaibility_read', 'availaibility_write'])]
+    private ?User $lodger = null;
+
     public function getProperty(): ?Property
     {
         return $this->property;
@@ -63,6 +67,18 @@ class Availaibility
     public function setViewing(?Viewing $viewing): self
     {
         $this->viewing = $viewing;
+
+        return $this;
+    }
+
+    public function getLodger(): ?User
+    {
+        return $this->lodger;
+    }
+
+    public function setLodger(?User $lodger): self
+    {
+        $this->lodger = $lodger;
 
         return $this;
     }

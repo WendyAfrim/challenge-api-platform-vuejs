@@ -44,30 +44,6 @@
             </v-row>
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="12">
-                    <v-file-input
-                        v-model="property.photos"
-                        placeholder="Upload your documents"
-                        label="Photos"
-                        multiple
-                        prepend-icon="mdi-paperclip"
-                    >
-                        <template v-slot:selection="{ fileNames }">
-                            <template v-for="fileName in fileNames" :key="fileName">
-                                <v-chip
-                                size="small"
-                                label
-                                color="primary"
-                                class="me-2"
-                                >
-                                {{ fileName }}
-                                </v-chip>
-                            </template>
-                        </template>
-                    </v-file-input>
-                </v-col>
-            </v-row>
-            <v-row class="d-flex justify-center align-start">
-                <v-col cols="12" md="12">
                     <v-select :items="numberRoom" label="Nombre de chambres" solo v-model="property.number_rooms"></v-select>
                 </v-col>
             </v-row>
@@ -118,17 +94,20 @@
     const router = useRouter();
     const route = useRoute();
 
+    const authStore = useAuthStore();
     const form = ref();
     const valid = ref(false);
     const loading = ref(false);
+
+    const user = authStore.user;
 
     const forType = route.meta.forType as Roles;
 
     const errorType = ref('');
     const message = ref({
-    text: '',
-    type: ''
-  })
+        text: '',
+        type: ''
+    })
 
     interface Property {
         title: string,
@@ -215,9 +194,6 @@
         (v: number) => !!v || 'La surface du bien est requis',
     ]);
 
-
-    console.log(property);
-
     const addProperty = async (event: MouseEvent) => {
         event.preventDefault();
         loading.value = true;
@@ -226,6 +202,7 @@
                 title: property.title,
                 address: property.address,
                 zipcode: property.zipcode,
+                city: property.city,
                 country: property.country,
                 description: property.description,
                 photos: property.photos,
@@ -240,6 +217,8 @@
                 is_furnished: property.is_furnished,
                 price: parseInt(property.price),
                 state: property.state,
+                owner: `users/${user.id}`
+
             }
 
             message.value.text = '';
