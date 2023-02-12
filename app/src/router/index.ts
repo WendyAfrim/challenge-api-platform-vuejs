@@ -15,6 +15,7 @@ import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
 import WizardViewVue from '@/views/Tenant/WizardView.vue';
 import ShowUserView from '@/views/Agency/ShowUserView.vue';
 import ViewingsView from '@/views/Agency/ViewingsView.vue';
+import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
           name: 'tenant_first_steps',
           component: WizardViewVue,
         },
+        {
+          path: 'property/:id/details',
+          name: 'property_details',
+          component: PropertyDetailsView,
+        }
       ],
     },
     {
