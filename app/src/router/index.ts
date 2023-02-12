@@ -4,10 +4,10 @@ import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import PropertyRequestsView from "@/views/Homeowner/PropertyRequestsView.vue";
 import VisitsProposals from "@/views/Homeowner/VisitsProposalsView.vue";
-
-
 import LoginView from "@/views/LoginView.vue";
-import DashboardView from "@/views/DashboardView.vue";
+import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
+import HomeownerDashboardView from "@/views/Homeowner/DashboardView.vue";
+import AgencyDashboardView from "@/views/Agency/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
 import PropertyRegister from '@/views/Property/AddProperty.vue';
 import { useAuthStore } from '@/stores/auth.store';
@@ -55,7 +55,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'tenant_dashboard',
-          component: DashboardView,
+          component: TenantDashboardView,
         },
         {
           path: 'first-steps',
@@ -99,7 +99,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'homeowner_dashboard',
-          component: DashboardView,
+          component: HomeownerDashboardView,
         },
         {
           path: 'property/add',
@@ -141,7 +141,7 @@ const router = createRouter({
         {
           path: 'dashboard',
           name: 'agency_dashboard',
-          component: DashboardView,
+          component: AgencyDashboardView,
         },
         {
           path: 'users/:id',

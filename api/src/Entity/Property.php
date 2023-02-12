@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    normalizationContext: ['groups' => ['property_read', 'user_details', 'all', 'all_id']],
+    normalizationContext: ['groups' => ['property_read', 'all',]],
     denormalizationContext: ['groups' => ['property_write']],
     paginationItemsPerPage: 10,
 )]
@@ -35,7 +35,7 @@ class Property implements PropertyInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['property_read', 'property_write', 'user_details'])]
+    #[Groups(['property_read', 'property_write'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]

@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             name: 'user_account'
         ),
     ],
-    normalizationContext: ['groups' => ['user_details', 'all']],
+    normalizationContext: ['groups' => ['user_read']],
     openapiContext: [
         'summary' => 'hidden'
     ],
@@ -82,7 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank(groups: ['register'])]
     #[Assert\Email(groups: ['register'])]
-    #[Groups(['user_read', 'user_write', 'user_details', 'property_read'])]
+    #[Groups(['user_read', 'user_write', 'property_read'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
@@ -94,16 +94,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write'])]
     private array $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write'])]
     #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write'])]
     #[Assert\NotBlank]
     private ?string $lastname = null;
 
@@ -124,15 +124,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $visits;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write'])]
     private ?int $salary = 0;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Property::class)]
-    #[Groups(['user_read', 'user_write', 'user_details'])]
+    #[Groups(['user_read', 'user_write'])]
     private Collection $properties;
 
     #[ORM\OneToMany(mappedBy: 'lodger', targetEntity: Request::class)]
-    #[Groups(['user_read', 'user_details'])]
+    #[Groups(['user_read'])]
     private Collection $requests;
 
     #[ORM\Column(type: 'boolean', options: ["default" => false])]
@@ -465,8 +465,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $availaibility->setLodger(null);
             }
         }
-     * Get the value of status
-     */ 
+
+        return $this;
+    }
+
     public function getValidationStatus(): ?UserValidationStatusEnum
     {
         return $this->validationStatus;
