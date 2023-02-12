@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { Roles } from '@/enums/roles';
 import { useAuthStore } from '@/stores/auth.store';
-import { defineProps } from 'vue';
+import { defineProps, computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 const props = defineProps<{
     for?: Roles;
 }>()
 const authStore = useAuthStore();
 const role = authStore.getRole;
+const route = useRoute();
+const currentRouteName = computed(() => route.name);
 </script>
-
 <template>
     <v-app-bar color="transparent" elevation="0" class="sticky">
         <template v-if="role && role === 'homeowner'">
@@ -35,8 +37,13 @@ const role = authStore.getRole;
             </router-link>
             <v-container class="d-flex justify-end">
                     <router-link :to="{ name: `${role}_dashboard` }">
-                        <v-btn color="primary" variant="outlined">Dashboard</v-btn>
+                        <v-btn color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'">Dashboard</v-btn>
                     </router-link>
+                    <template v-if="role === 'agency'">
+                        <router-link :to="{ name: `${role}_viewings` }">
+                            <v-btn color="primary" :variant="currentRouteName === `${role}_viewings` ? 'flat' : 'tonal'" class="ml-3">Demandes de visite</v-btn>
+                        </router-link>
+                    </template>
                     <router-link :to="{ name: 'logout' }">
                         <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
                     </router-link>

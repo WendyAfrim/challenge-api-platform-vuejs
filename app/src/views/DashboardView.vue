@@ -10,12 +10,22 @@
     const users = ref();
     const selection = ref([]);
 
-    if (authStore.getRole === Roles.Tenant) {
-        const response = await axios.get('https://localhost/users/' + authStore.user.id);
-        user.value = response.data;
-    } else if (authStore.getRole === Roles.Agency) {
-        const response = await axios.get('https://localhost/users/');
-        users.value = response.data;
+    try {
+        if (authStore.getRole === Roles.Tenant) {
+            const response = await axios.get('https://localhost/users/' + authStore.user.id);
+            user.value = response.data;
+            console.log(response);
+        } else if (authStore.getRole === Roles.Agency) {
+            const response = await axios.get('https://localhost/users/', {
+                params: {
+                    roles: Roles.Tenant,
+                },
+            });
+            users.value = response.data;
+            console.log(response);
+        }
+    } catch (error) {
+        console.log(error);
     }
 
     const showedUsers = computed(() => {

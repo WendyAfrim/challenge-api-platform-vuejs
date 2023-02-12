@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\UserController;
 use App\Enums\UserValidationStatusEnum;
 use App\Enums\WorkSituationEnum;
+use App\Filter\RoleFilter;
 use App\Traits\EntityIdTrait;
 use cebe\openapi\spec\SecurityScheme;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -67,7 +68,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
-#[ApiFilter(SearchFilter::class, properties: ['validationStatus' => 'exact', 'roles' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['validationStatus' => 'exact'])]
+#[ApiFilter(RoleFilter::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
 

@@ -40,6 +40,9 @@
 
 <template>
 <v-container class="ma-auto">
+    <v-btn class="mb-10" icon @click="$router.go(-1)">
+        <v-icon>mdi-arrow-left</v-icon>
+    </v-btn>
     <h2 class="mb-4 text-h4 font-weight-bold text-primary">Dossier de {{ user.firstname }} {{ user.lastname }} (#{{ user.id }})</h2>
     <h3 class="mb-10 text-h6 font-weight-light text-grey-darken-5">Statut du dossier: {{ $t(`validation_status.${user.validationStatus}`) }}</h3>
     <div class="d-flex flex-column">

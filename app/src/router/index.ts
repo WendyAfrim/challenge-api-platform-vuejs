@@ -14,6 +14,7 @@ import { useAuthStore } from '@/stores/auth.store';
 import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
 import WizardViewVue from '@/views/Tenant/WizardView.vue';
 import ShowUserView from '@/views/Agency/ShowUserView.vue';
+import ViewingsView from '@/views/Agency/ViewingsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,7 +61,7 @@ const router = createRouter({
           path: 'first-steps',
           name: 'tenant_first_steps',
           component: WizardViewVue,
-        }
+        },
       ],
     },
     {
@@ -146,6 +147,11 @@ const router = createRouter({
           path: 'users/:id',
           name: 'agency_show_user',
           component: ShowUserView,
+        },
+        {
+          path: 'viewings',
+          name: 'agency_viewings',
+          component: ViewingsView,
         },
       ],
     },
