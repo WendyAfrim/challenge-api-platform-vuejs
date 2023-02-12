@@ -57,14 +57,5 @@ export const useAuthStore = defineStore('auth', () => {
         return Date.now() > decoded.exp * 1000;
     }
 
-    function setPropertyId(id:String){
-        posted_property_id.value = id;
-    }
-
-    function getPropertyId(){
-        return posted_property_id.value;
-    }
-
-
-    return { access_token, refresh_token, setPropertyId, getPropertyId, login, logout, refreshAccessToken, user, getRole, isTokenExpired }
+    return { access_token, refresh_token, login, logout, refreshAccessToken, user, getRole, isTokenExpired }
 });

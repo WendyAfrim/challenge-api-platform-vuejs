@@ -1,20 +1,17 @@
 <script setup lang="ts">
     import FileInput from "@/components/FileInput.vue";
     import {useAuthStore} from "@/stores/auth.store";
-
-    const authStore = useAuthStore();
-    const property_id = authStore.getPropertyId();
     import { useRoute, useRouter } from "vue-router";
     import type { Roles } from "@/enums/roles";
 
+    const authStore = useAuthStore();
     const router = useRouter();
     const route = useRoute();
-    const forType = route.meta.forType as Roles;
 
+    const propertyId = route.params.id;
+  
     function onClick(){
-      authStore.setPropertyId("");
-      // router.push({ name: 'homeowner_property_add_photos'});
-      router.push({ name: `${forType}_dashboard`});
+      router.push({ name: `homeowner_dashboard`});
     }
 
 </script>

@@ -101,7 +101,8 @@
                 </v-col>
             </v-row>
             <v-col cols="12" class="d-flex justify-center">
-                <v-btn color="primary" class="mr-4" @click="addProperty"> Ajouter ce bien </v-btn>
+                <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
+                <v-btn v-else color="primary" class="mr-4" @click="addProperty"> Ajouter ce bien </v-btn>
             </v-col>
         </v-form>
     </v-container>
@@ -119,6 +120,7 @@
 
     const form = ref();
     const valid = ref(false);
+    const loading = ref(false);
 
     const forType = route.meta.forType as Roles;
 
@@ -216,9 +218,9 @@
 
     console.log(property);
 
-    const addProperty = (event: MouseEvent) => {
+    const addProperty = async (event: MouseEvent) => {
         event.preventDefault();
-
+        loading.value = true;
         if(valid.value) {
             const data = {
                 title: property.title,
@@ -243,26 +245,23 @@
             message.value.text = '';
             message.value.type = '';
 
-
-            axios.post(`${import.meta.env.VITE_BASE_API_URL}/properties`, data)
-                .then((response) => {
-                    message.value.text = 'Votre bien a été ajouté avec succès';
-                    message.value.type = 'info';
-                    router.push({ name: `${forType}_dashboard` })
-                })
-                .catch((error) => {
-                    console.log(error);
-
-                    errorType.value = error.response.data.error_type || '';
-                    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
-                    message.value.type = 'error';
-
-                });
-            } else {
-                form.value.validate();
+            try {
+                const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/properties`, data);
+                console.log(response);
+                message.value.text = 'Votre bien a été ajouté avec succès';
+                message.value.type = 'info';
+                router.push({ name: `homeowner_property_add_photos`, params: { id: response.data.id } })
+            } catch(error: any) {
+                console.log(error);
+                errorType.value = error.response.data.error_type || '';
+                message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+                message.value.type = 'error';
             }
-
+        } else {
+            form.value.validate();
         }
+        loading.value = false;
+    }
     
 </script>
 

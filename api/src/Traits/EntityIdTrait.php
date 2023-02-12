@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait EntityIdTrait
 {
@@ -12,6 +13,7 @@ trait EntityIdTrait
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
+    #[Groups(['property_read', 'property_write'])]
     private ?int $id = null;
 
     public function getId(): ?int

@@ -93,7 +93,7 @@ const router = createRouter({
           component: PropertyRegister,
         },
         {
-          path: 'property/add/photos',
+          path: 'property/:id/add/photos',
           name: 'homeowner_property_add_photos',
           component: PropertyPhotosUploadViews,
         }

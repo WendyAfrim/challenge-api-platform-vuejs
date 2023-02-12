@@ -106,6 +106,7 @@ class Property implements PropertyInterface
     private Collection $availaibilities;
 
     #[ORM\ManyToOne(inversedBy: 'properties')]
+    #[Groups(['property_read'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: Request::class)]
