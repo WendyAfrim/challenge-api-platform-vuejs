@@ -12,6 +12,7 @@ jobs:
     secrets: inherit
   deploy:
     name: 🚀 Deployment
+    if: github.ref == 'refs/heads/main'
     needs: ci
     runs-on: ubuntu-latest
     steps:
