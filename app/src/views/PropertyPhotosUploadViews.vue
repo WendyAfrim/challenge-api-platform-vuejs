@@ -8,7 +8,7 @@
     const router = useRouter();
     const route = useRoute();
 
-    const propertyId = route.params.id;
+    const propertyId = route.params.id as string;
   
     function onClick(){
       router.push({ name: `homeowner_dashboard`});
@@ -19,9 +19,9 @@
 <template>
   <h1 class="text-h4 font-weight-bold text-center mb-3">Formulaire - Ajout des photos de votre bien </h1>
   <div class="upload-area">
-    <FileInput :propertyId="property_id"></FileInput>
-    <FileInput :propertyId="property_id"></FileInput>
-    <FileInput :propertyId="property_id"></FileInput>
+    <FileInput :propertyId="propertyId"></FileInput>
+    <FileInput :propertyId="propertyId"></FileInput>
+    <FileInput :propertyId="propertyId"></FileInput>
     <v-btn color="primary" variant="tonal" @click="onClick">
       Terminé
     </v-btn>

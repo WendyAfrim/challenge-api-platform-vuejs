@@ -21,7 +21,7 @@ async function onUpload() {
   console.log("pro Id: ",  props.propertyId)
   const formData = new FormData();
   formData.append('file', selectedFile.value, selectedFile.value.name);
-  formData.append('property_id', props.propertyId);
+  formData.append('property_id', props.propertyId as string);
 
   try {
     const response = await axios.post('https://localhost/media_objects', formData, {
@@ -34,7 +34,7 @@ async function onUpload() {
       message.value.text = 'fichier recu';
       message.value.type = 'success';
     }
-  } catch (error) {
+  } catch (error: any) {
     console.log("err: ", error)
     message.value.text = '';
     message.value.type = '';
