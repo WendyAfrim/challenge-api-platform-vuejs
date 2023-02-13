@@ -28,12 +28,11 @@ class Availaibility
     #[Groups(['availaibility_read', 'availaibility_write'])]
     private ?\DateTimeInterface $slot = null;
 
-    #[ORM\OneToOne(inversedBy: 'availaibility', cascade: ['persist', 'remove'])]
-    private ?Viewing $viewing = null;
 
     #[ORM\ManyToOne(inversedBy: 'availaibilities')]
     #[Groups(['availaibility_read', 'availaibility_write'])]
     private ?User $lodger = null;
+
 
     public function getProperty(): ?Property
     {
@@ -55,18 +54,6 @@ class Availaibility
     public function setSlot(?\DateTimeInterface $slot): self
     {
         $this->slot = $slot;
-
-        return $this;
-    }
-
-    public function getViewing(): ?Viewing
-    {
-        return $this->viewing;
-    }
-
-    public function setViewing(?Viewing $viewing): self
-    {
-        $this->viewing = $viewing;
 
         return $this;
     }
