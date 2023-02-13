@@ -15,7 +15,7 @@
     }
 
     const chipColor = computed(() => {
-        switch (user.value.validationStatus) {
+        switch (user.value?.validationStatus) {
             case 'validated':
                 return 'success';
             case 'to_complete':
@@ -31,7 +31,7 @@
     <div class="mb-10">
         <h2 class="mb-4 text-h4 font-weight-bold">Mon dossier</h2>
         <v-chip :color="chipColor" text-color="white" class="mb-6">
-            {{ $t(`validation_status.${user.validationStatus}`) }}
+            {{ $t(`validation_status.${user?.validationStatus}`) }}
         </v-chip>
     </div>
     <v-row>

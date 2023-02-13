@@ -31,7 +31,6 @@ class Viewing
     #[Groups(['viewing_read', 'viewing_write'])]
     private ?Availaibility $availaibility = null;
 
-
     public function getAgent(): ?User
     {
         return $this->agent;
@@ -66,5 +65,4 @@ class Viewing
         $this->availaibility = $availaibility;
         return $this;
     }
-
 }

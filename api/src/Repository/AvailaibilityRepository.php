@@ -53,4 +53,32 @@ class AvailaibilityRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
+    public function findSlotsByRequestId(int $propertyId, int $lodgerId): array
+    {
+
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.property = :propertyId')
+            ->andWhere('a.lodger = :lodgerId')
+            ->orderBy('a.slot', 'ASC')
+            ->setParameters([
+                'propertyId' => $propertyId,
+                'lodgerId' => $lodgerId
+            ])
+            ->getQuery()
+            ->getResult();
+
+/*        return $this->createQueryBuilder('r')
+            ->leftJoin('r.property', 'p')
+            ->leftJoin('r.user', 'u')
+            ->leftJoin('p.availaibility', 'a')
+            ->where('a.property = :propertyId')
+            ->andWhere('u.id = :lodgerId')
+            ->setParameters([
+                'propertyId' => $propertyId,
+                'lodgerId'   => $lodgerId
+            ])
+            ->orderBy('r.created_at')
+            ->getQuery()
+            ->getResult();*/
+    }
 }
