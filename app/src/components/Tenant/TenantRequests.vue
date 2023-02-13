@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <div class="mx-16 h-75">
         <h1 class="text-h4 font-weight-bold mb-6">Mes demandes</h1>
 
         <v-chip-group multiple selected-class="text-primary" v-model="selection">
@@ -26,11 +26,12 @@
                         <router-link v-if="request.state === RequestEnum.Accepted" :to="{name: 'tenant_request_slots', params:{'id' : request.id }}">
                             <v-btn>Voir les créneaux</v-btn>
                         </router-link>
+                        <span v-else>Aucune action disponible</span>
                     </td>
                 </tr>
             </tbody>
         </v-table>
-    </v-container>
+    </div>
 </template>
 
 <script setup lang="ts">

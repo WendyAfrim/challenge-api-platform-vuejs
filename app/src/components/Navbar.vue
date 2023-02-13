@@ -34,26 +34,18 @@ const currentRouteName = computed(() => route.name);
         </template>
 
         <template v-else-if="role && role === 'tenant'">
-            <router-link :to="{ name: `${role}_dashboard` }">
+            <router-link :to="{ name: `tenant_dashboard` }">
                 <v-app-bar-title class="font-weight-bold ml-16" text="Easyhome" />
             </router-link>
             <v-container class="d-flex justify-end">
-                    <router-link :to="{ name: `${role}_dashboard` }">
-                        <v-btn color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'">Dashboard</v-btn>
+                    <router-link :to="{ name: `tenant_dashboard` }">
+                        <v-btn color="primary" :variant="currentRouteName === `tenant_dashboard` ? 'flat' : 'tonal'">Dashboard</v-btn>
                     </router-link>
-                    <router-link :to="{ name: `${role}_properties` }">
-                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `${role}_properties` ? 'flat' : 'tonal'">Nos biens</v-btn>
+                    <router-link :to="{ name: `tenant_properties` }">
+                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `tenant_properties` ? 'flat' : 'tonal'">Nos biens</v-btn>
                     </router-link>
-                    <router-link :to="{ name: `${role}_requests` }">
-                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `${role}_requests` ? 'flat' : 'tonal'">Mes demandes</v-btn>
-                    </router-link>
-                    <template v-if="role === 'agency'">
-                        <router-link :to="{ name: `${role}_viewings` }">
-                            <v-btn color="primary" :variant="currentRouteName === `${role}_viewings` ? 'flat' : 'tonal'" class="ml-3">Demandes de visite</v-btn>
-                        </router-link>
-                    </template>
-                    <router-link :to="{ name: 'logout' }">
-                        <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
+                    <router-link :to="{ name: `tenant_requests` }">
+                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `tenant_requests` ? 'flat' : 'tonal'">Mes demandes</v-btn>
                     </router-link>
                     <router-link :to="{ name: 'logout' }">
                         <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
