@@ -43,7 +43,7 @@ class ViewingFixtures extends Fixture  implements DependentFixtureInterface
             UserFixtures::class,
             PropertyFixtures::class,
             RequestFixtures::class,
-            AvailabilityFixtures::class,
+            AvailaibilityFixtures::class,
         ];
     }
 }

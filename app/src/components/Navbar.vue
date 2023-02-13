@@ -9,6 +9,7 @@ const props = defineProps<{
 }>()
 const authStore = useAuthStore();
 const role = authStore.getRole;
+const user = authStore.user;
 const route = useRoute();
 const currentRouteName = computed(() => route.name);
 </script>
@@ -22,9 +23,9 @@ const currentRouteName = computed(() => route.name);
                     <router-link :to="{ name: `${role}_dashboard` }">
                         <v-btn color="primary" variant="outlined">Dashboard</v-btn>
                     </router-link>
-                    <!-- <router-link :to="{ name: `${role}_requests` }">
-                        <v-btn color="primary" variant="outlined">Mes demandes</v-btn>
-                    </router-link> -->
+                    <router-link :to="{ name: `${role}_viewings`, params: {'ownerId' : user.id} }">
+                        <v-btn class="ml-4" color="primary" variant="outlined">Mes visites</v-btn>
+                    </router-link>
                     <router-link :to="{ name: 'logout' }">
                         <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
                     </router-link>

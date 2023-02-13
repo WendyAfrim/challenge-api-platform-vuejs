@@ -3,7 +3,8 @@ import Base from '../components/Base.vue';
 import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import PropertyRequestsView from "@/views/Homeowner/PropertyRequestsView.vue";
-import VisitsProposals from "@/views/Homeowner/VisitsProposalsView.vue";
+import ViewingView from "@/views/Homeowner/ViewingView.vue";
+import VisitsProposalsView from "@/views/Homeowner/VisitsProposalsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
 import HomeownerDashboardView from "@/views/Homeowner/DashboardView.vue";
@@ -118,9 +119,14 @@ const router = createRouter({
           component: PropertyRequestsView,
         },
         {
+          path: 'viewings/:ownerId',
+          name: 'homeowner_viewings',
+          component: ViewingView,
+        },
+        {
           path: 'lodger/:id/visits/proposals/:propertyId',
           name: 'homeowner_visits_proposals',
-          component: VisitsProposals
+          component: VisitsProposalsView
         },
         {
           path: 'property/:id/add/photos',
