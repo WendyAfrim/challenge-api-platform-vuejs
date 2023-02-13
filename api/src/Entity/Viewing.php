@@ -28,6 +28,7 @@ class Viewing
     private ?User $lodger = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[Groups(['viewing_read', 'viewing_write'])]
     private ?Availaibility $availaibility = null;
 
 

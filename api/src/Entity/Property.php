@@ -35,7 +35,7 @@ class Property implements PropertyInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['property_read', 'property_write'])]
+    #[Groups(['property_read', 'property_write', 'availaibility_read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]

@@ -17,7 +17,7 @@
                 <tbody v-for="request in requests">
                     <tr>
                         <td>{{ request.lodger.firstname }} {{ request.lodger.lastname }}</td>
-                        <td>{{ request.lodger.income_source }}</td>
+                        <td>{{ request.lodger.situation }}</td>
                         <td>{{ request.lodger.salary }} €</td>
                         <td>{{ request.lodger.email }}</td>
                         <td>{{ request.is_accepted === true ? 'Accepté' : false ? 'Refusé' : 'Non renseigné' }}</td>

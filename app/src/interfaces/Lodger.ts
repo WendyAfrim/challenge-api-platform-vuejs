@@ -3,6 +3,6 @@ export interface Lodger {
     firstname: string,
     lastname: string, 
     email: string, 
-    income_source: string,
+    situation: string
     salary: number
 }

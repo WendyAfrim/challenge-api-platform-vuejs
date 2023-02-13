@@ -16,7 +16,6 @@ import { ref } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { postAvailaibility } from '@/services/availaibility';
 import { sendAvailaibilityToLodger } from '@/services/availaibility';
-import type { Availaibility } from '@/interfaces/Availaibility';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 

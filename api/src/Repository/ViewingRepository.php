@@ -39,28 +39,17 @@ class ViewingRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Viewing[] Returns an array of Viewing objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('v.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Viewing
-//    {
-//        return $this->createQueryBuilder('v')
-//            ->andWhere('v.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findViewingsByOwner(int $ownerId): array
+    {
+        return $this->createQueryBuilder('v')
+            ->leftJoin('v.availaibility', 'a')
+            ->leftJoin('a.property', 'p')
+            ->leftJoin('p.owner', 'o')
+            ->where('o.id = :ownerId')
+            ->setParameter('ownerId', $ownerId)
+            ->orderBy('a.slot', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
