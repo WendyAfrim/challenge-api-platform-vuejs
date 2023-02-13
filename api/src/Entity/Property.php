@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\PropertyController;
 use App\Interfaces\PropertyInterface;
 use App\Repository\PropertyRepository;
 use App\Traits\EntityIdTrait;
@@ -21,15 +22,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     normalizationContext: ['groups' => ['property_read', 'all',]],
     denormalizationContext: ['groups' => ['property_write']],
-    paginationItemsPerPage: 10,
 )]
 #[Get]
 #[GetCollection]
+#[GetCollection(
+    uriTemplate: '/property/by_tenant',
+    controller: PropertyController::class,
+    normalizationContext: ['groups' => ['property_read', 'all',]],
+    denormalizationContext: ['groups' => ['property_write']],
+)]
 #[Post]
 #[Put(security: "is_granted('ROLE_OWNER')")]
 #[ORM\Entity(repositoryClass: PropertyRepository::class)]
 class Property implements PropertyInterface
 {
+    const ITEMS_PER_PAGE = 10;
     use TimestampTrait;
     use EntityIdTrait;
 

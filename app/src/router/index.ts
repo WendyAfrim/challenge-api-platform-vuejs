@@ -23,6 +23,7 @@ import ViewingsView from '@/views/Agency/ViewingsView.vue';
 import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
 import PropertiesView from '@/views/Agency/PropertiesView.vue';
 import ShowVisitView from '@/views/Agency/ShowVisitView.vue';
+import PropertiesGridView from "@/views/Property/PropertiesGridView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
