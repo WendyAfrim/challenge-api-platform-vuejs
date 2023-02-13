@@ -81,7 +81,7 @@ class AvailaibilityController extends AbstractController
             new Address('mailer@easyhome.com', 'Easyhome Mail Bot'),
             $lodger->getEmail(),
             'Easyhome : Proposition de visite',
-            'visits/proposal.html.twig', [
+            'viewings/proposal.html.twig', [
                 'property' => $property,
                 'availaibilities' => $availaibilities
             ]

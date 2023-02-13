@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Helpers\DateFormatterHelper;
 use App\Repository\AvailaibilityRepository;
 use App\Traits\EntityIdTrait;
 use App\Traits\TimestampTrait;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    normalizationContext: ['groups' => ['availaibility_read']],
+    normalizationContext: ['groups' => ['availaibility_read', 'all_id']],
     denormalizationContext: ['groups' => ['availaibility_write']],
 )]
 #[ORM\Entity(repositoryClass: AvailaibilityRepository::class)]
@@ -45,8 +46,11 @@ class Availaibility
         return $this;
     }
 
-    public function getSlot(): ?\DateTimeInterface
+    public function getSlot(): \DateTimeInterface|string|null
     {
+        if (null !== $this->slot) {
+            return DateFormatterHelper::dateTimeToString($this->slot);
+        }
         return $this->slot;
     }
 

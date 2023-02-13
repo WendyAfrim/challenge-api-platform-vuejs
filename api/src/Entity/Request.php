@@ -24,11 +24,12 @@ class Request
     private ?User $lodger = null;
 
     #[ORM\ManyToOne(inversedBy: 'requests')]
+    #[Groups(['request_read'])]
     private ?Property $property = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Groups(['request_read', 'request_write', 'property_read'])]
-    private ?bool $is_accepted = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['request_read'])]
+    private ?string $state = null;
 
     public function getLodger(): ?User
     {
@@ -54,14 +55,14 @@ class Request
         return $this;
     }
 
-    public function isIsAccepted(): ?bool
+    public function getState(): ?string
     {
-        return $this->is_accepted;
+        return $this->state;
     }
 
-    public function setIsAccepted(?bool $is_accepted): self
+    public function setState(?string $state): self
     {
-        $this->is_accepted = $is_accepted;
+        $this->state = $state;
 
         return $this;
     }

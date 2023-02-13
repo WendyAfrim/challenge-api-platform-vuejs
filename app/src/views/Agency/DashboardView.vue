@@ -6,6 +6,8 @@
 
     const users = ref();
     const selection = ref([]);
+    console.log(selection);
+    
 
     try {
         const response = await axios.get('https://localhost/users/', { params: {roles: Roles.Tenant}});

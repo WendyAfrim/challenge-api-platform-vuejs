@@ -7,6 +7,10 @@ import ViewingView from "@/views/Homeowner/ViewingView.vue";
 import VisitsProposalsView from "@/views/Homeowner/VisitsProposalsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
+import TenantRequestsView from "@/views/Tenant/TenantRequestsView.vue";
+import TenantPropertiesView from "@/views/Tenant/TenantPropertiesView.vue";
+import TenantRequestSlotsView from "@/views/Tenant/TenantRequestSlotsView.vue";
+
 import HomeownerDashboardView from "@/views/Homeowner/DashboardView.vue";
 import AgencyDashboardView from "@/views/Agency/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
@@ -24,7 +28,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '',
+      path: '/tenant/',
       name: 'tenant',
       component: Base,
       meta: {
@@ -65,6 +69,21 @@ const router = createRouter({
           path: 'first-steps',
           name: 'tenant_first_steps',
           component: WizardViewVue,
+        },
+        {
+          path: 'properties',
+          name: 'tenant_properties',
+          component: TenantPropertiesView,
+        },
+        {
+          path: 'requests',
+          name: 'tenant_requests',
+          component: TenantRequestsView,
+        },
+        {
+          path: 'requests/:id/slots',
+          name: 'tenant_request_slots',
+          component: TenantRequestSlotsView,
         },
         {
           path: 'property/:id/details',
@@ -126,7 +145,7 @@ const router = createRouter({
           component: ViewingView,
         },
         {
-          path: 'lodger/:id/visits/proposals/:propertyId',
+          path: 'lodger/:id/viewings/proposals/:propertyId',
           name: 'homeowner_visits_proposals',
           component: VisitsProposalsView
         },

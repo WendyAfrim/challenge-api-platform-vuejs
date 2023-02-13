@@ -50,28 +50,14 @@ class RequestRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
-//    /**
-//     * @return Request[] Returns an array of Request objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findRequestsByLodgerId(string $lodgerId): Request|array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.lodger = :lodgerId')
+            ->setParameter('lodgerId', $lodgerId)
+            ->orderBy('r.created_at')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Request
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

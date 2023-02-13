@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\DateFormatterHelper;
 use Gedmo\Mapping\Annotation\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,9 +23,9 @@ trait TimestampTrait
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable|string
     {
-        return $this->created_at;
+        return DateFormatterHelper::dateTimeToString($this->created_at);
     }
 
     /**
@@ -39,9 +40,9 @@ trait TimestampTrait
     /**
      * @return \DateTimeImmutable|null
      */
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): \DateTimeImmutable|string
     {
-        return $this->updated_at;
+        return DateFormatterHelper::dateTimeToString($this->updated_at);
     }
 
     /**

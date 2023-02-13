@@ -5,7 +5,7 @@
           {{ message.text }}
         </v-alert>
 
-        <v-table v-if="viewings">
+        <v-table v-if="viewings.length > 0">
             <template v-slot:default>
                 <thead>
                     <tr>
@@ -13,21 +13,18 @@
                         <th>Nom du locataire</th>
                         <th>Agent immobilier</th>
                         <th>Date de la visite</th>
-                        <th>Etat</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody v-for="viewing in viewings">
-                    <tr>
-                        <td>{{ viewing.availaibility.property.title }}</td>
-                        <td>{{ viewing.lodger.firstname }} {{ viewing.lodger.lastname }}</td>
-                        <td>{{ viewing.agent.firstname }} {{ viewing.agent.lastname }}</td>
-                        <td>{{ viewing.availaibility.slot ?? 'Non défini' }}</td>
+                <tbody >
+                    <tr v-for="viewing in viewings" :key="viewing.id">
+                        <td>{{ viewing?.availaibility.property.title }}</td>
+                        <td>{{ viewing?.lodger.firstname }} {{ viewing?.lodger.lastname }}</td>
+                        <td>{{ viewing?.agent ? viewing?.agent.firstname : 'Non défini' }}</td>
+                        <td>{{ viewing?.availaibility.slot ?? 'Non défini' }}</td>
                     </tr>
                 </tbody>
             </template>
         </v-table>
-
     </v-container>
 </template>
 
@@ -55,14 +52,17 @@ let viewings: Viewing[];
 
 await getOwnerVisits(user.id)
     .then((response) => {
+        if(response.status === 404) {
+            message.value.text = response.message;
+            message.value.type = 'info';
+        }
         viewings = response;
-        console.log(viewings);
         
     })
     .catch((error) => {
         errorType.value = error.response.data.error_type || '';
-        message.value.text = error.response.status === 404 ? 'Aucune visite n\'est programmée pour le moment' : 'Une erreur est survenue. Veuillez réessayer.';
-        message.value.type = error.response.status === 404 ? 'info' : 'error';
+        message.value.text = 'Une erreur est survenue. Veuillez réessayer.';
+        message.value.type = 'error';
     })
 </script>
 

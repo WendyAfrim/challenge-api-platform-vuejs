@@ -14,7 +14,7 @@ trait EntityIdTrait
     #[ORM\Id]
     #[ORM\Column]
     #[ORM\GeneratedValue]
-    #[Groups(['user_read', 'property_read', 'property_write', 'viewing_read', 'all'])]
+    #[Groups(['user_read', 'property_read', 'property_write', 'all_id'])]
     private ?int $id = null;
 
     public function getId(): ?int
