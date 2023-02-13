@@ -2,7 +2,8 @@
 
 import {ref} from "vue";
 import {axios} from "@/services/auth";
-
+import { useAuthStore } from "@/stores/auth.store";
+import { Roles } from "@/enums/roles";
 
 const props = defineProps({
       id:String,
@@ -13,6 +14,7 @@ const message = ref({
   type:''
 });
 
+const role = useAuthStore().getRole;
 
 async function getPhotoLink(id:String) {
   try {
@@ -85,7 +87,7 @@ const property = await getMyProperty(props.id);
               <span>{{property.type}}</span>
             </v-card-subtitle>
           </div>
-          <v-btn class="mr-5 mt-5 ml-auto" color="primary">Postuler</v-btn>
+          <v-btn v-if="role !== Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary">Postuler</v-btn>
         </div>
         <v-card-text>
           <v-list>
