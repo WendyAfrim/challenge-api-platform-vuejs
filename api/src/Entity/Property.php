@@ -35,7 +35,7 @@ class Property implements PropertyInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Groups(['property_read', 'property_write', 'availaibility_read'])]
+    #[Groups(['property_read', 'property_write', 'availaibility_read', 'viewing_read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
@@ -110,7 +110,7 @@ class Property implements PropertyInterface
     private Collection $availaibilities;
 
     #[ORM\ManyToOne(inversedBy: 'properties')]
-    #[Groups(['property_read', 'property_write'])]
+    #[Groups(['property_read', 'property_write', 'viewing_read'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: Request::class)]

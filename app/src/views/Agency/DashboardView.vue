@@ -57,3 +57,18 @@
         </v-table>
     </div>
 </template>
+
+<style scoped>
+    tbody tr:hover {
+        background-color: rgb(234, 237, 238);
+        cursor: pointer;
+    }
+    th {
+        padding: 0.5rem 1rem;
+        font-size: large;
+    }
+    td {
+        padding: 0.5rem 1rem;
+        font-size: large;
+    }
+</style>

@@ -14,7 +14,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody v-for="request in requests">
+                <tbody v-for="request in requests" :key="request.id">
                     <tr>
                         <td>{{ request.lodger.firstname }} {{ request.lodger.lastname }}</td>
                         <td>{{ request.lodger.situation }}</td>
@@ -44,7 +44,7 @@ import { ref, computed } from 'vue';
 import { useRoute } from "vue-router";
 import { axios } from '@/services/auth';
 import type { Property } from '@/interfaces/Property';
-import type { Request } from '@/interfaces/Request';
+import type { Request } from '@/interfaces/Request';
 
 let router = useRoute();
 let propertyId = router.params.id;

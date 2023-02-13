@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {axios} from "@/services/auth";
+import { useAuthStore } from "@/stores/auth.store";
 import {ref, defineProps, computed, onMounted} from "vue";
 import {useRoute, useRouter} from "vue-router";
 
@@ -16,13 +17,14 @@ const message = ref({
   type:''
 });
 const imagePath = ref("");
+const role = useAuthStore().getRole;
 
 async function onClick() {
     try{
       if (undefined !== props.property){
         if(undefined !== props.property['@id']){
           const property_id = props.property['@id'].split('/').pop()
-          await router.push({name: `property_details`, params: {id: property_id}})
+          await router.push({name: `${role}_property_details`, params: {id: property_id}})
           }
         }
     } catch (error: any) {
