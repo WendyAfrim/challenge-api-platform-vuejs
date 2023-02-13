@@ -9,12 +9,21 @@ const props = defineProps({
       id:String,
     });
 
-const message = ref({
-  text:'',
-  type:''
-});
-
+const message = ref({ text: '', type: undefined as "error" | "success" | "warning" | "info" | undefined });
+const loading = ref(false);
 const role = useAuthStore().getRole;
+
+const checkIfAlreadyRequested = async () => {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/requests/by_lodger/${useAuthStore().user.id}`);
+    return response.data.find((request: any) => request.property.id == props.id);
+  } catch (error: any) {
+    console.log("err: ", error)
+    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.type = 'error';
+  }
+}
+const alreadyRequested = await checkIfAlreadyRequested();
 
 async function getPhotoLink(id:String) {
   try {
@@ -24,8 +33,6 @@ async function getPhotoLink(id:String) {
 
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = '';
-    message.value.type = '';
     message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
@@ -45,19 +52,37 @@ async function getMyProperty(id:any) {
 
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = '';
-    message.value.type = '';
     message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }
 const property = await getMyProperty(props.id);
 
+const createRequest = async () => {
+  loading.value = true;
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/requests`, {
+      property: `/properties/${props.id}`,
+      lodger: `/users/${useAuthStore().user.id}`,
+      state: 'pending',
+    });
+    console.log(response);
+    message.value.text = 'Votre demande a été envoyée avec succès.';
+    message.value.type = 'success';
+  } catch (error: any) {
+    console.log("err: ", error)
+    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.type = 'error';
+  }
+  loading.value = false;
+}
+
 </script>
 
 <template>
   <div id="container">
     <div>
+      <v-alert v-if="message.text" :type="message.type" class="mb-5" dismissible>{{message.text}}</v-alert>
       <v-carousel id="images_slider">
         <v-carousel-item
             v-for="(link,i) in property.photos"
@@ -87,7 +112,9 @@ const property = await getMyProperty(props.id);
               <span>{{property.type}}</span>
             </v-card-subtitle>
           </div>
-          <v-btn v-if="role === Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary">Postuler</v-btn>
+          <v-progress-circular v-if="loading" indeterminate  color="primary" class="mr-5 mt-5 ml-auto"></v-progress-circular>
+          <v-alert v-if="alreadyRequested" type="info" variant="tonal" class="ma-5" dismissible>Vous avez déjà fait une requête pour ce bien</v-alert>
+          <v-btn v-else-if="!loading && role === Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary" @click="createRequest">Postuler</v-btn>
         </div>
         <v-card-text>
           <v-list>

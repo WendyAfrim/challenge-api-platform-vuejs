@@ -42,10 +42,10 @@ const currentRouteName = computed(() => route.name);
                         <v-btn color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'">Dashboard</v-btn>
                     </router-link>
                     <router-link :to="{ name: `${role}_properties` }">
-                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'">Mes biens</v-btn>
+                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `${role}_properties` ? 'flat' : 'tonal'">Nos biens</v-btn>
                     </router-link>
                     <router-link :to="{ name: `${role}_requests` }">
-                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'">Mes demandes</v-btn>
+                        <v-btn class="ml-4" color="primary" :variant="currentRouteName === `${role}_requests` ? 'flat' : 'tonal'">Mes demandes</v-btn>
                     </router-link>
                     <template v-if="role === 'agency'">
                         <router-link :to="{ name: `${role}_viewings` }">
