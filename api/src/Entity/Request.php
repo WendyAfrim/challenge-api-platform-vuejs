@@ -24,11 +24,11 @@ class Request
     private ?User $lodger = null;
 
     #[ORM\ManyToOne(inversedBy: 'requests')]
-    #[Groups(['request_read'])]
+    #[Groups(['request_read', 'request_write'])]
     private ?Property $property = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['request_read'])]
+    #[Groups(['request_read', 'request_write'])]
     private ?string $state = null;
 
     public function getLodger(): ?User

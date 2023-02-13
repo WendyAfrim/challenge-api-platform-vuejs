@@ -108,14 +108,20 @@ const schema = computed(() => {
             .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
             .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
         });
-      case 'tax_status':
+      case 'tax_status': {
+        let object: any = {
+          has_tax_notice: yup.boolean().required().label('Avis d\'imposition'),
+        };
         if (has_tax_notice.value) {
-          return yup.object({
+          object = {
+            ...object,
             tax_notice: yup.mixed().required().label('Avis d\'imposition')
             .test('maxFileSize','Le fichier est trop large', (value: any) => value ? value[0]?.size <= 1000000 : true)
             .test('fileType', "Format de fichier invalide", (value: any) => value ? SUPPORTED_FORMATS.includes(value[0]?.type) : true)
-          });
+          }
         }
+        return yup.object(object);
+      }
     }
   });
   if (stepsToComplete.includes('infos')) {
