@@ -1,15 +1,13 @@
 <template>
     <v-container v-if="'homeowner' === forType">
-      <v-row class="d-flex justify-center align-start">
-                <v-col cols="12" md="6">
-                  <h1>Tous mes biens</h1>
-                </v-col>
-                <v-col cols="12" md="6">
-                  <router-link :to="{ name: `homeowner_property_add` }">
-                    <v-btn rounded="pill" color="primary">Ajouter un bien</v-btn>
-                </router-link>
-                </v-col>
-        </v-row>
+      <div class="d-flex justify-space-between align-start">
+        <h1 class="">Tous mes biens</h1>
+        <div>
+          <router-link :to="{ name: `homeowner_property_add` }">
+            <v-btn rounded="pill" color="primary">Ajouter un bien</v-btn>
+          </router-link>
+        </div>
+      </div>
       <v-table v-if="properties">
         <template v-slot:default>
           <thead>

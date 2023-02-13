@@ -89,7 +89,7 @@ const currentRouteName = computed(() => route.name);
                     <router-link :to="{ name: 'tenant_home' }">
                         <v-btn color="primary" variant="outlined">Vous êtes locataire ?</v-btn>
                     </router-link>
-                    <router-link :to="{ name: 'homeowner_home' }">
+                    <router-link :to="{ name: 'homeowner_login' }">
                         <v-btn color="primary" class="ml-3">Je me connecte</v-btn>
                     </router-link>
                 </template>
