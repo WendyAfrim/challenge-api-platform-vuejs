@@ -12,6 +12,7 @@ const current_page = ref(1);
 const last_page = ref(1);
 const properties = ref();
 const totalItems = ref(0);
+const loading = ref(false);
 
 const items_number = computed(() => {
   return totalItems.value;
@@ -36,6 +37,7 @@ async function previous_page() {
 }
 
 async function get_page(pageNumber = 1) {
+  loading.value = true;
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
     const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property/by_tenant?page=${pageNumber}`);
@@ -56,12 +58,10 @@ async function get_page(pageNumber = 1) {
     message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
-  axios.defaults.headers.common['Accept'] = 'application/json';
+  loading.value = false;
 }
 
-onMounted(async () => {
-    await get_page(1);
-})
+await get_page(1);
 
 </script>
     
@@ -86,8 +86,8 @@ onMounted(async () => {
       </span>
     </div>
   </div>
-  <div v-else>
-    <v-app-bar-title class="font-weight-bold ml-16" text="Aucun résultat pour l'instant Mais ne ratez pas nos nouveautés !" />
+  <div v-else-if="!loading" class="ma-auto">
+    <span class="text-h5 ma-auto">Aucun résultat correspondant à votre profil</span>
   </div>
 </template>
 
