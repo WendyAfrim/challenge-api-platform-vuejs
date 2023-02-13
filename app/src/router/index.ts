@@ -126,6 +126,11 @@ const router = createRouter({
           path: 'property/:id/add/photos',
           name: 'homeowner_property_add_photos',
           component: PropertyPhotosUploadViews,
+        },
+        {
+          path: 'property/:id/details',
+          name: 'property_details',
+          component: PropertyDetailsView,
         }
       ],
     },
@@ -159,6 +164,11 @@ const router = createRouter({
           name: 'agency_viewings',
           component: ViewingsView,
         },
+        {
+          path: 'property/:id/details',
+          name: 'property_details',
+          component: PropertyDetailsView,
+        }
       ],
     },
     {

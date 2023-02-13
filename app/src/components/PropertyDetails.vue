@@ -66,35 +66,42 @@ const property = await getMyProperty(props.id);
       </v-carousel>
     </div>
     <v-card class="h-100">
-      <div id="details-area" class=" w-100 row">
-        <div>
-          <v-list>
-              <v-list-item class="text-h4">
-                  <v-icon icon="mdi mdi-currency-eur"></v-icon>
-                  {{property.price}}
-              </v-list-item>
-            <v-list-item class="text-h5">
-              <span class="justify-end" v-if="property.type === 'House'"><v-icon icon="mdi mdi-home-outline"></v-icon></span>
-              <span class="justify-end" v-if="property.type === 'Apartment'"><v-icon icon="mdi mdi-office-building-outline"></v-icon></span>
-              <span class="justify-end">{{property.type}}</span>
-            </v-list-item>
-            <v-list-item-title class="text-h5 ml-8">
+      <div id="details-area" class=" w-100">
+        <div class="d-flex justify-between">
+          <div>
+            <v-card-title class="text-h4 font-weight-bold">
+              <v-icon icon="mdi mdi-currency-eur"></v-icon>
+                {{property.price}}
+            </v-card-title>
+            <v-card-subtitle class="text-h5 font-weight-bold text-primary mb-2 py-2">
               {{property.title}}
-            </v-list-item-title>
-            <v-list-item class="text-h7">{{property.rooms}} pièces<v-icon icon="mdi mdi-floor-plan"></v-icon></v-list-item>
-            <v-list-item class="text-h7">{{property.surface}} &#13217; <v-icon icon="mdi mdi-tape-measure"></v-icon></v-list-item>
-            <v-list-item class="text-h7" v-if="property.state"> {{property.state}}<v-icon icon="mdi mdi-door-closed-lock"></v-icon></v-list-item>
-            <v-list-item class="text-h7" v-if="property.has_elevator">Ascenseur <v-icon icon="mdi mdi-elevator"></v-icon></v-list-item>
-              <v-list-item class="text-h7" v-if="property.has_balcony">Balcon <v-icon icon="mdi mdi-balcony"></v-icon></v-list-item>
-              <v-list-item class="text-h7" v-if="property.has_parking">Parking <v-icon icon="mdi mdi-garage"></v-icon></v-list-item>
-              <v-list-item class="text-h7" v-if="property.has_terrace">Terrasse <v-icon icon="mdi mdi-fence"></v-icon></v-list-item>
-            <v-list-item class="text-h7" v-if="property.is_furnished">Meublé <v-icon icon="mdi mdi-sofa-single-outline"></v-icon></v-list-item>
-            <v-list-item class="text-h7" v-if="property.has_cave">Cave <v-icon icon="mdi mdi-door-closed-lock"></v-icon></v-list-item>
-            <v-list-item class="text-h7">{{property.address}} ({{property.zipcode}}), {{property.city}} {{property.country}}</v-list-item>
-          </v-list>
+            </v-card-subtitle>
+            <v-card-subtitle class="text-h6 mb-2">
+              {{property.address}}
+            </v-card-subtitle>
+            <v-card-subtitle class="mb-2 d-flex items-center">
+              <v-icon v-if="property.type === 'House'" icon="mdi mdi-home-outline mr-2"></v-icon>
+              <v-icon v-if="property.type === 'Apartment'" icon="mdi mdi-office-building-outline mr-2"></v-icon>
+              <span>{{property.type}}</span>
+            </v-card-subtitle>
+          </div>
+          <v-btn class="mr-5 mt-5 ml-auto" color="primary">Postuler</v-btn>
         </div>
+        <v-card-text>
+          <v-list>
+            <v-list-item class="text-h7">{{property.rooms}} pièces<v-icon icon="mdi mdi-floor-plan ml-2"></v-icon></v-list-item>
+            <v-list-item class="text-h7">{{property.surface}} &#13217; <v-icon icon="mdi mdi-tape-measure ml-2"></v-icon></v-list-item>
+            <v-list-item class="text-h7" v-if="property.state"> {{property.state}}<v-icon icon="mdi mdi-door-closed-lock ml-2"></v-icon></v-list-item>
+            <v-list-item class="text-h7" v-if="property.has_elevator">Ascenseur <v-icon icon="mdi mdi-elevator ml-2"></v-icon></v-list-item>
+              <v-list-item class="text-h7" v-if="property.has_balcony">Balcon <v-icon icon="mdi mdi-balcony ml-2"></v-icon></v-list-item>
+              <v-list-item class="text-h7" v-if="property.has_parking">Parking <v-icon icon="mdi mdi-garage ml-2"></v-icon></v-list-item>
+              <v-list-item class="text-h7" v-if="property.has_terrace">Terrasse <v-icon icon="mdi mdi-fence ml-2"></v-icon></v-list-item>
+            <v-list-item class="text-h7" v-if="property.is_furnished">Meublé <v-icon icon="mdi mdi-sofa-single-outline ml-2"></v-icon></v-list-item>
+            <v-list-item class="text-h7" v-if="property.has_cave">Cave <v-icon icon="mdi mdi-door-closed-lock ml-2"></v-icon></v-list-item>
+            <v-list-item class="text-h7">{{property.address}} ({{property.zipcode}}), {{property.city}} {{property.country}}</v-list-item>
+          </v-list> 
+        </v-card-text>
         <div>
-          <v-btn class="mr-5 mt-5 ml-auto" color="primary">Intéresse</v-btn>
         </div>
       </div>
     </v-card>
@@ -105,11 +112,6 @@ const property = await getMyProperty(props.id);
 </template>
 
 <style scoped>
-#details-area{
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  gap: 30px;
-}
 #container{
   display: grid;
   grid-template-columns: 3fr 2fr;
