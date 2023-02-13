@@ -209,7 +209,6 @@ async function onSubmit(formData: any) {
     console.log(error);
   }
   loading.value = false;
-  console.log(JSON.stringify(formData, null, 2));
 }
 const { lgAndUp } = useDisplay();
 </script>
@@ -225,7 +224,7 @@ const { lgAndUp } = useDisplay();
         </v-card-actions>
       </v-card>
     </div>
-    <v-progress-circular v-else-if="loading" indeterminate color="primary" class="m-auto"></v-progress-circular>
+    <v-progress-circular v-else-if="loading" indeterminate color="primary" class="ma-auto"></v-progress-circular>
     <FormWizard v-else :steps="stepsToComplete" class="ma-auto" as="v-form" :validation-schema="schema" @submit="onSubmit" :class="[lgAndUp ? 'w-50' : 'w-75']">
 
       <FormStep v-if="!user.firstname && !user.lastname">

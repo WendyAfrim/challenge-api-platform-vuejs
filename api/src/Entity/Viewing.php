@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    normalizationContext: ['groups' => ['viewing_read']],
+    normalizationContext: ['groups' => ['viewing_read', 'all_id']],
     denormalizationContext: ['groups' => ['viewing_write']],
 )]
 #[ORM\Entity(repositoryClass: ViewingRepository::class)]

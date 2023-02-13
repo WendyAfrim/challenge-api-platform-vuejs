@@ -43,16 +43,16 @@
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="user.firstname" label="Prénom" outlined dense readonly />
+                            <v-text-field :model-value="user?.firstname" label="Prénom" outlined dense readonly />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="user.lastname" label="Nom" outlined dense readonly />
+                            <v-text-field :model-value="user?.lastname" label="Nom" outlined dense readonly />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="user.email" label="Email" outlined dense readonly />
+                            <v-text-field :model-value="user?.email" label="Email" outlined dense readonly />
                         </v-col>
                         <v-col cols="12" md="6">
-                            <v-text-field v-model="user.situation" label="Situation" outlined dense readonly />
+                            <v-text-field :model-value="user?.situation" label="Situation" outlined dense readonly />
                         </v-col>
                     </v-row>
                 </v-card-text>

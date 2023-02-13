@@ -49,9 +49,9 @@
             </thead>
             <tbody>
                 <tr v-for="user in showedUsers" :key="user.email" @click="router.push({ name: 'agency_show_user', params: {id: user.id}})">
-                    <td>{{ user.firstname }}</td>
-                    <td>{{ user.lastname }}</td>
-                    <td>{{ $t(`work_situation.${user.situation}`) }}</td>
+                    <td>{{ user?.firstname ?? '-' }}</td>
+                    <td>{{ user?.lastname ?? '-' }}</td>
+                    <td>{{ user.situation !== undefined ? $t(`work_situation.${user.situation}`) : '-' }}</td>
                     <td>{{ user.salary ?? '0' }} €</td>
                     <td>{{ $t(`validation_status.${user.validationStatus}`) }}</td>
                 </tr>
