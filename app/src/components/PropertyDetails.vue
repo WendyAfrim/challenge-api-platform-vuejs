@@ -16,10 +16,14 @@ const role = useAuthStore().getRole;
 const checkIfAlreadyRequested = async () => {
   try {
     const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/requests/by_lodger/${useAuthStore().user.id}`);
+    console.log(response);
+    if (response.data[0] == 404) {
+      return false;
+    }
     return response.data.find((request: any) => request.property.id == props.id);
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.text = error.message || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }
