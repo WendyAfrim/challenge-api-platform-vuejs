@@ -20,13 +20,11 @@ const imagePath = ref("");
 async function onClick() {
     try{
       if (undefined !== props.property){
-        const property = props.property
-        if(undefined !== property['@id']){
-          const property_id = property['@id'].split('/').pop()
-          console.log("property_id: ", property_id)
+        if(undefined !== props.property['@id']){
+          const property_id = props.property['@id'].split('/').pop()
+          await router.push({name: `property_details`, params: {id: property_id}})
           }
         }
-      // router.push()
     } catch (error: any) {
       console.log("err: ", error)
       message.value.text = '';
@@ -45,21 +43,27 @@ onMounted(async () => {
       const photos_hydra_id_list =  property['photos']
       const default_photo_hydra_id = photos_hydra_id_list['0'];
       if(undefined !== default_photo_hydra_id){
-        try {
-          const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${default_photo_hydra_id.split('/').pop()}`);
-          imagePath.value = response.data.filePath;
-          // router.push() go to property details
-        } catch (error: any) {
-          console.log("err: ", error)
-          message.value.text = '';
-          message.value.type = '';
-          message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
-          message.value.type = 'error';
+        if(undefined !== default_photo_hydra_id.split('/').pop()){
+          imagePath.value = await getPhotoLink(default_photo_hydra_id.split('/').pop());
         }
       }
     }
   }
 })
+
+async function getPhotoLink(id:String) {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${id}`);
+    const photo_link = await response.data.filePath
+    return await photo_link;
+  } catch (error: any) {
+    console.log("err: ", error)
+    message.value.text = '';
+    message.value.type = '';
+    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.type = 'error';
+  }
+}
 
 
 const getImage = computed( () => {

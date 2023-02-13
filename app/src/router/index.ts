@@ -15,6 +15,7 @@ import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
 import WizardViewVue from '@/views/Tenant/WizardView.vue';
 import ShowUserView from '@/views/Agency/ShowUserView.vue';
 import ViewingsView from '@/views/Agency/ViewingsView.vue';
+import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
           name: 'tenant_first_steps',
           component: WizardViewVue,
         },
+        {
+          path: 'property/:id/details',
+          name: 'property_details',
+          component: PropertyDetailsView,
+        }
       ],
     },
     {
@@ -120,6 +126,11 @@ const router = createRouter({
           path: 'property/:id/add/photos',
           name: 'homeowner_property_add_photos',
           component: PropertyPhotosUploadViews,
+        },
+        {
+          path: 'property/:id/details',
+          name: 'property_details',
+          component: PropertyDetailsView,
         }
       ],
     },
@@ -153,6 +164,11 @@ const router = createRouter({
           name: 'agency_viewings',
           component: ViewingsView,
         },
+        {
+          path: 'property/:id/details',
+          name: 'property_details',
+          component: PropertyDetailsView,
+        }
       ],
     },
     {
