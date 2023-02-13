@@ -87,7 +87,7 @@ const property = await getMyProperty(props.id);
               <span>{{property.type}}</span>
             </v-card-subtitle>
           </div>
-          <v-btn v-if="role !== Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary">Postuler</v-btn>
+          <v-btn v-if="role === Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary">Postuler</v-btn>
         </div>
         <v-card-text>
           <v-list>

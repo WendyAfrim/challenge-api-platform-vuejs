@@ -17,6 +17,7 @@ import WizardViewVue from '@/views/Tenant/WizardView.vue';
 import ShowUserView from '@/views/Agency/ShowUserView.vue';
 import ViewingsView from '@/views/Agency/ViewingsView.vue';
 import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
+import PropertiesView from '@/views/Agency/PropertiesView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -66,7 +67,7 @@ const router = createRouter({
         },
         {
           path: 'property/:id/details',
-          name: 'property_details',
+          name: 'tenant_property_details',
           component: PropertyDetailsView,
         }
       ],
@@ -135,7 +136,7 @@ const router = createRouter({
         },
         {
           path: 'property/:id/details',
-          name: 'property_details',
+          name: 'homeowner_property_details',
           component: PropertyDetailsView,
         }
       ],
@@ -172,9 +173,14 @@ const router = createRouter({
         },
         {
           path: 'property/:id/details',
-          name: 'property_details',
+          name: 'agency_property_details',
           component: PropertyDetailsView,
-        }
+        },
+        {
+          path: 'properties',
+          name: 'agency_properties',
+          component: PropertiesView,
+        },
       ],
     },
     {

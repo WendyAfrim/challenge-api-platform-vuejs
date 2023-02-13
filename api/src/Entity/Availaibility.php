@@ -21,16 +21,15 @@ class Availaibility
     use EntityIdTrait;
 
     #[ORM\ManyToOne(inversedBy: 'availaibilities')]
-    #[Groups(['availaibility_read', 'availaibility_write'])]
+    #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read'])]
     private ?Property $property = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read'])]
     private ?\DateTimeInterface $slot = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'availaibilities')]
-    #[Groups(['availaibility_read', 'availaibility_write'])]
+    #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read'])]
     private ?User $lodger = null;
 
 

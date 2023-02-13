@@ -98,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user_read', 'user_write', 'property_read'])]
+    #[Groups(['user_read', 'user_write', 'property_read', 'viewing_read'])]
     #[Assert\NotBlank]
     private ?string $firstname = null;
 

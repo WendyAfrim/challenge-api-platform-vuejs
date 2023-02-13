@@ -12,6 +12,7 @@ const role = authStore.getRole;
 const user = authStore.user;
 const route = useRoute();
 const currentRouteName = computed(() => route.name);
+
 </script>
 <template>
     <v-app-bar color="transparent" elevation="0" class="sticky">
@@ -40,14 +41,29 @@ const currentRouteName = computed(() => route.name);
                     <router-link :to="{ name: `${role}_dashboard` }">
                         <v-btn color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'">Dashboard</v-btn>
                     </router-link>
-                    <template v-if="role === 'agency'">
-                        <router-link :to="{ name: `${role}_viewings` }">
-                            <v-btn color="primary" :variant="currentRouteName === `${role}_viewings` ? 'flat' : 'tonal'" class="ml-3">Demandes de visite</v-btn>
-                        </router-link>
-                    </template>
                     <router-link :to="{ name: 'logout' }">
                         <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
                     </router-link>
+            </v-container>
+        </template>
+
+        <template v-else-if="role && role === 'agency'">
+            <router-link :to="{ name: `${role}_dashboard` }">
+                <v-app-bar-title class="font-weight-bold ml-16" text="Easyhome" />
+            </router-link>
+            <v-container class="d-flex justify-end">
+                <router-link :to="{ name: `${role}_dashboard` }">
+                    <v-btn color="primary" :variant="currentRouteName === `${role}_dashboard` ? 'flat' : 'tonal'" class="ml-3">Dossiers locataires</v-btn>
+                </router-link>
+                <router-link :to="{ name: `${role}_viewings` }">
+                    <v-btn color="primary" :variant="currentRouteName === `${role}_viewings` ? 'flat' : 'tonal'" class="ml-3">Visites</v-btn>
+                </router-link>
+                <router-link :to="{ name: `${role}_properties` }">
+                    <v-btn color="primary" :variant="currentRouteName === `${role}_properties` ? 'flat' : 'tonal'" class="ml-3">Biens</v-btn>
+                </router-link>
+                <router-link :to="{ name: 'logout' }">
+                    <v-btn color="primary" class="ml-3">Déconnexion</v-btn>
+                </router-link>
             </v-container>
         </template>
 
