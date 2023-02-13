@@ -1,17 +1,18 @@
 <script setup lang="ts">
-    import { useRoute } from 'vue-router';
     import { axios } from '@/services/auth';
     import { ref, computed } from 'vue';
-import router from '@/router';
+    import { Roles } from '@/enums/roles';
 
     const viewings = ref();
+    const agents = ref();
     const timeFilter = ref();
     const assignedFilter = ref();
 
     try {
-        const response = await axios.get('https://localhost/viewings/');
-        viewings.value = response.data;
-        console.log(response);
+        const viewingsResponse = await axios.get('https://localhost/viewings/');
+        viewings.value = viewingsResponse.data;
+        const agentsResponse = await axios.get('https://localhost/users/', { params: {roles: Roles.Agency}});
+        agents.value = agentsResponse.data;
     } catch (error) {
         console.log(error);
     }
@@ -52,21 +53,31 @@ import router from '@/router';
         </v-chip-group>
         <v-table>
             <thead>
-                <tr class="">
+                <tr>
                     <th class="text-left">Locataire</th>
                     <th class="text-left">Agent responsable</th>
                     <th class="text-left">Propriétaire</th>
                     <th class="text-left">Bien</th>
                     <th class="text-left">Créneau</th>
+                    <th class="text-left">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="viewing in showedViewings" :key="viewing.id" @click="router.push({ name: 'agency_show_user', params: {id: viewing.id}})">
+                <tr v-for="viewing in showedViewings" :key="viewing.id">
                     <td>{{ viewing.lodger.firstname }} {{ viewing.lodger.lastname }}</td>
                     <td>{{ viewing.agent?.firstname }} {{ viewing.agent?.lastname }}</td>
                     <td>{{ viewing.availaibility.property.owner.firstname }} {{ viewing.availaibility.property.owner.lastname }}</td>
-                    <td>{{ viewing.availaibility.property.title }}</td>
+                    <td>
+                        <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.property.id} }" class="text-decoration-underline text-indigo">
+                            {{ viewing.availaibility.property.title }}
+                        </router-link>
+                    </td>
                     <td>{{ (new Date(viewing.availaibility.slot)).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ") }}</td>
+                    <td>
+                        <router-link :to="{ name: 'agency_show_visit', params: {id: viewing.id} }">
+                            <v-btn color="primary" variant="tonal">Voir</v-btn>
+                        </router-link>
+                    </td>
                 </tr>
             </tbody>
         </v-table>
@@ -75,7 +86,7 @@ import router from '@/router';
 
 <style scoped>
     tbody tr:hover {
-        background-color: rgb(234, 237, 238);
+        background-color: rgb(248, 248, 248);
         cursor: pointer;
     }
     th {

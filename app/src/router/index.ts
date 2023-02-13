@@ -18,6 +18,7 @@ import ShowUserView from '@/views/Agency/ShowUserView.vue';
 import ViewingsView from '@/views/Agency/ViewingsView.vue';
 import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
 import PropertiesView from '@/views/Agency/PropertiesView.vue';
+import ShowVisitView from '@/views/Agency/ShowVisitView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -180,6 +181,11 @@ const router = createRouter({
           path: 'properties',
           name: 'agency_properties',
           component: PropertiesView,
+        },
+        {
+          path: 'visit/:id',
+          name: 'agency_show_visit',
+          component: ShowVisitView,
         },
       ],
     },

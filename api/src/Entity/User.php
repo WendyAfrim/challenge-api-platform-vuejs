@@ -35,7 +35,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-
+        new GetCollection(),
+        new Post(processor: UserPasswordHasher::class),
+        new Get(),
         new Get(
             uriTemplate: '/user/details',
             controller: UserController::class,
@@ -43,18 +45,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             read: false,
             name: 'user_account'
         ),
-    ],
-    normalizationContext: ['groups' => ['user_read']],
-    openapiContext: [
-        'summary' => 'hidden'
-    ],
-    paginationEnabled: false,
-)]
-#[ApiResource(
-    operations: [
-        new GetCollection(),
-        new Post(processor: UserPasswordHasher::class),
-        new Get(),
         new Put(processor: UserPasswordHasher::class),
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
