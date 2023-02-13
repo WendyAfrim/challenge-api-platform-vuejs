@@ -4,7 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Property;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 use Doctrine\Persistence\ManagerRegistry;
+use ApiPlatform\Doctrine\Orm\Paginator  as ApiPlatformPaginator;
 
 /**
  * @extends ServiceEntityRepository<Property>
@@ -19,6 +22,7 @@ class PropertyRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Property::class);
+
     }
 
     public function save(Property $entity, bool $flush = false): void
@@ -37,6 +41,21 @@ class PropertyRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findPropertiesByTenantSalary($user, int $page=1): ApiPlatformPaginator
+    {
+        $firstResult = ($page-1) * Property::ITEMS_PER_PAGE;
+        $budget = $user->getSalary() / 2;
+        $queryBuilder = $this->createQueryBuilder('p');
+        $queryBuilder->andWhere('p.price < :val')
+            ->setParameter('val', $budget)
+            ->setFirstResult($firstResult)
+            ->setMaxResults(Property::ITEMS_PER_PAGE);
+
+        $doctrinePaginator = new Paginator($queryBuilder);
+        return new ApiPlatformPaginator($doctrinePaginator);
+
     }
 
 //    /**

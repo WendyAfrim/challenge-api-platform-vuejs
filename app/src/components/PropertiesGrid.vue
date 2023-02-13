@@ -11,6 +11,11 @@ const message = ref({
 const current_page = ref(1);
 const last_page = ref(1);
 const properties = ref();
+const totalItems = ref(0);
+
+const items_number = computed(() => {
+  return totalItems.value;
+});
 
 const has_next = computed(() => {
   return current_page.value < last_page.value;
@@ -33,12 +38,17 @@ async function previous_page() {
 async function get_page(pageNumber = 1) {
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties?page=${pageNumber}`);
-    if(response.data['hydra:view'] !== undefined){
-      current_page.value = parseInt(response.data['hydra:view']['@id'].split('=')[1]);
-      last_page.value = parseInt(response.data['hydra:view']['hydra:last'].split('=')[1]);
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property/by_tenant?page=${pageNumber}`);
+    if(response.data !== undefined){
+      if(response.data['hydra:totalItems'] !== undefined){
+        totalItems.value = response.data['hydra:totalItems'];
+        if(response.data['hydra:view'] !== undefined){
+          current_page.value = parseInt(response.data['hydra:view']['@id'].split('=')[1]);
+          last_page.value = parseInt(response.data['hydra:view']['hydra:last'].split('=')[1]);
+        }
+        properties.value = response.data['hydra:member'];
+      }
     }
-    properties.value = response.data['hydra:member'];
   } catch (error: any) {
     console.log("err: ", error)
     message.value.text = '';
@@ -56,23 +66,28 @@ onMounted(async () => {
 </script>
     
 <template>
-  <div id="box" >
-    <v-alert v-if="message.text" class="text-white" :color="message.type">{{ message.text }}</v-alert>
-    <div class="ma-0" v-for="element in properties" :key="element['@id'].split('/').pop()">
-    <Property :property="element"></Property>
+  <div v-if="items_number !== 0">
+    <div id="box" >
+      <v-alert v-if="message.text" class="text-white" :color="message.type">{{ message.text }}</v-alert>
+      <div class="ma-0" v-for="element in properties" :key="element['@id'].split('/').pop()">
+      <Property :property="element"></Property>
+      </div>
+    </div>
+    <div class="text-center" v-if="last_page > 1">
+      <span v-if="has_precious">
+        <v-btn class="ma-1" color="primary" variant="outlined" @click="previous_page">
+          <v-icon icon='mdi-chevron-left'></v-icon>
+        </v-btn>
+      </span>
+      <span v-if="has_next">
+        <v-btn class="ma-1" color="primary" variant="outlined" @click="next_page">
+          <v-icon icon='mdi-chevron-right'></v-icon>
+        </v-btn>
+      </span>
     </div>
   </div>
-  <div class="text-center" v-if="last_page > 1">
-    <span v-if="has_precious">
-      <v-btn class="ma-1" color="primary" variant="outlined" @click="previous_page">
-        <v-icon icon='mdi-chevron-left'></v-icon>
-      </v-btn>
-    </span>
-    <span v-if="has_next">
-      <v-btn class="ma-1" color="primary" variant="outlined" @click="next_page">
-        <v-icon icon='mdi-chevron-right'></v-icon>
-      </v-btn>
-    </span>
+  <div v-else>
+    <v-app-bar-title class="font-weight-bold ml-16" text="Aucun résultat pour l'instant Mais ne ratez pas nos nouveautés !" />
   </div>
 </template>
 
