@@ -25,7 +25,7 @@ async function onUpload() {
     formData.append('property_id', props.propertyId as string);
   }
   try {
-    const response = await axios.post('https://localhost/media_objects', formData, {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/media_objects`, formData, {
       headers:{
         'Content-type' : 'multipart/form-data'
       }
