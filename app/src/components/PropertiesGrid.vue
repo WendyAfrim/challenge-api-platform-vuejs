@@ -3,6 +3,8 @@ import {computed , ref} from 'vue';
 import Property from "@/components/Property.vue";
 import { axios } from '@/services/auth';
 import {onMounted} from "vue";
+import { useAuthStore } from '@/stores/auth.store';
+import { Roles } from '@/enums/roles';
 
 const message = ref({
   text:'',
@@ -40,7 +42,12 @@ async function get_page(pageNumber = 1) {
   loading.value = true;
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property/by_tenant?page=${pageNumber}`);
+    let response;
+    if (useAuthStore().getRole == Roles.Tenant) {
+      response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property/by_tenant?page=${pageNumber}`);
+    } else {
+      response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties`);
+    }
     if(response.data !== undefined){
       if(response.data['hydra:totalItems'] !== undefined){
         totalItems.value = response.data['hydra:totalItems'];

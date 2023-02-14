@@ -9,9 +9,9 @@
     const assignedFilter = ref();
 
     try {
-        const viewingsResponse = await axios.get('https://localhost/viewings/');
+        const viewingsResponse = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/viewings/`);
         viewings.value = viewingsResponse.data;
-        const agentsResponse = await axios.get('https://localhost/users/', { params: {roles: Roles.Agency}});
+        const agentsResponse = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/`, { params: {roles: Roles.Agency}});
         agents.value = agentsResponse.data;
     } catch (error) {
         console.log(error);

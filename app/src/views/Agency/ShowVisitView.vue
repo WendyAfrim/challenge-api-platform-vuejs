@@ -13,10 +13,10 @@
     const valid = ref();
 
     try {
-        const response = await axios.get(`https://localhost/viewings/${route.params.id}`);
+        const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/viewings/${route.params.id}`);
         selectedAgent.value = response.data.agent;
         viewing.value = response.data;
-        const agentsResponse = await axios.get('https://localhost/users/', { params: {roles: Roles.Agency}});
+        const agentsResponse = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/`, { params: {roles: Roles.Agency}});
         agents.value = agentsResponse.data;
     } catch (error) {
         console.log(error);
@@ -27,7 +27,7 @@
         if (valid.value) {
             console.log(selectedAgent.value);
             try {
-                const response = await axios.put(`https://localhost/viewings/${viewing.value.id}`, { agent: `/users/${selectedAgent.value}` });
+                const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/viewings/${viewing.value.id}`, { agent: `/users/${selectedAgent.value}` });
                 console.log(response);
                 viewing.value.agent = response.data.agent;
             } catch (error) {

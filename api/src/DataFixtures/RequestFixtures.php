@@ -30,7 +30,7 @@ class RequestFixtures extends Fixture  implements DependentFixtureInterface
             $object = (new Request())
                 ->setLodger($faker->randomElement($tenants))
                 ->setProperty($faker->randomElement($properties))
-                ->setIsAccepted($faker->boolean())
+                ->setState('pending')
             ;
             $manager->persist($object);
         }

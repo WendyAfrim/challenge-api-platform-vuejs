@@ -14,7 +14,7 @@
     const invalidDocuments = computed(() => {
         return user.value.documents.filter((document: any) => !document.isValid);
     });
-    const response = await axios.get('https://localhost/users/' + route.params.id);
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/${route.params.id}`);
     user.value = response.data;
     const baseValidatedDocuments = ref(response.data.documents.filter((document: any) => document.isValid));
     const baseInvalidDocuments = ref(response.data.documents.filter((document: any) => !document.isValid));
@@ -23,7 +23,7 @@
         loading.value = true;
         try {
             message.value = { text: '', type: undefined };
-            const response = await axios.put(`https://localhost/users/${user.value.id}`, {
+            const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/users/${user.value.id}`, {
                 validationStatus: user.value.documents.every((document: any) => document.isValid) ? 'validated' : 'to_complete',
                 documents: user.value.documents,
             });

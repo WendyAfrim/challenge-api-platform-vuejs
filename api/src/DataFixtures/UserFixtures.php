@@ -4,11 +4,12 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Enums\WorkSituationEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements FixtureGroupInterface
 {
     private $passwordHasher = null;
     
@@ -16,6 +17,12 @@ class UserFixtures extends Fixture
     {
         $this->passwordHasher = $passwordHasher;
     }
+
+    public static function getGroups(): array
+    {
+        return ['minimal'];
+    }
+
     public function load(ObjectManager $manager)
     {
         function userSalary($userRole, $faker){

@@ -31,7 +31,7 @@ const firstname = ref();
 const lastname = ref();
 const done = ref(false);
 
-const response = await axios.get('https://localhost/users/' + authStore.user.id);
+const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/${authStore.user.id}`);
 const user = response.data;
 
 const invalidDocuments = (user.documents.filter((document: any) => !document.isValid));
@@ -145,7 +145,7 @@ async function onSubmit(formData: any) {
       };
       identityPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Identity) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Identity).id : null;
       console.log(identityPostData);
-      await axios.post('https://localhost/documents', identityPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+      await axios.post(`${import.meta.env.VITE_BASE_API_URL}/documents`, identityPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
     if (documentsTypes.includes(DocumentTypeEnum.Address)) {
       const addressPostData: any = {
@@ -156,7 +156,7 @@ async function onSubmit(formData: any) {
       };
       addressPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Address) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Address).id : null;
       console.log(addressPostData);
-      await axios.post('https://localhost/documents', addressPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+      await axios.post(`${import.meta.env.VITE_BASE_API_URL}/documents`, addressPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
     if (documentsTypes.includes(DocumentTypeEnum.Professional)) {
       const professionalPostData: any = {
@@ -167,7 +167,7 @@ async function onSubmit(formData: any) {
       };
       professionalPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Professional) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Professional).id : null;
       console.log(professionalPostData);
-      await axios.post('https://localhost/documents', professionalPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+      await axios.post(`${import.meta.env.VITE_BASE_API_URL}/documents`, professionalPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
     if (documentsTypes.includes(DocumentTypeEnum.Income)) {
       const incomePostData: any = {
@@ -178,7 +178,7 @@ async function onSubmit(formData: any) {
       };
       incomePostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Income) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Income).id : null;
       console.log(incomePostData);
-      await axios.post('https://localhost/documents', incomePostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+      await axios.post(`${import.meta.env.VITE_BASE_API_URL}/documents`, incomePostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
     if (documentsTypes.includes(DocumentTypeEnum.TaxStatus) && has_tax_notice.value) {
       const taxStatusPostData: any = {
@@ -189,7 +189,7 @@ async function onSubmit(formData: any) {
       };
       taxStatusPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.TaxStatus) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.TaxStatus).id : null;
       console.log(taxStatusPostData);
-      await axios.post('https://localhost/documents', taxStatusPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
+      await axios.post(`${import.meta.env.VITE_BASE_API_URL}/documents`, taxStatusPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
     const userPutData: any = { validationStatus: 'to_review' };
     if (stepsToComplete.includes('infos')) {
@@ -202,7 +202,7 @@ async function onSubmit(formData: any) {
     if (documentsTypes.includes(DocumentTypeEnum.Professional)) {
       userPutData.situation = formData.work_situation;
     }
-      await axios.put(`https://localhost/users/${authStore.user.id}`, userPutData, {headers: {'Content-Type': 'application/json' }});
+      await axios.put(`${import.meta.env.VITE_BASE_API_URL}/users/${authStore.user.id}`, userPutData, {headers: {'Content-Type': 'application/json' }});
       done.value = true;
       authStore.user.validationStatus = 'to_review';
   } catch (error) {

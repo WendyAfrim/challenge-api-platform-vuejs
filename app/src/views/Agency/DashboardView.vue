@@ -10,7 +10,7 @@
     
 
     try {
-        const response = await axios.get('https://localhost/users/', { params: {roles: Roles.Tenant}});
+        const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users`, { params: {roles: Roles.Tenant}});
         users.value = response.data;
         console.log(response);
     } catch (error) {

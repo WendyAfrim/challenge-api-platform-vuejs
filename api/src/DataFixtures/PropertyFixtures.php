@@ -6,15 +6,21 @@ use App\Entity\Property;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Faker\Factory;
 use Faker\Provider\Address;
 
-class PropertyFixtures extends Fixture implements DependentFixtureInterface
+class PropertyFixtures extends Fixture implements DependentFixtureInterface, FixtureGroupInterface
 {
     public function __construct(private UserRepository $userRepository)
     {
+    }
+
+    public static function getGroups(): array
+    {
+        return ['minimal'];
     }
 
     /**

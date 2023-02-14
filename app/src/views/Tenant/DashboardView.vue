@@ -7,7 +7,7 @@
     const user = ref();
 
     try {
-        const response = await axios.get('https://localhost/users/' + authStore.user.id);
+        const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/` + authStore.user.id);
         user.value = response.data;
         console.log(response);
     } catch (error) {
