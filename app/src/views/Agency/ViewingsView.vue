@@ -75,11 +75,11 @@
                     <tbody>
                         <tr v-for="viewing in showedViewings" :key="viewing.id">
                             <td>{{ viewing.lodger.firstname }} {{ viewing.lodger.lastname }}</td>
-                            <td>{{ viewing.agent?.firstname }} {{ viewing.agent?.lastname }}</td>
-                            <td>{{ viewing.availaibility.property.owner.firstname }} {{ viewing.availaibility.property.owner.lastname }}</td>
+                            <td>{{ viewing.agent?.firstname ?? 'Non défini' }} {{ viewing.agent?.lastname }}</td>
+                            <td>{{ viewing.availaibility.request.property.owner.firstname }} {{ viewing.availaibility.request.property.owner.lastname }}</td>
                             <td>
-                                <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.property.id} }" class="text-decoration-underline text-indigo">
-                                    {{ viewing.availaibility.property.title }}
+                                <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.request.property.id} }" class="text-decoration-underline text-indigo">
+                                    {{ viewing.availaibility.request.property.title }}
                                 </router-link>
                             </td>
                             <td>{{ viewing.availaibility.slot }}</td>

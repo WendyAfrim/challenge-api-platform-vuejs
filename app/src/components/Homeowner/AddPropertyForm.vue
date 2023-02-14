@@ -23,7 +23,12 @@
                     <v-select v-model="property.type" :items="propertyType" :rules="typeRules" label="Type de bien" solo></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
-                    <v-select v-model="property.state" :items="propertyState" :rules="stateRules" label="Etat du bien" solo></v-select>
+                    <v-select :items="numberRoom" label="Nombre de chambres" solo v-model="property.number_rooms"></v-select>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center align-start">
+                <v-col cols="12" md="12">
+                    <v-text-field type="number" v-model="property.surface" :rules="surfaceRules" label="Surface" required></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="d-flex justify-center align-start">
@@ -45,17 +50,6 @@
                     <v-textarea outlined name="input-7-4" label="Description" v-model="property.description"></v-textarea>
                 </v-col>
             </v-row>
-            <v-row class="d-flex justify-center align-start">
-                <v-col cols="12" md="12">
-                    <v-select :items="numberRoom" label="Nombre de chambres" solo v-model="property.number_rooms"></v-select>
-                </v-col>
-            </v-row>
-            <v-row class="d-flex justify-center align-start">
-                <v-col cols="12" md="12">
-                    <v-text-field type="number" v-model="property.surface" :rules="surfaceRules" label="Surface" required></v-text-field>
-                </v-col>
-            </v-row>
-
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="4">
                     <v-checkbox  v-model="property.has_balcony" label="Balcon"></v-checkbox>
@@ -93,6 +87,7 @@
     import { ref, reactive } from 'vue';
     import { useAuthStore } from '@/stores/auth.store';
     import type { Roles } from "@/enums/roles";
+import { PropertyEnum } from "@/enums/PropertyEnum";
 
     const router = useRouter();
     const route = useRoute();
@@ -103,8 +98,6 @@
     const loading = ref(false);
 
     const user = authStore.user;
-
-    const forType = route.meta.forType as Roles;
 
     const errorType = ref('');
     const message = ref({
@@ -151,7 +144,7 @@
         has_parking: false,
         is_furnished: false,
         price: 0,
-        state: '',
+        state: PropertyEnum.Availaible,
     });
     
 

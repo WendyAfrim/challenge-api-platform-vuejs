@@ -50,6 +50,19 @@ class RequestRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
+    public function findRequestsByOwnerId(string $ownerId): Request|array
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.property', 'p')
+            ->leftJoin('p.owner', 'o')
+            ->where('o.id = :ownerId')
+            ->setParameter('ownerId', $ownerId)
+            ->orderBy('r.created_at')
+            ->getQuery()
+            ->getResult();
+    }
+
+
     public function findRequestsByLodgerId(string $lodgerId): Request|array
     {
         return $this->createQueryBuilder('r')

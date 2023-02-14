@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Layout from '@/components/Layout.vue';
-import PropertyForm from '@/components/Property/PropertyForm.vue';
+import PropertyForm from '@/components/Homeowner/AddPropertyForm.vue';
 </script>
     
 <template>

@@ -1,4 +1,4 @@
-import type { Request } from '@/interfaces/Request';
+import type { PropertyRequest } from '@/interfaces/PropertyRequest';
 
 export interface Property {
     id: number,
@@ -7,5 +7,5 @@ export interface Property {
     zipcode: string,
     price : number,
     state : string,
-    requests: Request
+    requests: PropertyRequest
 }

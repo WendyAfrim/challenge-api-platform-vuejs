@@ -12,7 +12,7 @@
         </v-row>
 
         <v-row>
-            <v-table v-if="viewings.length > 0">
+            <v-table v-if="viewings?.length !== 0">
                 <template v-slot:default>
                     <thead>
                         <tr>
@@ -24,7 +24,7 @@
                     </thead>
                     <tbody >
                         <tr v-for="viewing in viewings" :key="viewing.id">
-                            <td>{{ viewing?.availaibility.property.title }}</td>
+                            <td>{{ viewing.availaibility.request.property.title}}</td>
                             <td>{{ viewing?.lodger.firstname }} {{ viewing?.lodger.lastname }}</td>
                             <td>{{ viewing?.agent ? viewing?.agent.firstname : 'Non défini' }}</td>
                             <td>{{ viewing?.availaibility.slot ?? 'Non défini' }}</td>
@@ -55,7 +55,7 @@ const message = ref({
     type: ''
 })
 
-let viewings: Viewing[];
+let viewings= ref<Viewing[]>();
 
 
 await getOwnerVisits(user.id)
