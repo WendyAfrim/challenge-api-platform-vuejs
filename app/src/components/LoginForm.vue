@@ -1,7 +1,7 @@
 <template>
-    <v-layout class="d-flex flex-column justify-center items-center">
-      <div class="ma-auto w-25">
-        <v-alert v-if="message.text" class="mb-10 text-white" :color="message.type">
+    <v-layout class="d-flex flex-column justify-center align-center">
+      <div class="w-25">
+        <v-alert v-if="message.text" class="mb-5 text-white" :color="message.type">
           {{ message.text }}
           <div v-if="errorType && errorType === 'not_verified_email'">
             <v-btn class="mt-4" color="white" @click="router.push({name: 'email_verification_new_link'})">Je n'ai pas reçu d'email</v-btn>

@@ -43,34 +43,36 @@
     <v-btn class="mb-10" icon @click="$router.go(-1)">
         <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
-    <h2 class="mb-4 text-h4 font-weight-bold text-primary">Dossier de {{ user.firstname }} {{ user.lastname }} (#{{ user.id }})</h2>
-    <h3 class="mb-10 text-h6 font-weight-light text-grey-darken-5">Statut du dossier: {{ $t(`validation_status.${user.validationStatus}`) }}</h3>
+    <v-row align="center">
+        <v-col cols="12" md="6">
+            <h4 class="text-h4 font-weight-bold heading-sentence">Dossier de <span>{{ user.firstname }} {{ user.lastname }}</span> (#{{ user.id }})</h4>
+            <h3 class="mb-5 text-h6 text-grey-darken-5 heading-sentence font-weight-light">Statut du dossier: <span>{{ $t(`validation_status.${user.validationStatus}`) }}</span></h3>
+        </v-col>
+    </v-row>
     <div class="d-flex flex-column">
-            <div>
                 <v-list lines="three">
-                    <h3 class="mb-4 text-h5 font-weight-bold">Informations</h3>
-                    <v-list-item>
+                    <h3 class="mb-2 text-h5 font-weight-bold">Informations</h3>
+                    <v-list-item density="compact">
                         <v-list-item-title class="text-h7 font-weight-bold">Prénom</v-list-item-title>
                         <span class="font-weight-medium">{{ user.firstname }}</span>
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item density="compact">
                         <v-list-item-title class="text-h7 font-weight-bold">Nom de famille</v-list-item-title>
                         {{ user.lastname }}
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item density="compact">
                         <v-list-item-title class="text-h7 font-weight-bold">Email</v-list-item-title>
                         {{ user.email }}
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item density="compact">
                         <v-list-item-title class="text-h7 font-weight-bold">Situation professionnelle</v-list-item-title>
                         {{ user.situation }}
                     </v-list-item>
-                    <v-list-item>
+                    <v-list-item density="compact">
                         <v-list-item-title class="text-h7 font-weight-bold">Salaire</v-list-item-title>
                         {{ user.salary ?? '0' }} €
                     </v-list-item>
                 </v-list>
-            </div>
 
             <div class="d-flex flex-column">
                 <v-alert v-if="message.text" :type="message.type" class="mt-2">{{ message.text }}</v-alert>
@@ -81,8 +83,8 @@
                     <v-col v-if="user.validationStatus === 'to_review'" md="5">
                         <v-form ref="form" class="d-flex flex-column align-start" validate-on="submit" @submit.prevent="handleSubmit">
                             <v-list lines="three" class="w-100">
-                                <h3 class="mb-4 text-h6 font-weight-bold">A valider</h3>
-                                <v-list-item v-for="(item, index) in baseInvalidDocuments" :key="index">
+                                <h3 class="mb-4 text-h6 font-weight-bold">À valider</h3>
+                                <v-list-item v-for="(item, index) in baseInvalidDocuments" :key="index" density="compact">
                                     <v-list-item-title class="text-h7 font-weight-bold">{{ $t(`document_type.${item.type}`) }}</v-list-item-title>
                                     <div class="d-flex align-center justify-between">
                                         <a :href="item.contentUrl" target="_blank" class="mr-3 font-weight-medium">{{ item.name }}</a>
@@ -116,7 +118,7 @@
                     <v-col v-if="user.validationStatus === 'to_complete'" >
                         <v-list lines="three" class="">
                             <h3 class="mb-4 text-h6 font-weight-bold">En attente</h3>
-                            <v-list-item v-for="(item, index) in invalidDocuments" :key="index">
+                            <v-list-item v-for="(item, index) in invalidDocuments" :key="index" density="compact">
                                 <v-list-item-title class="text-h7 font-weight-bold">{{ $t(`document_type.${item.type}`) }}</v-list-item-title>
                                 <a :href="item.contentUrl" target="_blank" class="mr-3 font-weight-medium">{{ item.name }}</a>
                                 <v-divider></v-divider>
@@ -127,7 +129,7 @@
                     <v-col>
                         <v-list lines="three" class="">
                             <h3 class="mb-4 text-h6 font-weight-bold">Validés</h3>
-                            <v-list-item v-for="(item, index) in baseValidatedDocuments" :key="index">
+                            <v-list-item v-for="(item, index) in baseValidatedDocuments" :key="index" density="compact">
                                 <v-list-item-title class="text-h7 font-weight-bold">{{ $t(`document_type.${item.type}`) }}</v-list-item-title>
                                 <a :href="item.contentUrl" target="_blank" class="mr-3 font-weight-medium">{{ item.name }}</a>
                                 <v-divider></v-divider>
@@ -142,6 +144,9 @@
 </template>
 
 <style scoped lang="scss">
+    .v-list-item {
+        padding: 4px 8px;
+    }
     .item {
         flex: 1 1 0;
         width: 0;

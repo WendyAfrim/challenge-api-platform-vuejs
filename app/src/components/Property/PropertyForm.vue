@@ -1,8 +1,11 @@
 <template>
     <v-container>
-
-        <h1 class="text-h4 font-weight-bold text-center mb-10">Formulaire - Ajout d'un bien</h1>
-        <v-alert v-if="message.text" class="mb-10 text-white" :color="message.type">
+        <v-row class="d-flex justify-center">
+            <v-col cols="12" md="6">
+                <h1 class="text-h4 font-weight-bold text-center mb-3 heading-sentence">Remplissez ce formulaire afin <span>d'ajouter votre bien</span></h1>
+            </v-col>
+        </v-row>
+        <v-alert v-if="message.text" class="mb-5 text-white" :color="message.type">
           {{ message.text }}
         </v-alert>
 

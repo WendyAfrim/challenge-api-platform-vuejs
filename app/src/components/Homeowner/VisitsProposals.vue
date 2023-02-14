@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-alert v-if="message.text" class="mb-10 text-white" :color="message.type">
+        <v-alert v-if="message.text" class="mb-5 text-white" :color="message.type">
           {{ message.text }}
         </v-alert>
 

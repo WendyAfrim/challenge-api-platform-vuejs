@@ -1,1 +1,6 @@
 @import 'base.css';
+
+.heading-sentence span {
+    color: rgb(var(--v-theme-primary));
+    font-weight: 900;
+}

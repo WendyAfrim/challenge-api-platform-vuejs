@@ -1,13 +1,15 @@
 <template>
     <v-container v-if="'homeowner' === forType">
-      <div class="d-flex justify-space-between align-start">
-        <h1 class="">Tous mes biens</h1>
-        <div>
+      <v-row align="center" justify="space-between" no-gutters>
+        <v-col cols="12" md="6">
+          <h1 class="text-h4 font-weight-bold heading-sentence">Tous <span>mes biens</span></h1>
+        </v-col>
+        <v-col cols="12" md="6" class="text-right">
           <router-link :to="{ name: `homeowner_property_add` }">
             <v-btn rounded="pill" color="primary">Ajouter un bien</v-btn>
           </router-link>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
       <v-table v-if="properties">
         <template v-slot:default>
           <thead>
@@ -15,7 +17,7 @@
               <th class="text-left"> Nom du bien </th>
               <th class="text-left"> Adresse</th>
               <th class="text-left"> Loyer </th>
-              <th class="text-left"> Etat </th>
+              <th class="text-left"> État </th>
               <th class="text-left"> Actions </th>
             </tr>
           </thead>

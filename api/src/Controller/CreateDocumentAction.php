@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Document;
 use App\Entity\MediaObject;
-use App\Enums\DocumentStatusEnum;
+use App\Enums\UserValidationStatusEnum;
 use App\Repository\DocumentRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +17,10 @@ class CreateDocumentAction extends AbstractController
 {
     public function __invoke(Request $request, UserRepository $userRepository, DocumentRepository $documentRepository): Document
     {
+        $user = $userRepository->find($request->get('user_id'));
+        if ($user->getValidationStatus() === UserValidationStatusEnum::ToReview) {
+            throw new BadRequestHttpException('User is already in review');
+        }
         $uploadedFile = $request->files->get('file');
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
@@ -32,7 +36,6 @@ class CreateDocumentAction extends AbstractController
         if ($request->get('is_valid')) {
             $mediaObject->setIsValid($request->get('is_valid'));
         }
-        $user = $userRepository->find($request->get('user_id'));
         $mediaObject->setUserDocument($user);
 
         return $mediaObject;
