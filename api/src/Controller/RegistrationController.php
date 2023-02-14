@@ -84,13 +84,13 @@ class RegistrationController extends AbstractController
     {
         $id = $request->get('id');
             if (null === $id) {
-            return $this->redirect('http://localhost:4000/login?'.http_build_query(['status' => 'error']));
+            return $this->redirect($_ENV['BASE_URL'].'/login?'.http_build_query(['status' => 'error']));
         }
 
         $user = $this->userRepository->find($id);
 
         if (null === $user) {
-            return $this->redirect('http://localhost:4000/login?'.http_build_query(['status' => 'error']));
+            return $this->redirect($_ENV['BASE_URL'].'/login?'.http_build_query(['status' => 'error']));
         }
 
         try {
@@ -103,11 +103,11 @@ class RegistrationController extends AbstractController
                 ->subject('Please Confirm your Email')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            return $this->redirect('http://localhost:4000/login?'.http_build_query(['status' => 'expired']));
+            return $this->redirect($_ENV['BASE_URL'].'/login?'.http_build_query(['status' => 'expired']));
         } catch (VerifyEmailExceptionInterface $exception) {
-            return $this->redirect('http://localhost:4000/login?'.http_build_query(['status' => 'error']));
+            return $this->redirect($_ENV['BASE_URL'].'/login?'.http_build_query(['status' => 'error']));
         }
-        return $this->redirect('http://localhost:4000/login?'.http_build_query(['status' => 'validated']));
+        return $this->redirect($_ENV['BASE_URL'].'/login?'.http_build_query(['status' => 'validated']));
     }
 
     #[Route('/verify/request-new-link', name: 'app_request_verify_email')]
