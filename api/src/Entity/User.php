@@ -70,6 +70,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_AGENCY = 'ROLE_AGENCY';
     public const ROLE_HOMEOWNER = 'ROLE_HOMEOWNER';
 
+    public const ALLOWED_ROLES = [
+        self::ROLE_TENANT,
+        self::ROLE_HOMEOWNER,
+    ];
+
     #[Assert\NotBlank(groups: ['register'])]
     #[Assert\Email(groups: ['register'])]
     #[Groups(['user_read', 'user_write', 'property_read'])]
