@@ -67,7 +67,7 @@
                     </v-list-item>
                     <v-list-item>
                         <v-list-item-title class="text-h7 font-weight-bold">Créneau</v-list-item-title>
-                        >{{ (new Date(viewing.availaibility.slot)).toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " ") }}
+                        {{ viewing.availaibility.slot }}
                     </v-list-item>
                 </v-list>
             </v-card>

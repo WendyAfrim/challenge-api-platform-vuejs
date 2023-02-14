@@ -56,6 +56,9 @@
         });
 
     const showRequests = computed(() => {
+        if (requests.value[0] == 404) {
+        return false;
+        }
         if (!selection.value.length) {
             return requests.value;
         }

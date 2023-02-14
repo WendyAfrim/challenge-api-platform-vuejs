@@ -72,7 +72,7 @@
                             {{ viewing.availaibility.property.title }}
                         </router-link>
                     </td>
-                    <td>{{ (new Date(viewing.availaibility.slot)) }}</td>
+                    <td>{{ viewing.availaibility.slot }}</td>
                     <td>
                         <router-link :to="{ name: 'agency_show_visit', params: {id: viewing.id} }">
                             <v-btn color="primary" variant="tonal">Voir</v-btn>
