@@ -49,3 +49,4 @@ jobs:
             cd ${{ secrets.SSH_TARGET }}/api
             php bin/console doctrine:migrations:migrate --no-interaction
             php bin/console cache:clear --env=prod
+            php bin/console lexik:jwt:generate-keypair
