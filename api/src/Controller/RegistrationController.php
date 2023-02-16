@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +47,15 @@ class RegistrationController extends AbstractController
 
         $user = new User();
         if (isset($data['email'])) $user->setEmail($data['email']);
-        if (isset($data['roles'])) $user->setRoles($data['roles']);
+        if (isset($data['roles']) && count($data['roles']) === 1) {
+            if (count(array_diff($data['roles'], User::ALLOWED_ROLES)) > 0) {
+                return new JsonResponse(['message' => 'Rôle(s) non valide(s)'], 400);
+            } else {
+                $user->setRoles($data['roles']);
+            }
+        } else {
+            return new JsonResponse(['message' => 'Rôle(s) non valide(s)'], 400);
+        }
         if (isset($data['plainPassword'])) $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['plainPassword']));
 
         $errors = $this->validator->validate($user, null, ['registration']);
@@ -58,7 +67,11 @@ class RegistrationController extends AbstractController
             return new JsonResponse(['errors' => $errorsOutput], 400);
         }
         $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->flush();
+        } catch (UniqueConstraintViolationException $e) {
+            return new JsonResponse(['message' => 'Un compte avec cet email existe déjà'], 400);
+        }
 
         $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
             (new TemplatedEmail())
