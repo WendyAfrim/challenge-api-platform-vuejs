@@ -3,13 +3,16 @@ import router from '@/router';
 import { useAuthStore } from '@/stores/auth.store';
 
 export const axios = axiosDefault.create();
-axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] =  'application/json';
+axios.defaults.headers.put['Content-Type'] = 'application/json';
+axios.defaults.headers.get['Content-Type'] = 'application/json';
+axios.defaults.headers.delete['Content-Type'] = 'application/json';
 
 axios.interceptors.request.use(
   async config => {
     const authStore = useAuthStore();
     if (authStore.access_token && !authStore.isTokenExpired()) config.headers['Authorization'] = `Bearer ${authStore.access_token}`;
+    config.headers['Accept'] = 'application/json';
     return config;
   },
   error => {

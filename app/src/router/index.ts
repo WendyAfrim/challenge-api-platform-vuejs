@@ -29,7 +29,26 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/tenant/',
+      path: '/',
+      name: 'home',
+      component: Base,
+      meta: {
+        forType: 'tenant',
+        location: 'front'
+      },
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: HomeView,
+          meta: {
+            public: true,
+          },
+        },
+      ],
+    },
+    {
+      path: '/tenant',
       name: 'tenant',
       component: Base,
       meta: {

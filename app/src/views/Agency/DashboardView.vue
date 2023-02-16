@@ -1,21 +1,24 @@
 <script setup lang="ts">
     import { Roles } from '@/enums/roles';
     import { axios } from '@/services/auth';
-    import { ref, computed } from 'vue';
+    import { ref, computed, onMounted } from 'vue';
     import router from '@/router';
 
-    const users = ref();
+    const users = ref([]);
     const selection = ref([]);
-    console.log(selection);
-    
 
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users`, { params: {roles: Roles.Tenant}});
-        users.value = response.data;
-        console.log(response);
-    } catch (error) {
-        console.log(error);
+    const getUsers = async () => {
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users`, { params: {roles: Roles.Tenant}});
+            users.value = response.data;
+        } catch (error) {
+            throw 'Error while fetching users';
+        }
     }
+
+    onMounted(async () => {
+        await getUsers();
+    });
 
     const showedUsers = computed(() => {
         if (!selection.value.length) {
