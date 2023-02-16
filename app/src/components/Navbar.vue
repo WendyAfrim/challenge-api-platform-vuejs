@@ -15,7 +15,7 @@ const currentRouteName = computed(() => route.name);
 
 </script>
 <template>
-    <v-app-bar color="transparent" elevation="0" class="sticky">
+    <v-app-bar color="transparent" elevation="0" class="mb-5">
         <template v-if="role && role === 'homeowner'">
             <router-link :to="{ name: `${role}_dashboard` }">
                 <v-app-bar-title class="font-weight-bold ml-16" text="Easyhome" />
@@ -112,5 +112,6 @@ const currentRouteName = computed(() => route.name);
 <style scoped lang="scss">
 .v-app-bar {
     backdrop-filter: blur(5px);
+    position: sticky !important;
 }
 </style>

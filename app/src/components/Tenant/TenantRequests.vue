@@ -1,6 +1,6 @@
 <template>
-    <v-container>
-        <v-row align="start" no-gutters>
+    <v-container class="d-flex justify-center">
+        <v-row align="center" no-gutters>
             <v-col cols="12" md="12">
                 <h1 class="text-h4 font-weight-bold mb-6 heading-sentence">Mes <span>demandes</span></h1>
                 <v-chip-group multiple selected-class="text-primary" v-model="selection">

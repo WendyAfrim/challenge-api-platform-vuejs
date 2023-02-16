@@ -95,9 +95,12 @@ onMounted(async () => {
       </span>
     </div>
   </div>
-  <div v-else-if="!loading" class="ma-auto">
-    <span class="text-h5 ma-auto">Aucun résultat correspondant à votre profil</span>
-  </div>
+
+  <v-row v-else-if="!loading" align="center" no-gutters>
+    <v-col cols="12" class="text-center">
+      <span class="text-h5 ma-auto">Aucun résultat correspondant à votre profil</span>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped>
