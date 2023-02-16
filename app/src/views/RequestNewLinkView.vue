@@ -36,7 +36,7 @@ import { Roles } from "@/enums/roles";
     <v-layout class="d-flex flex-column justify-center items-center">
         <Navbar :for="Roles.Tenant" />
         <div class="ma-auto w-25">
-            <v-alert v-if="message.text" class="mb-10 text-white" :text="message.text" :color="message.type"></v-alert>
+            <v-alert v-if="message.text" class="mb-5 text-white" :text="message.text" :color="message.type"></v-alert>
             <v-card class="elevation-12">
             <v-toolbar dark color="primary">
                 <v-toolbar-title>Recevoir un nouveau mail de confirmation</v-toolbar-title>

@@ -14,12 +14,14 @@
 .v-main {
     display: flex;
     min-height: 100vh;
+    padding: 0;
 
     .v-container {
         display: flex;
         flex-direction: column;
         justify-content: center;
         height: 100%;
+        padding: 0;
     }
 }
 </style>

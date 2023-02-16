@@ -37,8 +37,8 @@ const messages = {
       tax_status: 'Situation fiscale',
     },
     validation_status: {
-      to_complete: 'A compléter',
-      to_review: 'A valider',
+      to_complete: 'À compléter',
+      to_review: 'À valider',
       validated: 'Validé',
     },
     work_situation: {

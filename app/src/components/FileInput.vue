@@ -13,11 +13,19 @@ const message = ref({
   type:''
 });
 
+const alert = ref(false);
+
 function onFileSelected(event: any){
   selectedFile.value = event.target.files[0];
 }
 
 async function onUpload() {
+  alert.value = true;
+  if (undefined === selectedFile.value) {
+    message.value.text = 'Veuillez sélectionner un fichier';
+    message.value.type = 'error';
+    return;
+  }
   console.log("pro Id: ",  props.propertyId)
   const formData = new FormData();
   if(undefined !== selectedFile.value && undefined !== selectedFile.value.name){
@@ -32,7 +40,7 @@ async function onUpload() {
         }
     )
     if(response.data){
-      message.value.text = 'fichier recu';
+      message.value.text = 'Ce fichier a été ajouté avec succès';
       message.value.type = 'success';
     }
   } catch (error: any) {
@@ -49,24 +57,23 @@ async function onUpload() {
 </script>
 
 <template>
-  <v-card>
-    <v-alert v-if="message.text" class="text-white" :color="message.type">
-      {{ message.text }}
-    </v-alert>
-    <v-file-input
-        color="primary"
-        variant="outlined"
-        show-size
-        label="File"
-        @change="onFileSelected"
-    ></v-file-input>
-    <v-btn color="primary" variant="tonal" @click="onUpload">
-      Upload
-      <v-icon primary>mdi-cloud-upload</v-icon>
-    </v-btn>
-  </v-card>
-
-
+  <v-alert v-if="message.text" v-model="alert" class="text-white mb-3" :color="message.type" density="compact" closable>
+    {{ message.text }}
+  </v-alert>
+  <v-row align="center">
+    <v-col cols="12">
+      <v-file-input
+      color="primary"
+      variant="outlined"
+      show-size
+      label="File"
+      @change="onFileSelected"
+      append-icon="mdi-cloud-upload"
+      @click:append="onUpload"
+      @click:clear="selectedFile = undefined"
+      ></v-file-input>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped>

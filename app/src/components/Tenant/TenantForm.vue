@@ -29,10 +29,10 @@ const router = useRouter();
 const loading = ref(false);
 const firstname = ref();
 const lastname = ref();
-const done = ref(false);
 
 const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/${authStore.user.id}`);
 const user = response.data;
+const done = ref(user.validationStatus === 'to_review');
 
 const invalidDocuments = (user.documents.filter((document: any) => !document.isValid));
 const invalidDocumentsTypes = invalidDocuments.map((document: any) => document.type);
@@ -210,7 +210,6 @@ async function onSubmit(formData: any) {
   }
   loading.value = false;
 }
-const { lgAndUp } = useDisplay();
 </script>
 <template>
     <div v-if="done">
@@ -225,7 +224,7 @@ const { lgAndUp } = useDisplay();
       </v-card>
     </div>
     <v-progress-circular v-else-if="loading" indeterminate color="primary" class="ma-auto"></v-progress-circular>
-    <FormWizard v-else :steps="stepsToComplete" class="ma-auto" as="v-form" :validation-schema="schema" @submit="onSubmit" :class="[lgAndUp ? 'w-50' : 'w-75']">
+    <FormWizard v-else :steps="stepsToComplete" class="w-75 ma-auto" as="v-form" :validation-schema="schema" @submit="onSubmit">
 
       <FormStep v-if="!user.firstname && !user.lastname">
         <h1 class="mb-10 text-h4 font-weight-bold">Mes informations</h1>
@@ -291,7 +290,7 @@ const { lgAndUp } = useDisplay();
     </FormWizard>
 </template>
 
-<style>
+<style scoped>
 input,
 select {
   margin: 10px 0;

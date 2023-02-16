@@ -1,16 +1,22 @@
 <template>
   <v-container>
-    <template v-if="props.for === 'homeowner'">
-      <h1 class="text-h4 font-weight-bold text-center mb-3">Créez votre compte et regroupez tous vos dossiers au même
-        endroit.
-      </h1>
-    </template>
-    <template v-else-if="props.for === 'tenant'">
-      <h1 class="text-h4 font-weight-bold text-center mb-3">Créez votre compte et trouvez votre logement idéal en quelques
-        clics.
-      </h1>
-    </template>
-    <v-alert v-if="message.content" class="mb-10 text-white" :color="message.type">
+    <v-row class="d-flex justify-center">
+      <template v-if="props.for === 'homeowner'">
+        <v-col cols="12" md="6">
+          <h1 class="text-h4 font-weight-bold text-center mb-3 heading-sentence">Créez votre compte et regroupez tous vos dossiers <span>au même
+            endroit.</span>
+          </h1>
+        </v-col>
+      </template>
+      <template v-else-if="props.for === 'tenant'">
+        <v-col cols="12" md="6">
+          <h1 class="text-h4 font-weight-bold text-center mb-3 heading-sentence">Créez votre compte et trouvez votre logement idéal <span>en quelques
+            clics.</span>
+          </h1>
+        </v-col>
+      </template>
+    </v-row>
+    <v-alert v-if="message.content" class="mb-3 text-white" :color="message.type">
       <div v-if="message.type === 'error'">
         <template v-for="(messages, field) in message.content" :key="field">
           <li>{{ field }}: </li>

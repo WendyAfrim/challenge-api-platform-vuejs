@@ -30,7 +30,7 @@ if (props.for === 'homeowner' && !heading) {
 
 const highlighted_heading = heading.replace(
     new RegExp(highlighted_words.join('|'), 'gi'),
-    (match) => `<span class="span">${match}</span>`
+    (match) => `<span>${match}</span>`
 );
 
 const link = computed(() => {
@@ -46,7 +46,7 @@ const link = computed(() => {
 </script>
 
 <template>
-    <v-row align="center" justify="space-between">
+    <v-row align="center" justify="space-between" no-gutters>
         <v-col>
             <h1 class="text-h2 font-weight-black heading-sentence" v-html="highlighted_heading"></h1>
             <v-btn color="primary" class="mt-6" :to="link">
@@ -67,13 +67,6 @@ const link = computed(() => {
     img {
         max-width: 100%;
         max-height: 100%;
-    }
-}
-
-.heading-sentence {
-    :deep(span) {
-        color: rgb(var(--v-theme-primary));
-        font-weight: 900;
     }
 }
 </style>

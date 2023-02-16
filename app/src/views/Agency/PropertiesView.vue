@@ -6,8 +6,12 @@
 </script>
 
 <template>
-    <div class="mx-16 h-75">
-        <h1 class="mb-10 text-h4 font-weight-bold">Tous les biens</h1>
-        <PropertiesGrid />
-    </div>
+    <v-container>
+        <v-row>
+            <v-col cols="12" md="6">
+                <h1 class="mb-3 text-h4 font-weight-bold heading-sentence">Biens <span>immobiliers</span></h1>
+                <PropertiesGrid />
+            </v-col>
+        </v-row>
+    </v-container>
 </template>

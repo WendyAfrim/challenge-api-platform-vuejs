@@ -68,16 +68,18 @@ async function get_page(pageNumber = 1) {
   loading.value = false;
 }
 
-await get_page(1);
+onMounted(async () => {
+  await get_page();
+});
 
 </script>
     
 <template>
   <div v-if="items_number !== 0">
-    <div id="box" >
+    <div id="box">
       <v-alert v-if="message.text" class="text-white" :color="message.type">{{ message.text }}</v-alert>
       <div class="ma-0" v-for="element in properties" :key="element['@id'].split('/').pop()">
-      <Property :property="element"></Property>
+        <Property :property="element"></Property>
       </div>
     </div>
     <div class="text-center" v-if="last_page > 1">
