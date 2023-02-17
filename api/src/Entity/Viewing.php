@@ -20,15 +20,16 @@ class Viewing
     use EntityIdTrait;
 
     #[ORM\ManyToOne(inversedBy: 'viewings')]
-    #[Groups(['viewing_read', 'viewing_write'])]
+    #[Groups(['viewing_read', 'viewing_write', 'property_read'])]
     private ?User $agent = null;
 
     #[ORM\ManyToOne(inversedBy: 'visits')]
     #[Groups(['viewing_read', 'viewing_write'])]
     private ?User $lodger = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[Groups(['viewing_read', 'viewing_write'])]
+    #[ORM\OneToOne(targetEntity: 'Availaibility', inversedBy: 'viewing' ,cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'availaibility_id', referencedColumnName: 'id', nullable: false)]
+    #[Groups(['viewing_read', 'viewing_write', 'availaibility_read'])]
     private ?Availaibility $availaibility = null;
 
     public function getAgent(): ?User

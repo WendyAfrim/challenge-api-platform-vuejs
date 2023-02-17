@@ -57,12 +57,12 @@
                     </v-list-item>
                     <v-list-item>
                         <v-list-item-title class="text-h7 font-weight-bold">Propriétaire</v-list-item-title>
-                        {{ viewing.availaibility.property.owner.firstname }} {{ viewing.availaibility.property.owner.lastname }}
+                        {{ viewing.availaibility.request.property.owner.firstname }} {{ viewing.availaibility.request.property.owner.lastname }}
                     </v-list-item>
                     <v-list-item>
                         <v-list-item-title class="text-h7 font-weight-bold">Bien</v-list-item-title>
-                        <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.property.id} }" class="text-decoration-underline text-indigo">
-                            {{ viewing.availaibility.property.title }}
+                        <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.request.property.id} }" class="text-decoration-underline text-indigo">
+                            {{ viewing.availaibility.request.property.title }}
                         </router-link>
                     </v-list-item>
                     <v-list-item>

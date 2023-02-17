@@ -43,7 +43,8 @@ class ViewingRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('v')
             ->leftJoin('v.availaibility', 'a')
-            ->leftJoin('a.property', 'p')
+            ->leftJoin('a.request', 'r')
+            ->leftJoin('r.property', 'p')
             ->leftJoin('p.owner', 'o')
             ->where('o.id = :ownerId')
             ->setParameter('ownerId', $ownerId)

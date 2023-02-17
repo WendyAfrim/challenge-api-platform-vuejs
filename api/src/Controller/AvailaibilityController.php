@@ -22,52 +22,9 @@ class AvailaibilityController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly PropertyRepository $propertyRepository,
         private readonly AvailaibilityRepository $availaibilityRepository,
-        private readonly EntityManagerInterface $manager,
         private readonly EmailService $emailService,
-        private readonly LocationService $locationService
     )
     {
-    }
-
-    #[Route('/availaibilities/proposed/by_owner', name: 'post_owner_availaibilities')]
-    public function postOwnerAvailaibilities(Request $request): JsonResponse
-    {
-        $availaibilities = json_decode($request->getContent(), true);
-
-        if(!$availaibilities) {
-            throw new \Exception('Aucune disponibilité n\'a été choisie');
-        }
-
-        $propertyId = $availaibilities[0]['property'];
-        $lodgerId = $availaibilities[0]['lodger'];
-
-        if ($this->locationService->isSlotConform($propertyId, $lodgerId)) {
-
-            foreach ($availaibilities as $availaibility) {
-
-                $slot = ((new Availaibility())
-                    ->setSlot(DateFormatterHelper::stringToDatetime($availaibility['slot']))
-                    ->setProperty($this->propertyRepository->find($availaibility['property']))
-                    ->setLodger($this->userRepository->find($availaibility['lodger']))
-                );
-
-                $this->manager->persist($slot);
-            }
-
-            $this->locationService->lockPropertyVisits($propertyId, $lodgerId);
-            $this->manager->flush();
-
-            return new JsonResponse([
-                'message' => 'Vos disponibilités ont bien été enregistrées ! Un email a été envoyé au futur locataire',
-                'status' => 201
-            ]);
-        }
-
-        return new JsonResponse([
-            'message' => 'Des créneaux ont déjà été proposés pour ce bien.',
-            'status' => 406
-        ]);
-
     }
 
     #[Route('/send/property/{propertyId}/availaibility/{lodgerId}', name: 'send_email_availaibilities')]

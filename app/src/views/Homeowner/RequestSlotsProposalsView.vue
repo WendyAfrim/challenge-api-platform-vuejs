@@ -1,12 +1,12 @@
 <script setup lang="ts">
-    import VisitsProposals from '@/components/Homeowner/VisitsProposals.vue';
+    import RequestSlotsProposals from '@/components/Homeowner/RequestSlotsProposals.vue';
     import Layout from '@/components/Layout.vue';
 </script>
 
 <template>
     <Layout>
         <template v-slot>
-            <VisitsProposals/>
+            <RequestSlotsProposals/>
         </template>
     </Layout>
 </template>

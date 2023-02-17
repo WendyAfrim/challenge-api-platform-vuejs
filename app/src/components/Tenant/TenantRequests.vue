@@ -91,6 +91,10 @@
             case RequestEnum.Pending:
                 state = 'En attente'
                 break;
+
+            case RequestEnum.Assignment:
+                state = 'En attente d\'assignation'
+                break;
         } 
 
         return state;

@@ -24,6 +24,9 @@ const currentRouteName = computed(() => route.name);
                     <router-link :to="{ name: `${role}_dashboard` }">
                         <v-btn color="primary" variant="outlined">Dashboard</v-btn>
                     </router-link>
+                    <router-link :to="{ name: `${role}_requests`}">
+                        <v-btn class="ml-4" color="primary" variant="outlined">Mes demandes</v-btn>
+                    </router-link>
                     <router-link :to="{ name: `${role}_viewings`, params: {'ownerId' : user.id} }">
                         <v-btn class="ml-4" color="primary" variant="outlined">Mes visites</v-btn>
                     </router-link>

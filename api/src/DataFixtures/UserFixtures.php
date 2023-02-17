@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 use App\Entity\User;
+use App\Enums\UserValidationStatusEnum;
 use App\Enums\WorkSituationEnum;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -42,7 +43,7 @@ class UserFixtures extends Fixture implements FixtureGroupInterface
         ->setEmail('admin@test.com')
         ->setRoles([User::ROLE_AGENCY])
         ->setSalary(null)
-        ->setSituation($faker->randomElement($situations))
+        ->setValidationStatus(UserValidationStatusEnum::Validated)
         ->setPassword($this->passwordHasher->hashPassword($admin, 'admin'));
         $manager->persist($admin);
 

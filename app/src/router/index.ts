@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import PropertyRequestsView from "@/views/Homeowner/PropertyRequestsView.vue";
 import ViewingView from "@/views/Homeowner/ViewingView.vue";
-import VisitsProposalsView from "@/views/Homeowner/VisitsProposalsView.vue";
+import RequestSlotsProposalsView from "@/views/Homeowner/RequestSlotsProposalsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
 import TenantRequestsView from "@/views/Tenant/TenantRequestsView.vue";
@@ -12,9 +12,10 @@ import TenantPropertiesView from "@/views/Tenant/TenantPropertiesView.vue";
 import TenantRequestSlotsView from "@/views/Tenant/TenantRequestSlotsView.vue";
 
 import HomeownerDashboardView from "@/views/Homeowner/DashboardView.vue";
+import HomeownerRequestsView from "@/views/Homeowner/HomeownerRequestsViews.vue";
 import AgencyDashboardView from "@/views/Agency/DashboardView.vue";
 import RequestNewLinkView from "@/views/RequestNewLinkView.vue";
-import PropertyRegister from '@/views/Property/AddProperty.vue';
+import PropertyRegister from '@/views/Homeowner/AddPropertyView.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import PropertyPhotosUploadViews from "@/views/PropertyPhotosUploadViews.vue";
 import WizardViewVue from '@/views/Tenant/WizardView.vue';
@@ -160,14 +161,19 @@ const router = createRouter({
           component: PropertyRequestsView,
         },
         {
+          path: 'requests',
+          name: 'homeowner_requests',
+          component: HomeownerRequestsView,
+        },
+        {
           path: 'viewings/:ownerId',
           name: 'homeowner_viewings',
           component: ViewingView,
         },
         {
-          path: 'lodger/:id/viewings/proposals/:propertyId',
-          name: 'homeowner_visits_proposals',
-          component: VisitsProposalsView
+          path: 'request/:id/slots/proposals',
+          name: 'homeowner_request_slots_proposals',
+          component: RequestSlotsProposalsView
         },
         {
           path: 'property/:id/add/photos',

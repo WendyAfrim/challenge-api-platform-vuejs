@@ -21,30 +21,22 @@ class Availaibility
     use TimestampTrait;
     use EntityIdTrait;
 
-    #[ORM\ManyToOne(inversedBy: 'availaibilities')]
-    #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read'])]
-    private ?Property $property = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read'])]
+    #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read', 'property_read'])]
     private ?\DateTimeInterface $slot = null;
 
     #[ORM\ManyToOne(inversedBy: 'availaibilities')]
-    #[Groups(['availaibility_read', 'availaibility_write', 'viewing_read'])]
-    private ?User $lodger = null;
+    #[Groups(['availaibility_read', 'viewing_read'])]
+    private ?Request $request = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['availaibility_read', 'property_read'])]
+    private ?string $state = null;
 
-    public function getProperty(): ?Property
-    {
-        return $this->property;
-    }
-
-    public function setProperty(?Property $property): self
-    {
-        $this->property = $property;
-
-        return $this;
-    }
+    #[ORM\OneToOne(targetEntity: 'Viewing', mappedBy: 'availaibility', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'viewing_id', referencedColumnName: 'id', nullable: true)]
+    #[Groups(['availaibility_read', 'property_read'])]
+    private ?Viewing $viewing = null;
 
     public function getSlot(): \DateTimeInterface|string|null
     {
@@ -61,15 +53,37 @@ class Availaibility
         return $this;
     }
 
-    public function getLodger(): ?User
+    public function getRequest(): ?Request
     {
-        return $this->lodger;
+        return $this->request;
     }
 
-    public function setLodger(?User $lodger): self
+    public function setRequest(?Request $request): self
     {
-        $this->lodger = $lodger;
+        $this->request = $request;
 
         return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getViewing(): ?Viewing
+    {
+        return $this->viewing;
+    }
+
+    public function setViewing(?Viewing $viewing): void
+    {
+        $this->viewing = $viewing;
     }
 }
