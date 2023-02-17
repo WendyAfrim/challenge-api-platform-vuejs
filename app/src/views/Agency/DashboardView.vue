@@ -3,6 +3,7 @@
     import { axios } from '@/services/auth';
     import { ref, computed, onMounted } from 'vue';
     import router from '@/router';
+    import { UserValidationStatus } from '@/enums/UserValidationStatus';
 
     const users = ref([]);
     const selection = ref([]);
@@ -44,9 +45,9 @@
             <v-col cols="12">
                 <h3 class="heading-sentence"><span class="font-weight-medium">Filtrer</span> les dossiers</h3>
                 <v-chip-group multiple selected-class="text-primary" v-model="selection">
-                    <v-chip filter class="ma-2" size="x-large" value="to_complete">À compléter</v-chip>
-                    <v-chip filter class="ma-2" size="x-large" value="to_review">À valider</v-chip>
-                    <v-chip filter class="ma-2" size="x-large" value="validated">Validés</v-chip>
+                    <v-chip filter class="ma-2" size="x-large" :value="UserValidationStatus.ToComplete">À compléter</v-chip>
+                    <v-chip filter class="ma-2" size="x-large" :value="UserValidationStatus.ToReview">À valider</v-chip>
+                    <v-chip filter class="ma-2" size="x-large" :value="UserValidationStatus.Validated">Validés</v-chip>
                 </v-chip-group>
                 <v-table>
                     <thead>
@@ -59,7 +60,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in showedUsers" :key="user.email" @click="router.push({ name: 'agency_show_user', params: {id: user.id}})">
+                        <tr v-for="user in showedUsers" :key="user.email" @click="router.push({ name: `${Roles.Agency}_show_user`, params: {id: user.id}})">
                             <td>{{ user?.firstname ?? '-' }}</td>
                             <td>{{ user?.lastname ?? '-' }}</td>
                             <td>{{ user.situation !== undefined ? $t(`work_situation.${user.situation}`) : '-' }}</td>

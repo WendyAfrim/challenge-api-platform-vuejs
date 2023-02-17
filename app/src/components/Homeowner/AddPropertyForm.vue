@@ -86,8 +86,8 @@
     import { axios } from '@/services/auth';
     import { ref, reactive } from 'vue';
     import { useAuthStore } from '@/stores/auth.store';
-    import type { Roles } from "@/enums/roles";
-import { PropertyEnum } from "@/enums/PropertyEnum";
+    import { PropertyEnum } from "@/enums/PropertyEnum";
+    import { Roles } from "@/enums/roles";
 
     const router = useRouter();
     const route = useRoute();
@@ -97,7 +97,7 @@ import { PropertyEnum } from "@/enums/PropertyEnum";
     const valid = ref(false);
     const loading = ref(false);
 
-    const user = authStore.user;
+    const user = await authStore.getUser;
 
     const errorType = ref('');
     const message = ref({
@@ -225,7 +225,7 @@ import { PropertyEnum } from "@/enums/PropertyEnum";
                 console.log(response);
                 message.value.text = 'Votre bien a été ajouté avec succès';
                 message.value.type = 'info';
-                router.push({ name: `homeowner_property_add_photos`, params: { id: response.data.id } })
+                router.push({ name: `${Roles.Homeowner}_property_add_photos`, params: { id: response.data.id } })
             } catch(error: any) {
                 console.log(error);
                 errorType.value = error.response.data.error_type || '';

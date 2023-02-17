@@ -19,19 +19,12 @@ final class RoleFilter extends AbstractFilter
         ) {
             return;
         }
-        // dd($property);
 
         $parameterName = $queryNameGenerator->generateParameterName($property);
 
-        $role = match ($value) {
-            'agency' => User::ROLE_AGENCY,
-            'tenant' => User::ROLE_TENANT,
-            'homeowner' => User::ROLE_HOMEOWNER,
-            default => null,
-        };
         $queryBuilder
         ->where("JSON_GET_TEXT(o.roles, 0) = :role")
-        ->setParameter('role', $role);
+        ->setParameter('role', $value);
     }
 
     public function getDescription(string $resourceClass): array

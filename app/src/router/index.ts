@@ -24,7 +24,8 @@ import ViewingsView from '@/views/Agency/ViewingsView.vue';
 import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
 import PropertiesView from '@/views/Agency/PropertiesView.vue';
 import ShowVisitView from '@/views/Agency/ShowVisitView.vue';
-import PropertiesGridView from "@/views/Property/PropertiesGridView.vue";
+import { Roles } from '@/enums/roles';
+import { UserValidationStatus } from '@/enums/UserValidationStatus';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,7 +35,7 @@ const router = createRouter({
       name: 'home',
       component: Base,
       meta: {
-        forType: 'tenant',
+        forType: Roles.Tenant,
         location: 'front'
       },
       children: [
@@ -50,16 +51,16 @@ const router = createRouter({
     },
     {
       path: '/tenant',
-      name: 'tenant',
+      name: Roles.Tenant,
       component: Base,
       meta: {
-        forType: 'tenant',
+        forType: Roles.Tenant,
         location: 'front'
       },
       children: [
         {
           path: '',
-          name: 'tenant_home',
+          name: `${Roles.Tenant}_home`,
           component: HomeView,
           meta: {
             public: true,
@@ -67,7 +68,7 @@ const router = createRouter({
         },
         {
           path: 'register',
-          name: 'tenant_signup',
+          name: `${Roles.Tenant}_signup`,
           component: RegisterView,
           meta: {
             public: true,
@@ -75,7 +76,7 @@ const router = createRouter({
         },
         {
           path: 'login',
-          name: 'tenant_login',
+          name: `${Roles.Tenant}_login`,
           component: LoginView,
           meta: {
             public: true,
@@ -83,32 +84,32 @@ const router = createRouter({
         },
         {
           path: 'dashboard',
-          name: 'tenant_dashboard',
+          name: `${Roles.Tenant}_dashboard`,
           component: TenantDashboardView,
         },
         {
           path: 'first-steps',
-          name: 'tenant_first_steps',
+          name: `${Roles.Tenant}_first_steps`,
           component: WizardViewVue,
         },
         {
           path: 'properties',
-          name: 'tenant_properties',
+          name: `${Roles.Tenant}_properties`,
           component: TenantPropertiesView,
         },
         {
           path: 'requests',
-          name: 'tenant_requests',
+          name: `${Roles.Tenant}_requests`,
           component: TenantRequestsView,
         },
         {
           path: 'requests/:id/slots',
-          name: 'tenant_request_slots',
+          name: `${Roles.Tenant}_request_slots`,
           component: TenantRequestSlotsView,
         },
         {
           path: 'property/:id/details',
-          name: 'tenant_property_details',
+          name: `${Roles.Tenant}_property_details`,
           component: PropertyDetailsView,
         }
       ],
@@ -117,13 +118,13 @@ const router = createRouter({
       path: '/homeowner',
       component: Base,
       meta: {
-        forType: 'homeowner',
+        forType: Roles.Homeowner,
         location: 'dashboard'
       },
       children: [
         {
           path: '',
-          name: 'homeowner_home',
+          name: `${Roles.Homeowner}_home`,
           component: HomeView,
           meta: {
             public: true,
@@ -131,7 +132,7 @@ const router = createRouter({
         },
         {
           path: 'register',
-          name: 'homeowner_signup',
+          name: `${Roles.Homeowner}_signup`,
           component: RegisterView,
           meta: {
             public: true,
@@ -139,7 +140,7 @@ const router = createRouter({
         },
         {
           path: 'login',
-          name: 'homeowner_login',
+          name: `${Roles.Homeowner}_login`,
           component: LoginView,
           meta: {
             public: true,
@@ -147,42 +148,42 @@ const router = createRouter({
         },
         {
           path: 'dashboard',
-          name: 'homeowner_dashboard',
+          name: `${Roles.Homeowner}_dashboard`,
           component: HomeownerDashboardView,
         },
         {
           path: 'property/add',
-          name: 'homeowner_property_add',
+          name: `${Roles.Homeowner}_property_add`,
           component: PropertyRegister,
         },
         {
           path: 'property/requests/:id',
-          name: 'homeowner_property_requests',
+          name: `${Roles.Homeowner}_property_requests`,
           component: PropertyRequestsView,
         },
         {
           path: 'requests',
-          name: 'homeowner_requests',
+          name: `${Roles.Homeowner}_requests`,
           component: HomeownerRequestsView,
         },
         {
           path: 'viewings/:ownerId',
-          name: 'homeowner_viewings',
+          name: `${Roles.Homeowner}_viewings`,
           component: ViewingView,
         },
         {
           path: 'request/:id/slots/proposals',
-          name: 'homeowner_request_slots_proposals',
+          name: `${Roles.Homeowner}_request_slots_proposals`,
           component: RequestSlotsProposalsView
         },
         {
           path: 'property/:id/add/photos',
-          name: 'homeowner_property_add_photos',
+          name: `${Roles.Homeowner}_property_add_photos`,
           component: PropertyPhotosUploadViews,
         },
         {
           path: 'property/:id/details',
-          name: 'homeowner_property_details',
+          name: `${Roles.Homeowner}_property_details`,
           component: PropertyDetailsView,
         }
       ],
@@ -191,12 +192,12 @@ const router = createRouter({
       path: '/admin',
       component: Base,
       meta: {
-        forType: 'agency',
+        forType: Roles.Agency,
       },
       children: [
         {
           path: 'login',
-          name: 'agency_login',
+          name: `${Roles.Agency}_login`,
           component: LoginView,
           meta: {
             public: true,
@@ -204,32 +205,32 @@ const router = createRouter({
         },
         {
           path: 'dashboard',
-          name: 'agency_dashboard',
+          name: `${Roles.Agency}_dashboard`,
           component: AgencyDashboardView,
         },
         {
           path: 'users/:id',
-          name: 'agency_show_user',
+          name: `${Roles.Agency}_show_user`,
           component: ShowUserView,
         },
         {
           path: 'viewings',
-          name: 'agency_viewings',
+          name: `${Roles.Agency}_viewings`,
           component: ViewingsView,
         },
         {
           path: 'property/:id/details',
-          name: 'agency_property_details',
+          name: `${Roles.Agency}_property_details`,
           component: PropertyDetailsView,
         },
         {
           path: 'properties',
-          name: 'agency_properties',
+          name: `${Roles.Agency}_properties`,
           component: PropertiesView,
         },
         {
           path: 'visit/:id',
-          name: 'agency_show_visit',
+          name: `${Roles.Agency}_show_visit`,
           component: ShowVisitView,
         },
       ],
@@ -242,7 +243,7 @@ const router = createRouter({
           const authStore = useAuthStore();
           authStore.logout();
           const alert = { type: 'info', message: 'Vous vous êtes bien déconnecté' };
-          next({ name: 'tenant_login', params: { alert: JSON.stringify(alert) } });
+          next({ name: `${Roles.Tenant}_login`, params: { alert: JSON.stringify(alert) } });
         }
       },
     },
@@ -266,25 +267,26 @@ router.beforeEach(async (to) => {
         router.push(to.path);
       } catch (error) {
         authStore.logout();
-        return { name: 'tenant_login' }
+        return { name: `${Roles.Tenant}_login` }
       }
     }
+    const user = await authStore.getUser;
+    console.log(user);
     if (to.name === 'logout') return true;
-    const role = authStore.getRole;
-    if (role === 'tenant') {
-      if (authStore.user.validation_status === 'to_complete' && to.name !== 'tenant_first_steps') {
-        return { name: 'tenant_first_steps' };
+    if (user.role === Roles.Tenant) {
+      if (user.validationStatus === UserValidationStatus.ToComplete && to.name !== `${Roles.Tenant}_first_steps`) {
+        return { name: `${Roles.Tenant}_first_steps` };
       }
-      if (authStore.user.validation_status !== 'to_complete' && to.name === 'tenant_first_steps') {
-        return { name: 'tenant_dashboard' };
+      if (user.validationStatus !== UserValidationStatus.ToComplete && to.name === `${Roles.Tenant}_first_steps`) {
+        return { name: `${Roles.Tenant}_dashboard` };
       }
     }
-    if (to.meta.public || (to.meta.forType && to.meta.forType !== role)) {
-      return { name: `${role}_dashboard` }
+    if (to.meta.public || (to.meta.forType && to.meta.forType !== user.role)) {
+      return { name: `${user.role}_dashboard` }
     }
     return true;
   }
-  return to.meta.public ? true : { name: 'tenant_login' }
+  return to.meta.public ? true : { name: `${Roles.Tenant}_login` }
 })
 
 export default router

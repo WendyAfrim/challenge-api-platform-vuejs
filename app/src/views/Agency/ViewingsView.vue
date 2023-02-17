@@ -78,13 +78,13 @@
                             <td>{{ viewing.agent?.firstname ?? 'Non défini' }} {{ viewing.agent?.lastname }}</td>
                             <td>{{ viewing.availaibility.request.property.owner.firstname }} {{ viewing.availaibility.request.property.owner.lastname }}</td>
                             <td>
-                                <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.request.property.id} }" class="text-decoration-underline text-indigo">
+                                <router-link :to="{ name: `${Roles.Agency}_property_details`, params: {id: viewing.availaibility.request.property.id} }" class="text-decoration-underline text-indigo">
                                     {{ viewing.availaibility.request.property.title }}
                                 </router-link>
                             </td>
                             <td>{{ viewing.availaibility.slot }}</td>
                             <td>
-                                <router-link :to="{ name: 'agency_show_visit', params: {id: viewing.id} }">
+                                <router-link :to="{ name: `${Roles.Agency}_show_visit`, params: {id: viewing.id} }">
                                     <v-btn color="primary" variant="tonal">Voir</v-btn>
                                 </router-link>
                             </td>

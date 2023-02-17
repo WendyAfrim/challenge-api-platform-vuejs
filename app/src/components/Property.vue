@@ -17,21 +17,20 @@ const message = ref({
   type:''
 });
 const imagePath = ref("");
-const role = useAuthStore().getRole;
+const authStore = useAuthStore();
+const user = await authStore.getUser;
 
 async function onClick() {
     try{
       if (undefined !== props.property){
         if(undefined !== props.property['@id']){
           const property_id = props.property['@id'].split('/').pop()
-          await router.push({name: `${role}_property_details`, params: {id: property_id}})
+          await router.push({name: `${user.role}_property_details`, params: {id: property_id}})
           }
         }
     } catch (error: any) {
       console.log("err: ", error)
-      message.value.text = '';
-      message.value.type = '';
-      message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+      message.value.text = error || 'Une erreur est survenue. Veuillez réessayer.';
       message.value.type = 'error';
   }
 }

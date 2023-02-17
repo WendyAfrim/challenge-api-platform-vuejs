@@ -47,6 +47,12 @@ const messages = {
       public_official: 'Fonctionnaire',
       alternating_student: 'Alternant',
     },
+    request_status: {
+      pending: 'En attente',
+      accepted: 'Accepté',
+      rejected: 'Refusé',
+      assignment: 'En attente d\'assignation',
+    },
   }
 }
 

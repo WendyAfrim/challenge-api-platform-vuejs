@@ -1,28 +1,20 @@
 <script setup lang="ts">
     import { useAuthStore } from '@/stores/auth.store';
-    import { axios } from '@/services/auth';
-    import { ref, computed } from 'vue';
+    import { computed } from 'vue';
+    import { UserValidationStatus } from '@/enums/UserValidationStatus';
 
     const authStore = useAuthStore();
-    const user = ref();
-
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/` + authStore.user.id);
-        user.value = response.data;
-        console.log(response);
-    } catch (error) {
-        console.log(error);
-    }
+    const user = await authStore.getUser;
 
     const chipColor = computed(() => {
-        switch (user.value?.validationStatus) {
-            case 'validated':
+        switch (user.validationStatus) {
+            case UserValidationStatus.Validated:
                 return 'success';
-            case 'to_complete':
+            case UserValidationStatus.ToComplete:
                 return 'warning';
-            case 'to_review':
+            case UserValidationStatus.ToReview:
             default:
-                return 'primary';
+                return 'warning';
         }
     });
 </script>
@@ -32,6 +24,9 @@
         <v-row>
             <v-col cols="12" md="6">
                 <h1 class="text-h4 font-weight-bold heading-sentence">Mon <span>dossier</span></h1>
+                <v-chip :color="chipColor" class="mt-4" label outlined>
+                    {{ $t(`validation_status.${user?.validationStatus}`) }}
+                </v-chip>
             </v-col>
         </v-row>
         <v-row>
@@ -69,9 +64,6 @@
                             <v-list-item-title class="text-h7 font-weight-bold">{{ $t(`document_type.${item.type}`) }}</v-list-item-title>
                             <div class="d-flex align-center">
                                 <a :href="item.contentUrl" target="_blank" class="mr-1 font-weight-medium">{{ item.name }}</a>
-                                <v-icon v-if="item.status === 'validated'" icon="mdi-check-bold"></v-icon>
-                                <v-icon v-if="item.status === 'rejected'" icon="mdi-close-thick"></v-icon>
-                                <v-icon v-if="item.status === 'to_review'" icon="mdi-account-clock" color="primary"></v-icon>
                                 <v-icon tag="a" :href="item.contentUrl" target="_blank" icon="mdi-eye-arrow-right" color="primary" class="ml-1"></v-icon>
                             </div>
                         </v-list-item>

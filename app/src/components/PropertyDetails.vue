@@ -11,11 +11,13 @@ const props = defineProps({
 
 const message = ref({ text: '', type: undefined as "error" | "success" | "warning" | "info" | undefined });
 const loading = ref(false);
-const role = useAuthStore().getRole;
+const authStore = useAuthStore();
+const user = await authStore.getUser;
+const alreadyRequested = ref(false);
 
 const checkIfAlreadyRequested = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/requests/by_lodger/${useAuthStore().user.id}`);
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/requests/by_lodger/${user.id}`);
     console.log(response);
     if (response.data[0] == 404) {
       return false;
@@ -23,11 +25,12 @@ const checkIfAlreadyRequested = async () => {
     return response.data.find((request: any) => request.property.id == props.id);
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = error.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.text = error || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }
-const alreadyRequested = await checkIfAlreadyRequested();
+
+alreadyRequested.value = await checkIfAlreadyRequested();
 
 async function getPhotoLink(id:String) {
   try {
@@ -67,7 +70,7 @@ const createRequest = async () => {
   try {
     const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/requests`, {
       property: `/properties/${props.id}`,
-      lodger: `/users/${useAuthStore().user.id}`,
+      lodger: `/users/${user.id}`,
       state: 'pending',
     });
     console.log(response);
@@ -78,9 +81,9 @@ const createRequest = async () => {
     message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
+  alreadyRequested.value = true;
   loading.value = false;
 }
-
 </script>
 
 <template>
@@ -88,14 +91,13 @@ const createRequest = async () => {
     <v-row>
       <v-col cols="12">
         <v-alert v-if="message.text" :type="message.type" class="mb-5" dismissible>{{message.text}}</v-alert>
-        <v-carousel id="images_slider">
-          <v-carousel-item
-              v-for="(link,i) in property.photos"
-              :key="i"
-              :src="link"
-              cover
-          ></v-carousel-item>
-        </v-carousel>
+          <v-img
+          class="bg-white"
+          :aspect-ratio="1"
+          height="300"
+          src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+          cover
+        ></v-img>
       </v-col>
       <v-col cols="12">
         <v-card class="h-100">
@@ -119,7 +121,7 @@ const createRequest = async () => {
               </div>
               <v-progress-circular v-if="loading" indeterminate  color="primary" class="mr-5 mt-5 ml-auto"></v-progress-circular>
               <v-alert v-if="alreadyRequested" type="info" variant="tonal" class="ma-5" dismissible>Vous avez déjà fait une requête pour ce bien</v-alert>
-              <v-btn v-else-if="!loading && role === Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary" @click="createRequest">Postuler</v-btn>
+              <v-btn v-else-if="!loading && user.role === Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary" @click="createRequest">Postuler</v-btn>
             </div>
             <v-card-text>
               <v-list>

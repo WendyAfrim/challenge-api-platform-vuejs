@@ -2,7 +2,7 @@
     import FileInput from "@/components/FileInput.vue";
     import {useAuthStore} from "@/stores/auth.store";
     import { useRoute, useRouter } from "vue-router";
-    import type { Roles } from "@/enums/roles";
+    import { Roles } from "@/enums/roles";
 
     const authStore = useAuthStore();
     const router = useRouter();
@@ -11,7 +11,7 @@
     const propertyId = route.params.id as string;
   
     function onClick(){
-      router.push({ name: `homeowner_dashboard`});
+      router.push({ name: `${Roles.Homeowner}_dashboard`});
     }
 
 </script>
