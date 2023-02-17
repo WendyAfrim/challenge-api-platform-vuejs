@@ -27,7 +27,7 @@
                                 <v-chip v-else-if="request.state === RequestEnum.Refused" color="red">
                                     Refusé
                                 </v-chip>
-                                <v-chip v-else-if="request.state === RequestEnum.Viewing" color="warning">
+                                <v-chip v-else-if="request.state === RequestEnum.Visit" color="warning">
                                     En visite
                                 </v-chip>
                                 <v-chip v-else color="info">
@@ -79,7 +79,7 @@
         </v-card>
         <v-card v-else title="Votre visite">
             <div v-for="request in requests">
-                <p v-if="request.state === RequestEnum.Viewing">
+                <p v-if="request.state === RequestEnum.Visit">
                     L'agence a affecté l'agent : <strong> {{ getViewing(request.availaibilities).agent }}</strong> pour votre prochaine visite prévue le  <strong>{{ getViewing(request.availaibilities).slot }}</strong>  avec le locataire : 
                     {{ request.lodger.firstname }} {{ request.lodger.lastname }}. <br/>
                 </p>
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useRoute } from "vue-router";
 import { axios } from '@/services/auth';
 import type { Property } from '@/interfaces/Property';
@@ -103,8 +103,6 @@ import type { Availaibility } from '@/interfaces/Availaibility';
 import type { PropertyRequest } from '@/interfaces/PropertyRequest';
 import { RequestEnum } from '@/enums/RequestEnum';
 import { PropertyEnum } from '@/enums/PropertyEnum';
-import { array } from 'yup';
-
 
 let router = useRoute();
 let propertyId = router.params.id;

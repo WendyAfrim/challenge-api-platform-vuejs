@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
     import { ref, computed } from 'vue';
-    import { getRequest } from '@/services/tenant/requests';
+    import { getTenantRequest } from '@/services/tenant/requests';
     import { postSlotChoosenByTheLodger } from '@/services/tenant/requests';
     import { useRoute } from "vue-router";
     import type { Availaibility } from '@/interfaces/Availaibility';
@@ -57,7 +57,7 @@
     let requestId: any = router.params.id;
 
 
-    await getRequest(requestId)
+    await getTenantRequest(requestId)
         .then((response) => {
             request.value = response;
             availaibilities.value = response.availaibilities;
