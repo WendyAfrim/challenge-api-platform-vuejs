@@ -6,6 +6,7 @@ import PropertyRequestsView from "@/views/Homeowner/PropertyRequestsView.vue";
 import ViewingView from "@/views/Homeowner/ViewingView.vue";
 import RequestSlotsProposalsView from "@/views/Homeowner/RequestSlotsProposalsView.vue";
 import LoginView from "@/views/LoginView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
 import TenantRequestsView from "@/views/Tenant/TenantRequestsView.vue";
 import TenantPropertiesView from "@/views/Tenant/TenantPropertiesView.vue";
@@ -254,6 +255,24 @@ const router = createRouter({
         public: true,
       },
     },
+    {
+      path: "/:catchAll(.*)",
+      name: 'not_found',
+      component: Base,
+      meta: {
+        forType: 'tenant',
+      },
+      children: [
+        {
+          path: '',
+          name: 'not_found',
+          component: NotFoundView,
+          meta: {
+            public: true,
+          },
+        },
+      ],
+    }
   ]
 })
 

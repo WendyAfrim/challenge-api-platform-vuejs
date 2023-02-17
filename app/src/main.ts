@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import Vue3Lottie from 'vue3-lottie'
+import 'vue3-lottie/dist/style.css'
 
 import App from "./App.vue";
 import router from "./router";
@@ -62,6 +64,7 @@ configure({
 const app = createApp(App);
 
 app.use(createPinia());
+app.use(Vue3Lottie);
 app.use(router);
 app.use(vuetify);
 app.use(i18n);
