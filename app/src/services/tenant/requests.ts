@@ -5,7 +5,7 @@ export const getRequestsByLodger = async (lodgerId: number) => {
     return data;
 };
 
-export const getRequest = async (requestId: number) => {
+export const getTenantRequest = async (requestId: number) => {
     const { data } = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/requests/${requestId}`);
     return data;
 };

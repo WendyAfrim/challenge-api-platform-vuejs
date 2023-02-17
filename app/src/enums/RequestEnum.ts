@@ -3,5 +3,5 @@ export enum RequestEnum {
     Accepted = 'accepted',
     Refused = 'refused',
     Assignment = 'assignment',
-    Viewing = 'viewing'
+    Visit = 'viewing'
 }
