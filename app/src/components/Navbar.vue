@@ -93,7 +93,7 @@ const currentRouteName = computed(() => route.name);
                         <v-btn color="primary" variant="outlined">Vous êtes locataire ?</v-btn>
                     </router-link>
                     <router-link :to="{ name: 'homeowner_login' }">
-                        <v-btn color="primary" class="ml-3">Je me connecte</v-btn>
+                        <v-btn color="primary" id="signinBtn" class="ml-3">Je me connecte</v-btn>
                     </router-link>
                 </template>
                 <template v-else-if="props.for === 'tenant'">
