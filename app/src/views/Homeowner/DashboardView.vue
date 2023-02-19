@@ -6,7 +6,7 @@
         </v-col>
         <v-col cols="12" md="6" class="text-right">
           <router-link :to="{ name: `homeowner_property_add` }">
-            <v-btn rounded="pill" color="primary">Ajouter un bien</v-btn>
+            <v-btn rounded="pill" color="primary" class="btn-add-property">Ajouter un bien</v-btn>
           </router-link>
         </v-col>
       </v-row>

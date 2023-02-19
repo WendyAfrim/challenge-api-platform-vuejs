@@ -12,18 +12,18 @@
         <v-form ref="form" v-model="valid" >
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="6">
-                    <v-text-field v-model="property.title" :rules="titleRules" label="Nom du bien" required ></v-text-field>
+                    <v-text-field v-model="property.title" :rules="titleRules" label="Nom du bien" name="title" required ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="6">
-                    <v-text-field v-model="property.price" type="number" :rules="monthlyRentRules" label="Prix mensuel" required ></v-text-field>
+                    <v-text-field v-model="property.price" type="number" :rules="monthlyRentRules" label="Prix mensuel" name="price" required ></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="6">
-                    <v-select v-model="property.type" :items="propertyType" :rules="typeRules" label="Type de bien" solo></v-select>
+                    <v-select v-model="property.type" :items="propertyType" :rules="typeRules" label="Type de bien" name="type" solo></v-select>
                 </v-col>
                 <v-col cols="12" md="6">
-                    <v-select :items="numberRoom" label="Nombre de chambres" solo v-model="property.number_rooms"></v-select>
+                    <v-select :items="numberRoom" label="Nombre de chambres" solo v-model="property.number_rooms" name="rooms"></v-select>
                 </v-col>
             </v-row>
             <v-row class="d-flex justify-center align-start">

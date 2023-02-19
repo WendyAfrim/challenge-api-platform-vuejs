@@ -1,0 +1,20 @@
+{
+    "title": "Appartement - Suresnes",
+    "address": "3 Allée des peupliers",
+    "zipcode": 92100,
+    "city": "Suresnes",
+    "country": "France",
+    "description": "Test",
+    "type": "appartment", 
+    "rooms": 3,
+    "surface": 90,
+    "has_balcony": true,
+    "has_terrace": false,
+    "has_cave": true,
+    "has_elevator": false,
+    "has_parking": true,
+    "is_furnished": false,
+    "price": 3000,
+    "state": "availaible"
+
+}
