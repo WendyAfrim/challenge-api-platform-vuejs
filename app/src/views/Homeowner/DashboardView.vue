@@ -51,19 +51,17 @@
   </template>
   
   <script setup lang="ts">
-  
-  import { ref } from "vue";
+
+  import {ref} from "vue";
   import { useRoute, useRouter } from "vue-router";
   import { axios } from '@/services/auth';
   import { Roles } from "@/enums/roles";
   import type { Property } from '@/interfaces/Property';
   import  { PropertyEnum } from '@/enums/PropertyEnum';
 
-
   const router = useRouter();
   const route = useRoute();
   const forType = route.meta.forType as Roles;
-
   let properties = ref<Property[]>();
 
 

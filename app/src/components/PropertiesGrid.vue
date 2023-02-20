@@ -45,7 +45,7 @@ async function get_page(pageNumber = 1) {
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
     let response;
-    if (user.role == Roles.Tenant) {
+    if (user.role === Roles.Tenant) {
       response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property/by_tenant?page=${pageNumber}`);
     } else {
       response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties`);
@@ -75,33 +75,33 @@ onMounted(async () => {
 });
 
 </script>
-    
+
 <template>
-  <div v-if="items_number !== 0">
-      <v-row>
-        <v-col v-for="element in properties" :key="element['@id'].split('/').pop()" cols="12" sm="4">
-          <Property class="" :property="element"></Property>
-        </v-col>
-      </v-row>
-    <div class="text-center" v-if="last_page > 1">
+    <div v-if="!loading && items_number !== 0">
+        <v-row>
+            <v-col v-for="element in properties" :key="element['@id'].split('/').pop()" cols="12" sm="4">
+                <Property class="" :property="element"></Property>
+            </v-col>
+        </v-row>
+        <div class="text-center" v-if="last_page > 1">
       <span v-if="has_previous">
         <v-btn class="ma-1" color="primary" variant="outlined" @click="previous_page">
           <v-icon icon='mdi-chevron-left'></v-icon>
         </v-btn>
       </span>
-      <span v-if="has_next">
+            <span v-if="has_next">
         <v-btn class="ma-1" color="primary" variant="outlined" @click="next_page">
           <v-icon icon='mdi-chevron-right'></v-icon>
         </v-btn>
       </span>
+        </div>
     </div>
-  </div>
 
-  <v-row v-else-if="!loading" align="center" no-gutters>
-    <v-col cols="12" class="text-center">
-      <span class="text-h5 ma-auto">Aucun résultat correspondant à votre profil</span>
-    </v-col>
-  </v-row>
+    <v-row v-else-if="!loading" align="center" no-gutters>
+        <v-col cols="12" class="text-center">
+            <span class="text-h5 ma-auto">Aucun résultat correspondant à votre profil</span>
+        </v-col>
+    </v-row>
 </template>
 
 <style scoped>

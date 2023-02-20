@@ -39,31 +39,15 @@ onMounted(async () => {
   imagePath.value = getFullUrl('../assets/no-image.jpg');
   if(undefined !== props.property) {
     const property = props.property
-    if (undefined !== property['photos']) {
-      const photos_hydra_id_list =  property['photos']
-      const default_photo_hydra_id = photos_hydra_id_list['0'];
-      if(undefined !== default_photo_hydra_id){
-        if(undefined !== default_photo_hydra_id.split('/').pop()){
-          imagePath.value = await getPhotoLink(default_photo_hydra_id.split('/').pop());
-        }
+    if (undefined !== property['photosUrl']) {
+      const photos_list =  property['photosUrl']
+      const default_photo = photos_list['0'];
+      if(undefined !== default_photo){
+          imagePath.value = default_photo;
       }
     }
   }
 })
-
-async function getPhotoLink(id:String) {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${id}`);
-    const photo_link = await response.data.filePath
-    return await photo_link;
-  } catch (error: any) {
-    console.log("err: ", error)
-    message.value.text = '';
-    message.value.type = '';
-    message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
-    message.value.type = 'error';
-  }
-}
 
 
 const getImage = computed( () => {
