@@ -36,9 +36,9 @@ class RequestController extends AbstractController
 
     #[Route('/requests/by_owner/{ownerId}', name: 'get_requests_by_owner', methods: ['GET'])]
     #[IsGranted('ROLE_HOMEOWNER')]
-    public function getRequestsByOwner(int $ownerId): JsonResponse
+    public function getRequestsByOwner($ownerId): JsonResponse
     {
-        $requests = $this->requestRepository->findRequestsByOwnerId($ownerId);
+        $requests = $this->requestRepository->findRequestsByOwnerId((int)$ownerId);
 
         if(!$requests) {
             return new JsonResponse([
@@ -58,9 +58,9 @@ class RequestController extends AbstractController
 
     #[Route('/requests/by_lodger/{lodgerId}', name: 'get_requests_by_lodger', methods: ['GET'])]
     #[IsGranted('ROLE_TENANT')]
-    public function getRequestsByLodger(int $lodgerId): JsonResponse
+    public function getRequestsByLodger($lodgerId): JsonResponse
     {
-        $requests = $this->requestRepository->findRequestsByLodgerId($lodgerId);
+        $requests = $this->requestRepository->findRequestsByLodgerId((int)$lodgerId);
 
         if(!$requests) {
             return new JsonResponse([
@@ -79,9 +79,10 @@ class RequestController extends AbstractController
 
 
     #[Route('/requests/{id}/slots/proposals', name: 'post_requests_slots',methods: ['POST'])]
-    public function postRequestSlotsProposals(int $id ,Request $request): JsonResponse
+    #[IsGranted('ROLE_HOMEOWNER')]
+    public function postRequestSlotsProposals($id ,Request $request): JsonResponse
     {
-        $propertyRequest = $this->requestRepository->find($id);
+        $propertyRequest = $this->requestRepository->find((int) $id);
         $slots = json_decode($request->getContent(), true);
 
 
@@ -131,11 +132,11 @@ class RequestController extends AbstractController
 
     #[Route('/requests/{requestId}/slot/{slotId}', name: 'post_requests_slot', methods: ['POST'])]
     #[IsGranted('ROLE_TENANT')]
-    public function postSlotAcceptedByTenant(int $requestId, int $slotId): JsonResponse
+    public function postSlotAcceptedByTenant($requestId, $slotId): JsonResponse
     {
-        $request = $this->requestRepository->find($requestId);
+        $request = $this->requestRepository->find((int) $requestId);
         $property = $request->getProperty();
-        $availaibility = $this->availaibilityRepository->find($slotId);
+        $availaibility = $this->availaibilityRepository->find((int) $slotId);
 
         if (!$request || !$availaibility) {
             throw new \Exception('Une erreur est survenue', 404);
@@ -169,9 +170,9 @@ class RequestController extends AbstractController
     }
 
     #[Route('/requests/{id}/slots', name: 'get_requests_slots', methods: ['GET'])]
-    public function getAcceptedRequestSlots(int $id): JsonResponse
+    public function getAcceptedRequestSlots($id): JsonResponse
     {
-        $request = $this->requestRepository->find($id);
+        $request = $this->requestRepository->find((int) $id);
 
         if (!$request) {
             throw new \Exception('Votre demande est inexistante', 404);
