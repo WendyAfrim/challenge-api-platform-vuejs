@@ -13,6 +13,7 @@ use App\Service\LocationService;
 use App\Service\SlotService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
@@ -30,6 +31,7 @@ class RequestController extends AbstractController
         private readonly SlotService $slotService,
         private readonly EntityManagerInterface $manager,
         private readonly EmailService $emailService,
+        private readonly Security $security
     )
     {
     }
@@ -38,8 +40,9 @@ class RequestController extends AbstractController
     #[IsGranted('ROLE_HOMEOWNER')]
     public function getRequestsByOwner($ownerId): JsonResponse
     {
+//        $user = $this->security->getUser();
+//        $requests = $this->requestRepository->findRequestsByOwnerId($user->getId());
         $requests = $this->requestRepository->findRequestsByOwnerId((int)$ownerId);
-
         if(!$requests) {
             return new JsonResponse([
                 'message' => 'Vous n\'avez aucune demande pour le moment',

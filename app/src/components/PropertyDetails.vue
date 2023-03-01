@@ -12,67 +12,35 @@ const props = defineProps({
 const message = ref({ text: '', type: undefined as "error" | "success" | "warning" | "info" | undefined });
 const loading = ref(false);
 const role = useAuthStore().getRole;
+const alreadyRequested = ref(true);
 
-const checkIfAlreadyRequested = async () => {
+const getMyProperty = async () => {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/requests/by_lodger/${useAuthStore().user.id}`);
-    console.log(response);
-    if (response.data[0] == 404) {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property_details/by_tenant/${props.id}`);
+    if (response.data[0] ==! 200) {
       return false;
     }
-    return response.data.find((request: any) => request.property.id == props.id);
-  } catch (error: any) {
-    console.log("err: ", error)
-    message.value.text = error.message || 'Une erreur est survenue. Veuillez réessayer.';
-    message.value.type = 'error';
-  }
-}
-const alreadyRequested = await checkIfAlreadyRequested();
-
-async function getPhotoLink(id:String) {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/media_objects/${id}`);
-    const photo_link = await response.data.filePath
-    return await photo_link;
-
+    console.log( response);
+    alreadyRequested.value =  response.data.isAlreadyApplied;
+    return  response.data;
   } catch (error: any) {
     console.log("err: ", error)
     message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }
-
-async function getMyProperty(id:any) {
-  try {
-
-    const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties/${props.id}`);
-    const photos_links = [];
-    for (const photo_id of response.data.photos) {
-      const link  = await getPhotoLink(photo_id.split('/').pop())
-      photos_links.push(link)
-    }
-      response.data.photos = photos_links;
-    return response.data;
-
-  } catch (error: any) {
-    console.log("err: ", error)
-    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
-    message.value.type = 'error';
-  }
-}
-const property = await getMyProperty(props.id);
+const property = await getMyProperty()
 
 const createRequest = async () => {
   loading.value = true;
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/requests`, {
-      property: `/properties/${props.id}`,
-      lodger: `/users/${useAuthStore().user.id}`,
-      state: 'pending',
+    const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/property_request/by_tenant`, {
+      property: `/properties/${props.id}`
     });
     console.log(response);
     message.value.text = 'Votre demande a été envoyée avec succès.';
     message.value.type = 'success';
+    alreadyRequested.value = true;
   } catch (error: any) {
     console.log("err: ", error)
     message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
