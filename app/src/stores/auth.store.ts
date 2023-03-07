@@ -10,33 +10,47 @@ export const useAuthStore = defineStore('auth', () => {
 
     const access_token: Ref<string | null> = ref(useLocalStorage('access_token', null));
     const refresh_token: Ref<string | null> = ref(useLocalStorage('refresh_token', null));
-    const posted_property_id: Ref<String> = ref(useLocalStorage('posted_property_id', ''));
-    const user: any = ref(access_token.value ? jwt_decode(access_token.value) : null);
-
-    const getRole = computed(() => {
+    const payload: any = ref(access_token.value ? jwt_decode(access_token.value) : null);
+    const user: any = ref(null);
+    
+    const getUser = computed(async () => {
+        if (isTokenExpired()) {
+            refreshAccessToken();
+        }
         if (access_token.value) {
-            const roles: any = {
-                'ROLE_AGENCY': `${Roles.Agency}`,
-                'ROLE_TENANT': `${Roles.Tenant}`,
-                'ROLE_HOMEOWNER': `${Roles.Homeowner}`
-            };
-            return roles[user.value.roles[0]];
+            if (user.value) return user.value;
+            const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/${payload.value.id}`, { headers: { 'Authorization': `Bearer ${access_token.value}` } });
+            user.value = response.data;
+            return response.data;
         } else {
             return null;
         }
     });
 
+    const updateUser = async (data: any) => {
+        if (isTokenExpired()) {
+            refreshAccessToken();
+        }
+        if (access_token.value) {
+            const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/users/${payload.value.id}`, data, { headers: { 'Authorization': `Bearer ${access_token.value}` } });
+            user.value = response.data;
+            return response.data;
+        } else {
+            return null;
+        }
+    }
+
     async function login(email: string, password: string) {
         const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/api/login`, { email, password }, { headers: { 'Content-Type': 'application/json' } });
         access_token.value = response.data.token;
         refresh_token.value = response.data.refresh_token;
-        user.value = jwt_decode<any>(access_token.value as string);
+        payload.value = jwt_decode<any>(access_token.value as string);
         return access_token.value;
     }
 
     function logout() {
-        access_token.value = null;
-        refresh_token.value = null;
+        [access_token.value, refresh_token.value, user.value] = Array(3).fill(null);
+        console.log(payload);
     }
 
     async function refreshAccessToken() {
@@ -46,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
         });
         access_token.value = response.data.token;
         refresh_token.value = response.data.refresh_token;
-        user.value = jwt_decode(access_token.value as string);
+        payload.value = jwt_decode(access_token.value as string);
         return access_token.value;
     }
 
@@ -57,5 +71,5 @@ export const useAuthStore = defineStore('auth', () => {
         return Date.now() > decoded.exp * 1000;
     }
 
-    return { access_token, refresh_token, login, logout, refreshAccessToken, user, getRole, isTokenExpired }
+    return { access_token, refresh_token, login, logout, refreshAccessToken, payload, getUser, updateUser, isTokenExpired }
 });

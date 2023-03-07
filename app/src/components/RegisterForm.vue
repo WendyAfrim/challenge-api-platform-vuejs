@@ -1,14 +1,14 @@
 <template>
   <v-container>
     <v-row class="d-flex justify-center">
-      <template v-if="props.for === 'homeowner'">
+      <template v-if="props.for === Roles.Homeowner">
         <v-col cols="12" md="6">
           <h1 class="text-h4 font-weight-bold text-center mb-3 heading-sentence">Créez votre compte et regroupez tous vos dossiers <span>au même
             endroit.</span>
           </h1>
         </v-col>
       </template>
-      <template v-else-if="props.for === 'tenant'">
+      <template v-else-if="props.for === Roles.Tenant">
         <v-col cols="12" md="6">
           <h1 class="text-h4 font-weight-bold text-center mb-3 heading-sentence">Créez votre compte et trouvez votre logement idéal <span>en quelques
             clics.</span>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Roles } from '@/enums/roles';
+import { Roles } from '@/enums/roles';
 import { axios } from '@/services/auth';
 import { ref, reactive } from 'vue';
 
@@ -63,7 +63,6 @@ interface User {
   password: string;
   passwordConfirm: string;
   roles: string[];
-  situation?: string;
   documents?: File[];
 }
 
@@ -72,15 +71,7 @@ const user = reactive<User>({
   password: '',
   passwordConfirm: '',
   roles: [],
-  situation: '',
-  documents: [],
 });
-
-// @TODO: fetch from API
-const roles = {
-  homeowner: ['ROLE_HOMEOWNER'],
-  tenant: ['ROLE_TENANT'],
-}
 
 const valid = ref(false);
 const emailRules = ref([
@@ -94,9 +85,6 @@ const passwordRules = ref([
 const passwordConfirmRules = ref([
   (v: string) => !!v || 'La confirmation du mot de passe est requise',
   (v: string) => v === user.password || 'Les mots de passe ne correspondent pas',
-]);
-const situationRules = ref([
-  (v: string) => !!v || 'Votre situation est requise',
 ]);
 
 const message = ref({
@@ -114,11 +102,8 @@ const register = async (event: MouseEvent) =>{
     const data: FormUserData = {
       email: user.email,
       plainPassword: user.password,
-      roles: roles[props.for as keyof typeof roles],
+      roles: [props.for as Roles]
     };
-    if (props.for === 'tenant') {
-      data.situation = user.situation;
-    }
     try {
       const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/register`, data, {headers: {'Content-Type': 'application/json'}});
       message.value.content = response.data.message;

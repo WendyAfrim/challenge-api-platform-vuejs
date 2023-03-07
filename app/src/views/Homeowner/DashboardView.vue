@@ -1,11 +1,11 @@
 <template>
-    <v-container v-if="'homeowner' === forType">
+    <v-container v-if="Roles.Homeowner === forType">
       <v-row align="center" justify="space-between" no-gutters>
         <v-col cols="12" md="6">
           <h1 class="text-h4 font-weight-bold heading-sentence">Tous <span>mes biens</span></h1>
         </v-col>
         <v-col cols="12" md="6" class="text-right">
-          <router-link :to="{ name: `homeowner_property_add` }">
+          <router-link :to="{ name: `${Roles.Homeowner}_property_add` }">
             <v-btn rounded="pill" color="primary">Ajouter un bien</v-btn>
           </router-link>
         </v-col>
@@ -38,7 +38,7 @@
               </td>
 
               <td>
-                <router-link :to="{ name: `homeowner_property_requests`, params: { id: property.id } }">
+                <router-link :to="{ name: `${Roles.Homeowner}_property_requests`, params: { id: property.id } }">
                   <v-btn v-if="property.state === PropertyEnum.Availaible" color="primary" variant="tonal">Voir les demandes</v-btn>
                   <v-btn v-else >Details</v-btn>
                 </router-link>
@@ -58,7 +58,7 @@
   import { ref } from "vue";
   import { useRoute, useRouter } from "vue-router";
   import { axios } from '@/services/auth';
-  import type { Roles } from "@/enums/roles";
+  import { Roles } from "@/enums/roles";
   import type { Property } from '@/interfaces/Property';
   import  { PropertyEnum } from '@/enums/PropertyEnum';
 
@@ -74,7 +74,7 @@
     const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/user/details`);
     console.log(response);
 
-    properties = response.data.properties;
+    properties.value = response.data.properties;
   }
   catch(e){
     console.log(e);

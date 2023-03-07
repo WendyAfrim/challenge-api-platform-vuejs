@@ -13,15 +13,15 @@
         </div>
 
         <div v-else>
-            <h1 class="mb-10">Votre bien : {{ request.property.title }}</h1>
-            <v-card :title="request.property.title" subtitle="Proposition de créneau">
+            <h1 class="mb-10">Votre bien : {{ request.property?.title }}</h1>
+            <v-card :title="request.property?.title" subtitle="Proposition de créneau">
                 <p>
                     Vos disponibilités ont bien été enregistrées ! <br/>
-                    Un email à été envoyé au locataire : {{ request.lodger.firstname}} {{ request.lodger.lastname }} et toutes les autres demandes sur
+                    Un email à été envoyé au locataire : {{ request.lodger?.firstname}} {{ request.lodger?.lastname }} et toutes les autres demandes sur
                     le bien sont actuellement refusées
                 </p>
                 <v-card-actions>
-                    <router-link :to="{name: 'homeowner_dashboard'}">
+                    <router-link :to="{name: `${Roles.Homeowner}_dashboard`}">
                         <v-btn color="primary" variant="tonal" class="ml-2 mb-4 mt-4">Retour à l'accueil</v-btn>
                     </router-link>
                 </v-card-actions>
@@ -37,6 +37,7 @@ import { postRequestSlots } from '@/services/homeowner/requests';
 import Datepicker from '@vuepic/vue-datepicker';
 import type { PropertyRequest } from '@/interfaces/PropertyRequest';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { Roles } from '@/enums/roles';
 
 let route = useRoute();
 const requestId: any = route.params.id;

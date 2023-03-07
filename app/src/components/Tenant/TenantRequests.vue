@@ -20,10 +20,10 @@
                     <tbody>
                         <tr v-for="request in showRequests" :key="request.id">
                             <td>{{ request.property.title }}</td>
-                            <td>{{ getRequestState(request.state)  }}</td>
+                            <td>{{ $t(`request_status.${request.state}`) }}</td>
                             <td>{{ request.created_at }}</td>
                             <td>
-                                <router-link v-if="request.state === RequestEnum.Accepted" :to="{name: 'tenant_request_slots', params:{'id' : request.id }}">
+                                <router-link v-if="request.state === RequestEnum.Accepted" :to="{name: `${Roles.Tenant}_request_slots`, params:{'id' : request.id }}">
                                     <v-btn>Voir les créneaux</v-btn>
                                 </router-link>
                                 <span v-else>Aucune action disponible</span>
@@ -41,13 +41,14 @@
     import { getRequestsByLodger } from '@/services/tenant/requests';
     import { useAuthStore } from '@/stores/auth.store';
     import { RequestEnum } from '@/enums/RequestEnum';
+import { Roles } from '@/enums/roles';
 
     const selection = ref([]);
     const requests = ref();
 
     const authStore = useAuthStore();
 
-    const user = authStore.user;
+    const user = await authStore.getUser;
 
     await getRequestsByLodger(user.id)
         .then((response) => {
@@ -75,30 +76,7 @@
         });
 
         return showed;
-    })
-
-    function getRequestState(state: string): string {
-
-        switch(state){
-            case RequestEnum.Accepted:
-                state = 'Accepté'
-                break;
-
-            case RequestEnum.Refused:
-                state = 'Refusé'
-                break;
-
-            case RequestEnum.Pending:
-                state = 'En attente'
-                break;
-
-            case RequestEnum.Assignment:
-                state = 'En attente d\'assignation'
-                break;
-        } 
-
-        return state;
-    }
+    });
 
 </script>
 

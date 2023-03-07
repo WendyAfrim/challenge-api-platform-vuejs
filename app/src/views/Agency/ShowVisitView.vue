@@ -61,7 +61,7 @@
                     </v-list-item>
                     <v-list-item>
                         <v-list-item-title class="text-h7 font-weight-bold">Bien</v-list-item-title>
-                        <router-link :to="{ name: 'agency_property_details', params: {id: viewing.availaibility.request.property.id} }" class="text-decoration-underline text-indigo">
+                        <router-link :to="{ name: `${Roles.Agency}_property_details`, params: {id: viewing.availaibility.request.property.id} }" class="text-decoration-underline text-indigo">
                             {{ viewing.availaibility.request.property.title }}
                         </router-link>
                     </v-list-item>

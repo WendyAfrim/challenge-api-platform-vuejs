@@ -1,5 +1,5 @@
 export enum Roles {
-    Agency = 'agency',
-    Tenant = 'tenant',
-    Homeowner = 'homeowner',
+    Agency = 'ROLE_AGENCY',
+    Tenant = 'ROLE_TENANT',
+    Homeowner = 'ROLE_HOMEOWNER',
 }

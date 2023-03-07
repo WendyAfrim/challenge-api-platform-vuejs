@@ -7,10 +7,11 @@ import { ref, computed, watch } from 'vue';
 import { WorkSituationEnum } from '@/enums/WorkSituation';
 import { useAuthStore } from '@/stores/auth.store';
 import { axios } from '@/services/auth';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useRouter } from 'vue-router';
 import { DocumentTypeEnum } from '@/enums/DocumentTypeEnum';
 import { enumKeys } from '@/enums/EnumHelper';
+import { Roles } from '@/enums/roles';
+import { UserValidationStatus } from '@/enums/UserValidationStatus';
 
 const SUPPORTED_FORMATS = [
   "image/jpg",
@@ -30,9 +31,8 @@ const loading = ref(false);
 const firstname = ref();
 const lastname = ref();
 
-const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/${authStore.user.id}`);
-const user = response.data;
-const done = ref(user.validationStatus === 'to_review');
+let user = await authStore.getUser;
+const done = ref(user.validationStatus === UserValidationStatus.ToReview);
 
 const invalidDocuments = (user.documents.filter((document: any) => !document.isValid));
 const invalidDocumentsTypes = invalidDocuments.map((document: any) => document.type);
@@ -141,7 +141,7 @@ async function onSubmit(formData: any) {
         file: formData.id_card[0],
         name: formData.id_card[0].name,
         type: 'identity',
-        user_id: authStore.user.id
+        user_id: user.id
       };
       identityPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Identity) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Identity).id : null;
       console.log(identityPostData);
@@ -152,7 +152,7 @@ async function onSubmit(formData: any) {
         file: formData.rent_receipt[0],
         name: formData.rent_receipt[0].name,
         type: 'address',
-        user_id: authStore.user.id
+        user_id: user.id
       };
       addressPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Address) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Address).id : null;
       console.log(addressPostData);
@@ -163,7 +163,7 @@ async function onSubmit(formData: any) {
         file: formData[`${workDocumentType.value.name}`][0],
         name: formData[`${workDocumentType.value.name}`][0].name,
         type: 'professional',
-        user_id: authStore.user.id
+        user_id: user.id
       };
       professionalPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Professional) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Professional).id : null;
       console.log(professionalPostData);
@@ -174,7 +174,7 @@ async function onSubmit(formData: any) {
         file: formData.pay_slip[0],
         name: formData.pay_slip[0].name,
         type: 'income',
-        user_id: authStore.user.id
+        user_id: user.id
       };
       incomePostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.Income) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.Income).id : null;
       console.log(incomePostData);
@@ -185,13 +185,13 @@ async function onSubmit(formData: any) {
         file: formData.tax_notice[0],
         name: formData.tax_notice[0].name,
         type: 'tax_status',
-        user_id: authStore.user.id
+        user_id: user.id
       };
       taxStatusPostData.id = invalidDocumentsTypes.includes(DocumentTypeEnum.TaxStatus) ? invalidDocuments.find((document: any) => document.type === DocumentTypeEnum.TaxStatus).id : null;
       console.log(taxStatusPostData);
       await axios.post(`${import.meta.env.VITE_BASE_API_URL}/documents`, taxStatusPostData, { headers: { 'Content-Type': 'multipart/form-data' }});
     }
-    const userPutData: any = { validationStatus: 'to_review' };
+    const userPutData: any = { validationStatus: UserValidationStatus.ToReview };
     if (stepsToComplete.includes('infos')) {
       userPutData.firstname = formData.firstname;
       userPutData.lastname = formData.lastname;
@@ -202,9 +202,8 @@ async function onSubmit(formData: any) {
     if (documentsTypes.includes(DocumentTypeEnum.Professional)) {
       userPutData.situation = formData.work_situation;
     }
-      await axios.put(`${import.meta.env.VITE_BASE_API_URL}/users/${authStore.user.id}`, userPutData, {headers: {'Content-Type': 'application/json' }});
+      user = authStore.updateUser(userPutData);
       done.value = true;
-      authStore.user.validationStatus = 'to_review';
   } catch (error) {
     console.log(error);
   }
@@ -219,7 +218,7 @@ async function onSubmit(formData: any) {
           <p class="text-body-1">Votre demande est en cours de validation. Vous recevrez un email dès que votre demande aura été traitée.</p>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="primary" @click="router.push({ name: 'tenant_dashboard' })">Fermer</v-btn>
+          <v-btn color="primary" @click="router.push({ name: `${Roles.Tenant}_dashboard` })">Fermer</v-btn>
         </v-card-actions>
       </v-card>
     </div>

@@ -15,6 +15,8 @@ const last_page = ref(1);
 const properties = ref();
 const totalItems = ref(0);
 const loading = ref(false);
+const authStore = useAuthStore();
+const user = await authStore.getUser;
 
 const items_number = computed(() => {
   return totalItems.value;
@@ -43,7 +45,7 @@ async function get_page(pageNumber = 1) {
   axios.defaults.headers.common['Accept'] = 'application/ld+json';
   try {
     let response;
-    if (useAuthStore().getRole == Roles.Tenant) {
+    if (user.role == Roles.Tenant) {
       response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/property/by_tenant?page=${pageNumber}`);
     } else {
       response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/properties`);

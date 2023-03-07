@@ -2,6 +2,7 @@
     import { useRoute } from 'vue-router';
     import { axios } from '@/services/auth';
     import { ref, computed } from 'vue';
+    import { UserValidationStatus } from '@/enums/UserValidationStatus';
 
     const route = useRoute();
     const user = ref();
@@ -24,7 +25,7 @@
         try {
             message.value = { text: '', type: undefined };
             const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/users/${user.value.id}`, {
-                validationStatus: user.value.documents.every((document: any) => document.isValid) ? 'validated' : 'to_complete',
+                validationStatus: user.value.documents.every((document: any) => document.isValid) ? UserValidationStatus.Validated : UserValidationStatus.ToComplete,
                 documents: user.value.documents,
             });
             message.value = { text: 'Le dossier a bien été mis à jour.', type: 'success' };
@@ -36,6 +37,18 @@
         }
         loading.value = false;
     }
+
+    const chipColor = computed(() => {
+        switch (user.value.validationStatus) {
+            case UserValidationStatus.Validated:
+                return 'success';
+            case UserValidationStatus.ToComplete:
+                return 'warning';
+            case UserValidationStatus.ToReview:
+            default:
+                return 'warning';
+        }
+    });
 </script>
 
 <template>
@@ -46,7 +59,9 @@
     <v-row align="center">
         <v-col cols="12" md="6">
             <h4 class="text-h4 font-weight-bold heading-sentence">Dossier de <span>{{ user.firstname }} {{ user.lastname }}</span> (#{{ user.id }})</h4>
-            <h3 class="mb-5 text-h6 text-grey-darken-5 heading-sentence font-weight-light">Statut du dossier: <span>{{ $t(`validation_status.${user.validationStatus}`) }}</span></h3>
+            <v-chip :color="chipColor" class="mt-4" label outlined>
+                    {{ $t(`validation_status.${user?.validationStatus}`) }}
+            </v-chip>
         </v-col>
     </v-row>
     <div class="d-flex flex-column">
@@ -80,7 +95,7 @@
                 <h3 class="mb-4 text-h5 font-weight-bold">Documents</h3>
                 
                 <v-row>
-                    <v-col v-if="user.validationStatus === 'to_review'" md="5">
+                    <v-col v-if="user.validationStatus === UserValidationStatus.ToReview" md="5">
                         <v-form ref="form" class="d-flex flex-column align-start" validate-on="submit" @submit.prevent="handleSubmit">
                             <v-list lines="three" class="w-100">
                                 <h3 class="mb-4 text-h6 font-weight-bold">À valider</h3>
@@ -115,7 +130,7 @@
                         </v-form>
                     </v-col>
 
-                    <v-col v-if="user.validationStatus === 'to_complete'" >
+                    <v-col v-if="user.validationStatus === UserValidationStatus.ToComplete" >
                         <v-list lines="three" class="">
                             <h3 class="mb-4 text-h6 font-weight-bold">En attente</h3>
                             <v-list-item v-for="(item, index) in invalidDocuments" :key="index" density="compact">

@@ -57,7 +57,6 @@ class RequestController extends AbstractController
 
 
     #[Route('/requests/by_lodger/{lodgerId}', name: 'get_requests_by_lodger', methods: ['GET'])]
-    #[IsGranted('ROLE_TENANT')]
     public function getRequestsByLodger(int $lodgerId): JsonResponse
     {
         $requests = $this->requestRepository->findRequestsByLodgerId($lodgerId);

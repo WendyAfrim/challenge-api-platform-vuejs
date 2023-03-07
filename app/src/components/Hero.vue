@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import hero from '@/assets/hero.svg';
-import type { Roles } from '@/enums/roles';
+import { Roles } from '@/enums/roles';
 import { computed } from 'vue';
 
 
@@ -17,10 +17,10 @@ const props = withDefaults(defineProps<IHero>(), {
 
 let heading = props.heading || '';
 let highlighted_words = props.highlighted_words || [];
-if (props.for === 'homeowner' && !heading) {
+if (props.for === Roles.Homeowner && !heading) {
     heading = 'La mise en location simplifiée et de bout en bout.';
     highlighted_words = ['simplifiée', 'de bout en bout.'];
-} else if (props.for === 'tenant' && !heading) {
+} else if (props.for === Roles.Tenant && !heading) {
     heading = 'La recherche de logement simplifiée et de bout en bout.';
     highlighted_words = ['simplifiée', 'de bout en bout.'];
 } else {
@@ -34,10 +34,10 @@ const highlighted_heading = heading.replace(
 );
 
 const link = computed(() => {
-    if (props.for === 'homeowner') {
-        return { name: 'homeowner_signup' };
-    } else if (props.for === 'tenant') {
-        return { name: 'tenant_signup' };
+    if (props.for === Roles.Homeowner) {
+        return { name: `${Roles.Homeowner}_signup` };
+    } else if (props.for === Roles.Tenant) {
+        return { name: `${Roles.Tenant}_signup` };
     } else {
         return { name: 'home' };
     }

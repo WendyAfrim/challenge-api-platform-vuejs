@@ -23,7 +23,7 @@
                     Prochainement l'agence va attribuer un agent à votre visite. Vous en serez notifié ! 
                 </v-container>
                 <v-card-actions>
-                    <router-link :to="{ name: 'homeowner_dashboard' }">
+                    <router-link :to="{ name: `${Roles.Homeowner}_dashboard` }">
                         <v-btn variant="tonal" color="primary">Retour à l'accueil</v-btn>
                     </router-link>
                 </v-card-actions>
@@ -40,6 +40,7 @@
     import type { Availaibility } from '@/interfaces/Availaibility';
     import type { PropertyRequest } from '@/interfaces/PropertyRequest';
     import type { Viewing } from '@/interfaces/Viewing';
+    import { Roles } from '@/enums/roles';
 
 
     const request = ref<PropertyRequest>();

@@ -3,7 +3,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Action\NotFoundAction;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -18,15 +17,12 @@ use App\Enums\UserValidationStatusEnum;
 use App\Enums\WorkSituationEnum;
 use App\Filter\RoleFilter;
 use App\Traits\EntityIdTrait;
-use cebe\openapi\spec\SecurityScheme;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
 use App\Traits\TimestampTrait;
 use Doctrine\Common\Collections\Collection;
-use JetBrains\PhpStorm\NoReturn;
-use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;

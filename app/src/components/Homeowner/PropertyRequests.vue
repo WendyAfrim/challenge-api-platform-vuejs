@@ -35,7 +35,7 @@
                                 </v-chip>
                             </td>
                             <td>
-                                <router-link v-if="property.state === 'availaible'" :to="{ name: `homeowner_request_slots_proposals`, params: { id : request.id} }">
+                                <router-link v-if="property.state === 'availaible'" :to="{ name: `${Roles.Homeowner}_request_slots_proposals`, params: { id : request.id} }">
                                     <v-btn color="primary">Accepter</v-btn>
                                 </router-link>
                                 <v-chip  v-else variant="elevated" color="warning">
@@ -60,7 +60,7 @@
                     Dès retour de sa part, vous serez notifié par email.
                 </ul>
             </div>
-            <router-link :to="{ name:'homeowner_dashboard' }">
+            <router-link :to="{ name: `${Roles.Homeowner}_dashboard` }">
                 <v-card-actions>
                     <v-spacer></v-spacer>
                 <v-btn color="primary" variant="flat"> Retour à l'accueil</v-btn>
@@ -84,7 +84,7 @@
                     {{ request.lodger.firstname }} {{ request.lodger.lastname }}. <br/>
                 </p>
             </div>
-            <router-link :to="{ name:'homeowner_dashboard' }">
+            <router-link :to="{ name: `${Roles.Homeowner}_dashboard` }">
                 <v-card-actions>
                     <v-spacer></v-spacer>
                 <v-btn color="primary" variant="flat"> Retour à l'accueil</v-btn>
@@ -103,6 +103,7 @@ import type { Availaibility } from '@/interfaces/Availaibility';
 import type { PropertyRequest } from '@/interfaces/PropertyRequest';
 import { RequestEnum } from '@/enums/RequestEnum';
 import { PropertyEnum } from '@/enums/PropertyEnum';
+import { Roles } from '@/enums/roles';
 
 let router = useRoute();
 let propertyId = router.params.id;
