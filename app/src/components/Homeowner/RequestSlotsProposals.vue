@@ -7,7 +7,7 @@
         <div v-if="!request">
             <h1>Veuillez proposer 3 créneaux au profil sélectionné</h1>
 
-            <Datepicker v-model="dates" multi-dates multi-dates-limit="3" ></Datepicker>
+            <Datepicker v-model="dates" lang="fr" format="dd/MM/yyyy" multi-dates multi-dates-limit="3" ></Datepicker>
             <v-progress-circular v-if="loading" indeterminate color="primary" class="mt-5"></v-progress-circular>
             <v-btn v-else @click="loadVisits" color="primary" >Enregistrer</v-btn>
         </div>
@@ -38,6 +38,7 @@ import Datepicker from '@vuepic/vue-datepicker';
 import type { PropertyRequest } from '@/interfaces/PropertyRequest';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { Roles } from '@/enums/roles';
+import { format } from 'date-fns';
 
 let route = useRoute();
 const requestId: any = route.params.id;
@@ -58,7 +59,8 @@ function getAllAvailaibilities(): string[] {
 
     for (const date of dates.value) {
         let slot: object = {
-            slot: date,
+            // slot: date,
+            slot: format(new Date(date), 'dd-MM-yyyy h:mm:ss'),
         };
 
         availaibilities.push(slot)
@@ -71,6 +73,8 @@ function getAllAvailaibilities(): string[] {
 async function loadVisits() {
 
     const slots : string[] = getAllAvailaibilities();
+    console.log(slots);
+    
     loading.value = true;
     
     await postRequestSlots(requestId, slots)

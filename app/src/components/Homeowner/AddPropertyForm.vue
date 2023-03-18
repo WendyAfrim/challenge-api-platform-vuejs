@@ -9,7 +9,7 @@
           {{ message.text }}
         </v-alert>
 
-        <v-form ref="form" v-model="valid" >
+        <v-form ref="form" v-model="valid" lazy-validation>
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="6">
                     <v-text-field v-model="property.title" :rules="titleRules" label="Nom du bien" required ></v-text-field>
@@ -18,7 +18,7 @@
                     <v-text-field v-model="property.price" type="number" :rules="monthlyRentRules" label="Prix mensuel" required ></v-text-field>
                 </v-col>
             </v-row>
-            <v-row class="d-flex justify-center align-start">
+             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="6">
                     <v-select v-model="property.type" :items="propertyType" :rules="typeRules" label="Type de bien" solo></v-select>
                 </v-col>
@@ -42,14 +42,14 @@
                     <v-text-field v-model="property.city" :rules="zipcodeRules" label="Ville" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="3">
-                    <v-text-field v-model="property.country" :rules="countryRules" label="Pays" required></v-text-field>
+                    <v-select :items="countryItems"  solo v-model="property.country" label="Pays" required></v-select>
                 </v-col>
             </v-row>
-            <v-row class="d-flex justify-center align-start">
+           <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="12">
                     <v-textarea outlined name="input-7-4" label="Description" v-model="property.description"></v-textarea>
                 </v-col>
-            </v-row>
+            </v-row> 
             <v-row class="d-flex justify-center align-start">
                 <v-col cols="12" md="4">
                     <v-checkbox  v-model="property.has_balcony" label="Balcon"></v-checkbox>
@@ -72,7 +72,7 @@
                 <v-col cols="12" md="4">
                     <v-checkbox  v-model="property.is_furnished" label="Equipé"></v-checkbox>
                 </v-col>
-            </v-row>
+            </v-row> 
             <v-col cols="12" class="d-flex justify-center">
                 <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
                 <v-btn v-else color="primary" class="mr-4" @click="addProperty"> Ajouter ce bien </v-btn>
@@ -94,16 +94,6 @@
 
     const authStore = useAuthStore();
     const form = ref();
-    const valid = ref(false);
-    const loading = ref(false);
-
-    const user = await authStore.getUser;
-
-    const errorType = ref('');
-    const message = ref({
-        text: '',
-        type: ''
-    })
 
     interface Property {
         title: string,
@@ -131,7 +121,7 @@
         address: '',
         zipcode: '',
         city: '',
-        country: 'France',
+        country: '',
         description: '',
         photos: [],
         type: '',
@@ -148,10 +138,20 @@
     });
     
 
-    let propertyType: string[] = ['Appartement', 'Maison'];
-    let propertyState: string[] = ['Libre', 'Occupé'];
-    let numberRoom = [0, 1, 2, 3, 4, 5];
+    const propertyType: string[] = ['Appartement', 'Maison'];
+    const numberRoom = [0, 1, 2, 3, 4, 5];
+    const countryItems: string[] = ['France', 'Belgique', 'Luxembourg']
 
+    const valid = ref(false);
+    const loading = ref(false);
+
+    const user = await authStore.getUser;
+
+    const errorType = ref('');
+    const message = ref({
+        text: '',
+        type: ''
+    })
 
     const titleRules = ref([
         (v: string) => !!v || 'Le nom du bien est requis',
@@ -233,7 +233,7 @@
                 message.value.type = 'error';
             }
         } else {
-            form.value.validate();
+            // form.value.validate();
         }
         loading.value = false;
     }
