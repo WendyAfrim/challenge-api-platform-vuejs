@@ -233,7 +233,7 @@
                 message.value.type = 'error';
             }
         } else {
-            // form.value.validate();
+            form.value.validate();
         }
         loading.value = false;
     }
