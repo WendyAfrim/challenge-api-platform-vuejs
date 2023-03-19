@@ -1,11 +1,6 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="12" md="6">
-                <h1 class="text-h4 mb-10 font-weight-bold heading-sentence">Mes <span>visites</span></h1>
-            </v-col>
-        </v-row>
-        <v-row>
             <v-alert v-if="message.text" class="mb-5 text-white" :type="message.type">
               {{ message.text }}
             </v-alert>

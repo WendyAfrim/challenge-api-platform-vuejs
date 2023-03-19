@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getFullUrl } from "@/helpers/assets";
 import {axios} from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 import {ref, defineProps, computed, onMounted} from "vue";
@@ -10,8 +11,6 @@ const props = defineProps(
     });
 
 const router = useRouter();
-const route = useRoute();
-const errorType = ref('');
 const message = ref({
   text:'',
   type:''
@@ -37,7 +36,7 @@ async function onClick() {
 
 onMounted(async () => {
   // default value will never be used (agency will verify the announcement before published)
-  imagePath.value = "https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+  imagePath.value = getFullUrl('../assets/no-image.jpg');
   if(undefined !== props.property) {
     const property = props.property
     if (undefined !== property['photos']) {
@@ -82,6 +81,7 @@ const getImage = computed( () => {
       <v-img
           class="align-end text-white"
           v-bind:src="getImage"
+          height="200px"
           cover>
       </v-img>
       <v-card-title>

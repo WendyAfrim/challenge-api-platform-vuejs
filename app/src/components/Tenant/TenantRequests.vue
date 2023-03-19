@@ -2,7 +2,6 @@
     <v-container class="d-flex justify-center">
         <v-row align="center" no-gutters>
             <v-col cols="12" md="12">
-                <h1 class="text-h4 font-weight-bold mb-6 heading-sentence">Mes <span>demandes</span></h1>
                 <v-chip-group multiple selected-class="text-primary" v-model="selection">
                         <v-chip filter class="ma-2" size="x-large" value="pending" color="blue">En attente</v-chip>
                         <v-chip filter class="ma-2" size="x-large" value="accepted" color="blue">Proposition de visite</v-chip>
@@ -41,7 +40,7 @@
     import { getRequestsByLodger } from '@/services/tenant/requests';
     import { useAuthStore } from '@/stores/auth.store';
     import { RequestEnum } from '@/enums/RequestEnum';
-import { Roles } from '@/enums/roles';
+    import { Roles } from '@/enums/roles';
 
     const selection = ref([]);
     const requests = ref();
@@ -50,13 +49,7 @@ import { Roles } from '@/enums/roles';
 
     const user = await authStore.getUser;
 
-    await getRequestsByLodger(user.id)
-        .then((response) => {
-            requests.value = response;
-
-        }).catch((error) => {
-            console.log(error);
-        });
+    requests.value = await getRequestsByLodger(user.id).catch((error) => console.log(error));
 
     const showRequests = computed(() => {
         if (requests.value[0] == 404) {

@@ -4,6 +4,8 @@ import {ref} from "vue";
 import {axios} from "@/services/auth";
 import { useAuthStore } from "@/stores/auth.store";
 import { Roles } from "@/enums/roles";
+import { UserValidationStatus } from "@/enums/UserValidationStatus";
+import { getFullUrl } from "@/helpers/assets";
 
 const props = defineProps({
       id:String,
@@ -92,12 +94,11 @@ const createRequest = async () => {
       <v-col cols="12">
         <v-alert v-if="message.text" :type="message.type" class="mb-5" dismissible>{{message.text}}</v-alert>
           <v-img
-          class="bg-white"
-          :aspect-ratio="1"
-          height="300"
-          src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
-          cover
-        ></v-img>
+            class="bg-white"
+            height="300"
+            :src="property.photos?.length ? property.photos[0] : getFullUrl('../assets/no-image.jpg')"
+            cover
+          ></v-img>
       </v-col>
       <v-col cols="12">
         <v-card class="h-100">
@@ -121,7 +122,7 @@ const createRequest = async () => {
               </div>
               <v-progress-circular v-if="loading" indeterminate  color="primary" class="mr-5 mt-5 ml-auto"></v-progress-circular>
               <v-alert v-if="alreadyRequested" type="info" variant="tonal" class="ma-5" dismissible>Vous avez déjà fait une requête pour ce bien</v-alert>
-              <v-btn v-else-if="!loading && user.role === Roles.Tenant" class="mr-5 mt-5 ml-auto" color="primary" @click="createRequest">Postuler</v-btn>
+              <v-btn v-else-if="!loading && user.role === Roles.Tenant && user.validationStatus === UserValidationStatus.Validated" class="mr-5 mt-5 ml-auto" color="primary" @click="createRequest">Postuler</v-btn>
             </div>
             <v-card-text>
               <v-list>

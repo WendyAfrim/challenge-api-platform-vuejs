@@ -9,7 +9,6 @@ import LoginView from "@/views/LoginView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import TenantDashboardView from "@/views/Tenant/DashboardView.vue";
 import TenantRequestsView from "@/views/Tenant/TenantRequestsView.vue";
-import TenantPropertiesView from "@/views/Tenant/TenantPropertiesView.vue";
 import TenantRequestSlotsView from "@/views/Tenant/TenantRequestSlotsView.vue";
 
 import HomeownerDashboardView from "@/views/Homeowner/DashboardView.vue";
@@ -23,10 +22,10 @@ import WizardViewVue from "@/views/Tenant/WizardView.vue";
 import ShowUserView from "@/views/Agency/ShowUserView.vue";
 import ViewingsView from "@/views/Agency/ViewingsView.vue";
 import PropertyDetailsView from "@/views/Property/PropertyDetailsView.vue";
-import PropertiesView from "@/views/Agency/PropertiesView.vue";
-import ShowVisitView from "@/views/Agency/ShowVisitView.vue";
-import { Roles } from "@/enums/roles";
-import { UserValidationStatus } from "@/enums/UserValidationStatus";
+import ShowVisitView from '@/views/Agency/ShowVisitView.vue';
+import { Roles } from '@/enums/roles';
+import { UserValidationStatus } from '@/enums/UserValidationStatus';
+import PropertiesGridView from '@/views/Property/PropertiesGridView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +45,7 @@ const router = createRouter({
           component: HomeView,
           meta: {
             public: true,
+            fluid: true,
           },
         },
       ],
@@ -65,6 +65,7 @@ const router = createRouter({
           component: HomeView,
           meta: {
             public: true,
+            fluid: true,
           },
         },
         {
@@ -87,6 +88,9 @@ const router = createRouter({
           path: "dashboard",
           name: `${Roles.Tenant}_dashboard`,
           component: TenantDashboardView,
+          meta: {
+            title: "Mon dossier",
+          },
         },
         {
           path: "first-steps",
@@ -96,17 +100,26 @@ const router = createRouter({
         {
           path: "properties",
           name: `${Roles.Tenant}_properties`,
-          component: TenantPropertiesView,
+          component: PropertiesGridView,
+          meta: {
+            title: "Tous les biens",
+          }
         },
         {
           path: "requests",
           name: `${Roles.Tenant}_requests`,
           component: TenantRequestsView,
+          meta: {
+            title: "Mes demandes",
+          }
         },
         {
           path: "requests/:id/slots",
           name: `${Roles.Tenant}_request_slots`,
           component: TenantRequestSlotsView,
+          meta: {
+            title: "Mes demandes",
+          }
         },
         {
           path: "property/:id/details",
@@ -129,6 +142,7 @@ const router = createRouter({
           component: HomeView,
           meta: {
             public: true,
+            fluid: true,
           },
         },
         {
@@ -151,11 +165,17 @@ const router = createRouter({
           path: "dashboard",
           name: `${Roles.Homeowner}_dashboard`,
           component: HomeownerDashboardView,
+          meta: {
+            title: "Mes biens",
+          }
         },
         {
           path: "property/add",
           name: `${Roles.Homeowner}_property_add`,
           component: PropertyRegister,
+          meta: {
+            title: "Ajouter un bien",
+          }
         },
         {
           path: "property/requests/:id",
@@ -166,21 +186,33 @@ const router = createRouter({
           path: "requests",
           name: `${Roles.Homeowner}_requests`,
           component: HomeownerRequestsView,
+          meta: {
+            title: "Mes demandes",
+          }
         },
         {
           path: "viewings/:ownerId",
           name: `${Roles.Homeowner}_viewings`,
           component: ViewingView,
+          meta: {
+            title: "Mes visites",
+          }
         },
         {
           path: "request/:id/slots/proposals",
           name: `${Roles.Homeowner}_request_slots_proposals`,
           component: RequestSlotsProposalsView,
+          meta: {
+            title: "Propositions de visites",
+          }
         },
         {
           path: "property/:id/add/photos",
           name: `${Roles.Homeowner}_property_add_photos`,
           component: PropertyPhotosUploadViews,
+          meta: {
+            title: "Ajouter des photos",
+          }
         },
         {
           path: "property/:id/details",
@@ -208,6 +240,9 @@ const router = createRouter({
           path: "dashboard",
           name: `${Roles.Agency}_dashboard`,
           component: AgencyDashboardView,
+          meta: {
+            title: "Dossiers locataires",
+          }
         },
         {
           path: "users/:id",
@@ -218,6 +253,9 @@ const router = createRouter({
           path: "viewings",
           name: `${Roles.Agency}_viewings`,
           component: ViewingsView,
+          meta: {
+            title: "Demandes de visite",
+          }
         },
         {
           path: "property/:id/details",
@@ -227,7 +265,10 @@ const router = createRouter({
         {
           path: "properties",
           name: `${Roles.Agency}_properties`,
-          component: PropertiesView,
+          component: PropertiesGridView,
+          meta: {
+            title: "Biens immobiliers",
+          }
         },
         {
           path: "visit/:id",

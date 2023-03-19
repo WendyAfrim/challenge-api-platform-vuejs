@@ -31,11 +31,11 @@ async function next_page() {
   }
 }
 
-const has_precious = computed(()=>{
+const has_previous = computed(()=>{
   return current_page.value > 1;
 });
 async function previous_page() {
-  if(has_precious.value){
+  if(has_previous.value){
     await get_page(current_page.value - 1);
   }
 }
@@ -78,14 +78,13 @@ onMounted(async () => {
     
 <template>
   <div v-if="items_number !== 0">
-    <div id="box">
-      <v-alert v-if="message.text" class="text-white" :color="message.type">{{ message.text }}</v-alert>
-      <div class="ma-0" v-for="element in properties" :key="element['@id'].split('/').pop()">
-        <Property :property="element"></Property>
-      </div>
-    </div>
+      <v-row>
+        <v-col v-for="element in properties" :key="element['@id'].split('/').pop()" cols="12" sm="4">
+          <Property class="" :property="element"></Property>
+        </v-col>
+      </v-row>
     <div class="text-center" v-if="last_page > 1">
-      <span v-if="has_precious">
+      <span v-if="has_previous">
         <v-btn class="ma-1" color="primary" variant="outlined" @click="previous_page">
           <v-icon icon='mdi-chevron-left'></v-icon>
         </v-btn>
@@ -106,11 +105,4 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-#box{
-  align-self: start;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(250px, 1fr));
-  grid-gap: 3vmin;
-}
-
 </style>
