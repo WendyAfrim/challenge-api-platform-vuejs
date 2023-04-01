@@ -25,7 +25,7 @@ import { Roles } from "@/enums/roles";
       message.value.text = response.message;
       message.value.type = 'success';
     } catch (error: any) {
-      message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+      message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
       message.value.type = 'error';
     }
     loading.value = false;

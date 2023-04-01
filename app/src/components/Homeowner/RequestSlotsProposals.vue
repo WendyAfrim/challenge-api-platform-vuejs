@@ -88,7 +88,7 @@ async function loadVisits() {
     })
     .catch((error) => {
         errorType.value = error.response.data.error_type || '';
-        message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+        message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
         message.value.type = 'error';
 
     });

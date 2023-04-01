@@ -42,7 +42,7 @@ async function getPhotoLink(id:String) {
 
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }
@@ -61,7 +61,7 @@ async function getMyProperty(id:any) {
 
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }
@@ -80,7 +80,7 @@ const createRequest = async () => {
     message.value.type = 'success';
   } catch (error: any) {
     console.log("err: ", error)
-    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
   alreadyRequested.value = true;
