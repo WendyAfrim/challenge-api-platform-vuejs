@@ -5,9 +5,9 @@ import type { Roles } from '@/enums/roles';
 
 const route = useRoute();
 const forType = route.meta.forType as Roles;
-let titleFirstWords: string, titleLastWord: string;
-if (route.meta.title) {
-    const title = route.meta.title.split(" ");
+let titleFirstWords: string|undefined, titleLastWord: string|undefined;
+if (route.meta.title as string) {
+    const title: string[] = (route.meta.title as string).split(" ") ?? [];
     titleLastWord = title.pop();
     titleFirstWords = title.join(" ");
 }
