@@ -2,9 +2,6 @@
     <v-container v-if="Roles.Homeowner === forType">
       <v-row align="center" justify="space-between" no-gutters>
         <v-col cols="12" md="6">
-          <h1 class="text-h4 font-weight-bold heading-sentence">Tous <span>mes biens</span></h1>
-        </v-col>
-        <v-col cols="12" md="6" class="text-right">
           <router-link :to="{ name: `${Roles.Homeowner}_property_add` }">
             <v-btn rounded="pill" color="primary">Ajouter un bien</v-btn>
           </router-link>
@@ -14,7 +11,7 @@
         <template v-slot:default>
           <thead>
             <tr>
-              <th class="text-left"> Nom du bien </th>
+              <th class="text-left"> Nom du bien</th>
               <th class="text-left"> Adresse</th>
               <th class="text-left"> Loyer </th>
               <th class="text-left"> État </th>

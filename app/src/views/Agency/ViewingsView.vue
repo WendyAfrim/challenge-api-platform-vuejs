@@ -47,10 +47,8 @@
     });
 </script>
 <template>
-    <v-container>
         <v-row align="center">
             <v-col cols="12">
-                <h1 class="mb-5 text-h4 font-weight-bold heading-sentence">Demandes de <span>visite</span></h1>
                 <h3 class="heading-sentence"><span class="font-weight-medium">Filtrer</span> les visites</h3>
                 <v-chip-group v-model="assignedFilter">
                     <v-chip filter selected-class="text-success" class="ma-2" size="x-large" value="assigned">Assignées</v-chip>
@@ -93,7 +91,6 @@
                 </v-table>
             </v-col>
         </v-row>
-    </v-container>
 </template>
 
 <style scoped>

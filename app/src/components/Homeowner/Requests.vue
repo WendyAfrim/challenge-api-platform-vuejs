@@ -1,6 +1,5 @@
 <template>
     <v-container>
-        <h1 class="text-h4 mb-10 font-weight-bold heading-sentence">Mes <span>demandes</span></h1>
         <v-card v-if="requests?.length">
             <v-card-text>
                 <v-container>

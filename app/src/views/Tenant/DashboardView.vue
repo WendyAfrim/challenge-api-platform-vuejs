@@ -21,14 +21,9 @@
 
 <template>
     <v-container>
-        <v-row>
-            <v-col cols="12" md="6">
-                <h1 class="text-h4 font-weight-bold heading-sentence">Mon <span>dossier</span></h1>
-                <v-chip :color="chipColor" class="mt-4" label outlined>
-                    {{ $t(`validation_status.${user?.validationStatus}`) }}
-                </v-chip>
-            </v-col>
-        </v-row>
+        <v-chip :color="chipColor" class="mt-4" label outlined>
+            {{ $t(`validation_status.${user?.validationStatus}`) }}
+        </v-chip>
         <v-row>
             <v-col cols="12" md="6">
                 <v-card>
