@@ -32,7 +32,7 @@
             user.value.validationStatus = response.data.validationStatus;
             baseValidatedDocuments.value = user.value.documents.filter((document: any) => document.isValid);
         } catch (error: any) {
-            message.value = { text: error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.', type: 'error' };
+            message.value = { text: error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.', type: 'error' };
             console.log(error.response.data);
         }
         loading.value = false;

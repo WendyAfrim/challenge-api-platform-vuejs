@@ -60,7 +60,7 @@ async function getPhotoLink(id:String) {
     console.log("err: ", error)
     message.value.text = '';
     message.value.type = '';
-    message.value.text = error.response.data.message || 'Une erreur est survenue. Veuillez réessayer.';
+    message.value.text = error.response.data.detail || 'Une erreur est survenue. Veuillez réessayer.';
     message.value.type = 'error';
   }
 }

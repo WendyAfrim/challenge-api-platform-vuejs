@@ -12,6 +12,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\CreateHomeownerAction;
+use App\Controller\CreateTenantAction;
 use App\Controller\UserController;
 use App\Enums\UserValidationStatusEnum;
 use App\Enums\WorkSituationEnum;
@@ -51,6 +53,18 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['user_read', 'all']],
     denormalizationContext: ['groups' => ['user_write']],
 )]
+#[Post(
+    uriTemplate: '/users/register_tenant',
+    controller: CreateTenantAction::class,
+    denormalizationContext: ['groups' => ['create_user']],
+    name: 'register_tenant'
+)]
+#[Post(
+    uriTemplate: '/users/register_homeowner',
+    controller: CreateHomeownerAction::class,
+    denormalizationContext: ['groups' => ['create_user']],
+    name: 'register_homeowner'
+)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
@@ -73,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank(groups: ['register'])]
     #[Assert\Email(groups: ['register'])]
-    #[Groups(['user_read', 'user_write', 'property_read'])]
+    #[Groups(['user_read', 'user_write', 'property_read', 'create_user'])]
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
@@ -81,7 +95,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank(groups: ['register'])]
-    #[Groups(['user_write'])]
+    #[Groups(['user_write', 'create_user'])]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]

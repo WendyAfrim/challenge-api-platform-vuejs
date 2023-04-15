@@ -18,12 +18,7 @@
     </v-row>
     <v-alert v-if="message.content" class="mb-3 text-white" :color="message.type">
       <div v-if="message.type === 'error'">
-        <template v-for="(messages, field) in message.content" :key="field">
-          <li>{{ field }}: </li>
-          <template v-for="(message, index) in messages" :key="index">
-            <li class="error-message pl-6"> - {{ message }} </li>
-          </template>
-        </template>
+        {{ message.content }}
       </div>
       <div v-else>
         {{ message.content }}
@@ -95,21 +90,27 @@ const message = ref({
 const loading = ref<Boolean>(false);
 
 const register = async (event: MouseEvent) =>{
-    event.preventDefault();
+  event.preventDefault();
   loading.value = true;
-  if (valid.value) {
-    type FormUserData = Omit<User, "passwordConfirm" | "password"> & { plainPassword: string };
+  let url_by_role = '';
+  if(props.for === Roles.Tenant) {
+    url_by_role = `${import.meta.env.VITE_BASE_API_URL}/users/register_tenant`;
+  }else if(props.for === Roles.Homeowner) {
+    url_by_role = `${import.meta.env.VITE_BASE_API_URL}/users/register_homeowner`;
+  }
+  if (valid.value && url_by_role !== '') {
+    type FormUserData = Omit<User, "passwordConfirm" | "password" | "roles"> & { plainPassword: string };
     const data: FormUserData = {
       email: user.email,
-      plainPassword: user.password,
-      roles: [props.for as Roles]
+      plainPassword: user.password
     };
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_API_URL}/register`, data, {headers: {'Content-Type': 'application/json'}});
-      message.value.content = response.data.message;
+      const response = await axios.post(url_by_role, data, {headers: {'Content-Type': 'application/json'}});
+      console.log(response)
+      message.value.content = response.data;
       message.value.type = 'success';
     } catch (error: any) {
-      message.value.content = error.response.data.errors;
+      message.value.content =  error.response.data.detail;
       message.value.type = 'error';
       console.log(error);
     }
