@@ -85,7 +85,7 @@ services:
       - ./app:/app
     environment:
       - VITE_BASE_API_URL=https://localhost
-    command: npm run dev
+#    command: npm run dev
 
   adminer:
     image: adminer

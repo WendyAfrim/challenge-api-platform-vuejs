@@ -45,6 +45,17 @@ It means that you can:
 
 [Read the official "Getting Started" guide](https://api-platform.com/docs/distribution).
 
+
+### SETUP PROJECT
+- Monter les containers : docker compose up -d --build
+- Installation des dépendances dans le container vue via la commande: npm install 
+- Installation des dépendances dans le container php via la commande : composer install 
+- Setting des variables d'environnement BASE_URL & MAILER_DSN dans le .env
+- Pour avoir un jeu de données lancer les fixtures : 
+- Connectez vous au container API via make php-bash puis lancer la commande : bin/console d:f:l 
+- Pour assurer l'authentification d'un utilisateur générer les SSL keys via cette commande : bin/console lexik:jwt:generate-keypair  
+
+
 ## Credits
 
 Created by [Kévin Dunglas](https://dunglas.fr). Commercial support available at [Les-Tilleuls.coop](https://les-tilleuls.coop).
