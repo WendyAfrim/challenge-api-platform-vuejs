@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use App\Controller\CreateRequestAction;
 use App\Helpers\DateFormatterHelper;
 use App\Repository\RequestRepository;
 use App\Traits\EntityIdTrait;
@@ -16,6 +19,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['request_read', 'all', 'all_timestamp', 'property_read']],
     denormalizationContext: ['groups' => ['request_write']]
 )]
+#[Get(security: "is_granted('".User::ROLE_AGENCY."') or object.getLodger() == user or object.getOwner() == user")]
+#[Post(security: "is_granted('".User::ROLE_AGENCY."')")]
+#[Post(
+    uriTemplate: '/property_request/by_tenant',
+    controller: CreateRequestAction::class,
+    denormalizationContext: ['groups' => ['property_request_write']],
+    security: "is_granted('".User::ROLE_TENANT."')"
+)]
+#[Get(routeName: 'get_requests_by_owner')]
+#[Get(routeName: 'get_requests_by_lodger')]
+#[Post(routeName: 'post_requests_slots')]
+#[Post(routeName: 'post_requests_slot')]
+#[Get(routeName: 'get_requests_slots')]
+
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
 class Request
 {
@@ -27,12 +44,12 @@ class Request
     private ?User $lodger = null;
 
     #[ORM\ManyToOne(inversedBy: 'requests')]
-    #[Groups(['request_read', 'request_write', 'viewing_read'])]
+    #[Groups(['request_read', 'request_write', 'viewing_read', 'property_request_write'])]
     private ?Property $property = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, options: ["default" => "pending"])]
     #[Groups(['request_read', 'request_write', 'property_read'])]
-    private ?string $state = null;
+    private ?string $state = 'pending';
 
     #[ORM\OneToMany(mappedBy: 'request', targetEntity: Availaibility::class)]
     #[Groups(['request_read', 'property_read'])]
@@ -41,6 +58,11 @@ class Request
     public function __construct()
     {
         $this->availaibilities = new ArrayCollection();
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->property->getOwner();
     }
 
     public function getLodger(): ?User

@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     types: ['https://schema.org/MediaObject'],
     operations: [
-        new Get(),
+        new Get(security: "is_granted('".User::ROLE_AGENCY."') or object.getUserDocument() == user"),
         new GetCollection(),
         new Post(
             controller: CreateDocumentAction::class,
@@ -64,6 +64,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => ['document_write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['user_document' => 'exact'])]
+#[Put(security: "is_granted('".User::ROLE_AGENCY."') or object.getUserDocument() == user")]
 #[Vich\Uploadable]
 #[ORM\Entity]
 class Document

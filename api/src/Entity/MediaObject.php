@@ -48,7 +48,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             deserialize: false
         )
     ],
-    normalizationContext: ['groups' => ['media_object:read']]
+    normalizationContext: ['groups' => ['media_object:read']],
+    security: "is_granted('".User::ROLE_HOMEOWNER."')"
 )]
 class MediaObject
 {

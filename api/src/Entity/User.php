@@ -1,5 +1,4 @@
 <?php
-# api/src/Entity/User.php
 
 namespace App\Entity;
 
@@ -33,22 +32,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(security: "is_granted('".User::ROLE_AGENCY."')"),
         new Post(processor: UserPasswordHasher::class),
-        new Get(),
+        new Get(security: "is_granted('".User::ROLE_AGENCY."') or object == user"),
         new Get(
             uriTemplate: '/user/details',
             controller: UserController::class,
-            output: false,
             read: false,
             name: 'user_account'
         ),
-        new Put(processor: UserPasswordHasher::class),
-        new Patch(processor: UserPasswordHasher::class),
-        new Delete(),
-        // new Post(
-        //     uriTemplate: '/users/{id}',
-        //     inputFormats: ['multipart' => ['multipart/form-data']]),
+        new Put(security: "is_granted('".User::ROLE_AGENCY."') or object == user",
+            processor: UserPasswordHasher::class),
+        new Patch(security: "is_granted('".User::ROLE_AGENCY."') or object == user",
+            processor: UserPasswordHasher::class),
+        new Delete(security: "is_granted('".User::ROLE_AGENCY."')"),
     ],
     normalizationContext: ['groups' => ['user_read', 'all']],
     denormalizationContext: ['groups' => ['user_write']],
