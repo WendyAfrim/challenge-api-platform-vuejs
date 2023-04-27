@@ -5,20 +5,16 @@ namespace App\Tests\Api\Unit\Service;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\Request;
 use App\Factory\RequestFactory;
-use App\Factory\SlotFactory;
+use App\Factory\AvailabilityFactory;
 use App\Service\SlotService;
 use Doctrine\ORM\EntityManager;
 
 class SlotServiceTest extends ApiTestCase
 {
-    private RequestFactory $requestFactory;
-    private SlotFactory $slotFactory;
-    public function setup(): void
-    {
-        $this->requestFactory = new RequestFactory();
-        $this->slotFactory    = new SlotFactory();
-    }
 
+    /**
+     * @dataProvider provideSlots
+     */
     public function testIsSlotConform(Request $request, array $slots, bool $expected): void
     {
         $managerMock = $this->createMock(EntityManager::class);
@@ -29,11 +25,38 @@ class SlotServiceTest extends ApiTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function getSlots(): array
+    /**
+     * @dataProvider provideSlotsForCounting
+     */
+    public function testCountSlotToAdd(Request $request, array $slots, int $expected): void
     {
+        $managerMock = $this->createMock(EntityManager::class);
+        $slotService = new SlotService($managerMock);
+
+        $actual = $slotService->countSlotToAdd($request, $slots);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public static function provideSlots(): array
+    {
+        $requestFactory = new RequestFactory();
+        $slotFactory    = new AvailabilityFactory();
+
         return [
-            [$this->requestFactory->createRequest(2), $this->slotFactory->createSlots(1), true],
-            [$this->requestFactory->createRequest(3), $this->slotFactory->createSlots(2), false],
+            [$requestFactory->createRequest(2), $slotFactory->createSlots(), true],
+            [$requestFactory->createRequest(3), $slotFactory->createSlots(), false],
+        ];
+    }
+
+    public static function provideSlotsForCounting(): array
+    {
+        $requestFactory = new RequestFactory();
+        $slotFactory    = new AvailabilityFactory();
+
+        return [
+            [$requestFactory->createRequest(2), $slotFactory->createSlots(), 3],
+            [$requestFactory->createRequest(1), $slotFactory->createSlots(), 1],
         ];
     }
 }

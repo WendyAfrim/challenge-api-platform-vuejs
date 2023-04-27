@@ -10,7 +10,7 @@ class AvailaibilityFactory
     {
         $availabilities = [];
         for($i = 0; $i < $number; $i++) {
-            $availabilities = (new Availaibility())
+            $availabilities[] = (new Availaibility())
                                     ->setSlot(new \DateTime());
         }
 
