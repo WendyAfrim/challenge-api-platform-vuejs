@@ -56,6 +56,7 @@ class RequestController extends AbstractController
     }
 
 
+    #[IsGranted('REQUEST_VIEW_TENANT', subject: 'lodgerId')]
     #[Route('/requests/by_lodger/{lodgerId}', name: 'get_requests_by_lodger', methods: ['GET'])]
     public function getRequestsByLodger(int $lodgerId): JsonResponse
     {

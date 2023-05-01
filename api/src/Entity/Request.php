@@ -19,13 +19,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['request_read', 'all', 'all_timestamp', 'property_read']],
     denormalizationContext: ['groups' => ['request_write']]
 )]
-#[Get(security: "is_granted('".User::ROLE_AGENCY."') or object.getLodger() == user or object.getOwner() == user")]
+#[Get(security: "is_granted('REQUEST_VIEW', object)")]
 #[Post(security: "is_granted('".User::ROLE_AGENCY."')")]
 #[Post(
     uriTemplate: '/property_request/by_tenant',
     controller: CreateRequestAction::class,
     denormalizationContext: ['groups' => ['property_request_write']],
-    security: "is_granted('".User::ROLE_TENANT."')"
+    securityPostDenormalize: "is_granted('REQUEST_CREATE', object)"
 )]
 #[Get(routeName: 'get_requests_by_owner')]
 #[Get(routeName: 'get_requests_by_lodger')]
