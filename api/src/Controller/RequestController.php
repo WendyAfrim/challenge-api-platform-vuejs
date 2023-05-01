@@ -78,6 +78,7 @@ class RequestController extends AbstractController
     }
 
 
+    #[IsGranted('REQUEST_CREATE_OWNER', subject: 'id')]
     #[Route('/requests/{id}/slots/proposals', name: 'post_requests_slots',methods: ['POST'])]
     public function postRequestSlotsProposals(int $id ,Request $request): JsonResponse
     {
