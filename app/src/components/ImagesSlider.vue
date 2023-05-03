@@ -35,7 +35,7 @@ const prev = function() {
 <template>
   <div style="text-align: center">
       <div v-for="(image, i) in props.images" :key="i" >
-        <img alt="" :src="image" :height="400" style="position: center" v-if="currentIndex === i && undefined !== image "/>
+        <img alt="" :src="image as string ?? 'https://via.placeholder.com/400'" :height="400" style="position: center" v-if="currentIndex === i && undefined !== image "/>
       </div>
       <v-btn class="ma-1" color="primary" variant="outlined" :disabled="!has_previous" @click.prevent="prev">
         <v-icon icon='mdi-chevron-left'></v-icon>
