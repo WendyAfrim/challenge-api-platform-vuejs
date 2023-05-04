@@ -119,7 +119,7 @@ class Property implements PropertyInterface
     private ?bool $has_parking = null;
 
     #[ORM\Column]
-    #[Groups(['property_read', 'property_write'])]
+    #[Groups(['property_read', 'property_write', 'user_read'])]
     private ?int $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -131,7 +131,7 @@ class Property implements PropertyInterface
     private ?bool $is_furnished = false;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['property_read', 'property_write'])]
+    #[Groups(['property_read', 'property_write', 'user_read'])]
     private ?string $state = null;
 
     #[ORM\OneToMany(mappedBy: 'property', targetEntity: Availaibility::class)]
