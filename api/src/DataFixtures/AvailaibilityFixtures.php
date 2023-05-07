@@ -23,19 +23,19 @@ class AvailaibilityFixtures extends Fixture  implements DependentFixtureInterfac
     public function load(ObjectManager $manager)
     {
 
-        $tenants = $this->userRepository->findByRole(User::ROLE_TENANT);
-        $properties = $manager->getRepository(Property::class)->findAll();
-        $faker = Factory::create();
-
-        for ($i = 0; $i < 4; $i++) {
-            $object = (new Availaibility())
-                ->setLodger($faker->randomElement($tenants))
-                ->setProperty($faker->randomElement($properties))
-
-            ;
-            $manager->persist($object);
-        }
-        $manager->flush();
+//        $tenants = $this->userRepository->findByRole(User::ROLE_TENANT);
+//        $properties = $manager->getRepository(Property::class)->findAll();
+//        $faker = Factory::create();
+//
+//        for ($i = 0; $i < 4; $i++) {
+//            $object = (new Availaibility())
+//                ->setLodger($faker->randomElement($tenants))
+//                ->setProperty($faker->randomElement($properties))
+//
+//            ;
+//            $manager->persist($object);
+//        }
+//        $manager->flush();
 
     }
 

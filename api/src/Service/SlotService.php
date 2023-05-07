@@ -37,10 +37,10 @@ class SlotService
         $addingSlots = count($slots);
 
         $totalSlots = $addingSlots + $existingSlotsNumber;
-        if($totalSlots <= 3) {
+        if($totalSlots >= 3) {
             $limit = $totalSlots;
         } else {
-            $limit = $addingSlots - $existingSlotsNumber;
+            $limit = self::SLOT_LIMIT - $totalSlots;
         }
 
         return $limit;
