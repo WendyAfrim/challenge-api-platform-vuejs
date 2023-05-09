@@ -26,7 +26,14 @@ jobs:
         with:
           name: app
           path: "./app"
+      - name: Run tests
+        id: tests
+        uses: php-actions/phpunit@v3
+        with:
+          version: '9.6.7'
+          configuration: './api/phpunit.xml.dist'
       - name: Deploy to SSH
+        if: steps.tests.outcome == 'success'
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -38,6 +45,7 @@ jobs:
           source: .
           target: ${{ secrets.SSH_TARGET }}
       - name: Clear cache
+        if: steps.tests.outcome == 'success'
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
