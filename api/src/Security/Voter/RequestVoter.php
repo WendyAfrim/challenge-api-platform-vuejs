@@ -13,6 +13,7 @@ class RequestVoter extends Voter
 {
     public const REQUEST_CREATE_BY_OWNER = 'REQUEST_CREATE_BY_OWNER';
     public const REQUEST_CREATE_BY_TENANT = 'REQUEST_CREATE_BY_TENANT';
+    public const REQUEST_PROPERTY_APPLICATION = 'REQUEST_PROPERTY_APPLICATION';
     public const REQUEST_VIEW = 'REQUEST_VIEW';
     public const REQUEST_VIEW_TENANT = 'REQUEST_VIEW_TENANT';
 
@@ -21,7 +22,7 @@ class RequestVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::REQUEST_CREATE_BY_TENANT, self::REQUEST_CREATE_BY_OWNER,self::REQUEST_VIEW, self::REQUEST_VIEW_TENANT]);
+        return in_array($attribute, [self::REQUEST_CREATE_BY_TENANT, self::REQUEST_CREATE_BY_OWNER,self::REQUEST_VIEW, self::REQUEST_VIEW_TENANT, self::REQUEST_PROPERTY_APPLICATION]);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -35,7 +36,10 @@ class RequestVoter extends Voter
 
         switch ($attribute) {
             case self::REQUEST_CREATE_BY_TENANT:
-                if($this->security->isGranted( User::ROLE_TENANT ) && $this->requestChecker->checkIfTenantAttachToRequest($subject, $user->getId())) { return true;}
+                if($this->security->isGranted( User::ROLE_TENANT ) && $this->requestChecker->checkIfTenantIsAttachToRequest($subject, $user->getId())) { return true;}
+                break;
+            case self::REQUEST_PROPERTY_APPLICATION:
+                if($this->security->isGranted( User::ROLE_TENANT ) && $this->requestChecker->checkIfTenantCanApplyForTheProperty($user, $subject->getProperty()) ) { return true;}
                 break;
             case self::REQUEST_CREATE_BY_OWNER:
                 if($this->security->isGranted( User::ROLE_HOMEOWNER ) && $this->requestChecker->isOwnerProperty($user, $subject)) { return true; }

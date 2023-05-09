@@ -2,6 +2,7 @@
 
 namespace App\Checker;
 
+use App\Entity\Property;
 use App\Entity\User;
 use App\Repository\RequestRepository;
 
@@ -29,11 +30,21 @@ class RequestChecker
         return false;
     }
 
-    public function checkIfTenantAttachToRequest(int $requestId, int $lodgerId): bool
+    public function checkIfTenantIsAttachToRequest(int $requestId, int $lodgerId): bool
     {
         $request = $this->requestRepository->find($requestId);
 
         if ($request->getLodger()->getId() === $lodgerId) { return true; }
+
+        return false;
+    }
+
+    public function checkIfTenantCanApplyForTheProperty(User $user, Property $property): bool
+    {
+        $lodgerIncome = $user->getSalary();
+        $propertyRent = $property->getPrice();
+
+        if (($lodgerIncome / 2) > $propertyRent) { return true; }
 
         return false;
     }

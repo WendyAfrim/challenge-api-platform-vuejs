@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     uriTemplate: '/property_request/by_tenant',
     controller: CreateRequestAction::class,
     denormalizationContext: ['groups' => ['property_request_write']],
-    securityPostDenormalize: "is_granted('REQUEST_CREATE_TENANT', object)"
+    securityPostDenormalize: "is_granted('REQUEST_PROPERTY_APPLICATION', object)"
 )]
 #[Get(routeName: 'get_requests_by_owner')]
 #[Get(routeName: 'get_requests_by_lodger')]
