@@ -52,7 +52,7 @@ const messages = {
     request_status: {
       pending: 'En attente',
       accepted: 'Accepté',
-      rejected: 'Refusé',
+      refused: 'Refusé',
       assignment: 'En attente d\'assignation',
     },
   }

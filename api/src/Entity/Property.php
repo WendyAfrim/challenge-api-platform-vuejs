@@ -394,36 +394,6 @@ class Property implements PropertyInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Availaibility>
-     */
-    public function getAvailaibilities(): Collection
-    {
-        return $this->availaibilities;
-    }
-
-    public function addAvailaibility(Availaibility $availaibility): self
-    {
-        if (!$this->availaibilities->contains($availaibility)) {
-            $this->availaibilities->add($availaibility);
-            $availaibility->setProperty($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvailaibility(Availaibility $availaibility): self
-    {
-        if ($this->availaibilities->removeElement($availaibility)) {
-            // set the owning side to null (unless already changed)
-            if ($availaibility->getProperty() === $this) {
-                $availaibility->setProperty(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getOwner(): ?User
     {
         return $this->owner;
