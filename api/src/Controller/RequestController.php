@@ -78,7 +78,7 @@ class RequestController extends AbstractController
     }
 
 
-    #[IsGranted('REQUEST_CREATE_OWNER', subject: 'id')]
+    #[IsGranted('REQUEST_CREATE_BY_OWNER', subject: 'id')]
     #[Route('/requests/{id}/slots/proposals', name: 'post_requests_slots',methods: ['POST'])]
     public function postRequestSlotsProposals(int $id ,Request $request): JsonResponse
     {
@@ -130,6 +130,7 @@ class RequestController extends AbstractController
         ]);
     }
 
+    #[IsGranted('REQUEST_CREATE_BY_TENANT', subject: 'requestId')]
     #[Route('/requests/{requestId}/slot/{slotId}', name: 'post_requests_slot', methods: ['POST'])]
     #[IsGranted('ROLE_TENANT')]
     public function postSlotAcceptedByTenant(int $requestId, int $slotId): JsonResponse
