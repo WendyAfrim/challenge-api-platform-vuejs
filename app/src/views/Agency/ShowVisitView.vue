@@ -16,7 +16,7 @@
         const response = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/viewings/${route.params.id}`);
         selectedAgent.value = response.data.agent;
         viewing.value = response.data;
-        const agentsResponse = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users/`, { params: {roles: Roles.Agency}});
+        const agentsResponse = await axios.get(`${import.meta.env.VITE_BASE_API_URL}/users`, { params: {roles: Roles.Agency}});
         agents.value = agentsResponse.data;
     } catch (error) {
         console.log(error);
@@ -82,7 +82,7 @@
                             :items="agents"
                             label="Agent"
                             v-model="selectedAgent"
-                            item-title="firstname"
+                            :item-title="item => `${item.firstname} ${item.lastname}`"
                             item-value="id"
                             outlined
                             dense
