@@ -116,7 +116,7 @@ const viewing = ref({
     agent: ''
 });
 const requests = ref<PropertyRequest[]>();
-const propertyBusyState = ['locked', 'viewing', 'assignment'];
+const propertyBusyState = ['locked', 'viewing',];
 
 
 try{
