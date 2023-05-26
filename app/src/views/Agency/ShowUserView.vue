@@ -26,7 +26,15 @@
             message.value = { text: '', type: undefined };
             const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/users/${user.value.id}`, {
                 validationStatus: user.value.documents.every((document: any) => document.isValid) ? UserValidationStatus.Validated : UserValidationStatus.ToComplete,
-                documents: user.value.documents,
+            }, {
+                headers: {
+                    'Content-Type': 'application/ld+json',
+                }
+            });
+            user.value.documents.forEach(async (element: any) => {
+                const response2 = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/documents/${element.id}`, {
+                    isValid: element.isValid,
+                });
             });
             message.value = { text: 'Le dossier a bien été mis à jour.', type: 'success' };
             user.value.validationStatus = response.data.validationStatus;
