@@ -3,6 +3,7 @@
     import { axios } from '@/services/auth';
     import { ref } from 'vue';
     import { Roles } from '@/enums/roles';
+    import { RequestEnum } from '@/enums/RequestEnum';
 
     const viewing = ref();
     const agents = ref();
@@ -27,7 +28,12 @@
         if (valid.value) {
             console.log(selectedAgent.value);
             try {
-                const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/viewings/${viewing.value.id}`, { agent: `/users/${selectedAgent.value}` });
+                const response = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/viewings/${viewing.value.id}`, {
+                    agent: `/users/${selectedAgent.value}`,
+                });
+                const response2 = await axios.put(`${import.meta.env.VITE_BASE_API_URL}/requests/${response.data.availaibility.request.id}`, {
+                    state: RequestEnum.Visit,
+                });
                 console.log(response);
                 viewing.value.agent = response.data.agent;
             } catch (error) {
@@ -82,7 +88,7 @@
                             :items="agents"
                             label="Agent"
                             v-model="selectedAgent"
-                            :item-title="item => `${item.firstname} ${item.lastname}`"
+                            :item-title="item => item.firstname"
                             item-value="id"
                             outlined
                             dense

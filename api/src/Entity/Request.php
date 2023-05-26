@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Controller\CreateRequestAction;
 use App\Helpers\DateFormatterHelper;
 use App\Repository\RequestRepository;
@@ -32,6 +33,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Post(routeName: 'post_requests_slots')]
 #[Post(routeName: 'post_requests_slot')]
 #[Get(routeName: 'get_requests_slots')]
+#[Put(security: "is_granted('".User::ROLE_AGENCY."')")]
 
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
 class Request

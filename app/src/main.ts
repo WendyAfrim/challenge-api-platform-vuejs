@@ -54,6 +54,7 @@ const messages = {
       accepted: 'Accepté',
       rejected: 'Refusé',
       assignment: 'En attente d\'assignation',
+      viewing: 'En attente de visite',
     },
   }
 }
