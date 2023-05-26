@@ -33,7 +33,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('".User::ROLE_AGENCY."')"),
-        new Post(processor: UserPasswordHasher::class),
         new Get(security: "is_granted('".User::ROLE_AGENCY."') or object == user"),
         new Get(
             uriTemplate: '/user/details',
